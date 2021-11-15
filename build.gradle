@@ -10,7 +10,8 @@ repositories {
 }
 
 dependencies {
-    
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.0'
 }
 
 test {
