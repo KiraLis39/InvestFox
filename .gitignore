@@ -1,0 +1,7 @@
+.gradle
+.idea
+/build/
+.classpath
+*.tmp
+*.class
+*.log
