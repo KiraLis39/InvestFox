@@ -18,6 +18,8 @@ public class NetProcessor {
     private static final String SOURCE_FOUR = "https://www.dohod.ru/ik/analytics/dividend/";
     private static final String SOURCE_FIVE = "https://investfuture.ru/securities?filter_name=&filter_tiker=";
 
+//    https://www.google.com/finance/quote/LKOH:MCX; https://quote.rbc.ru/ticker/172651
+
     private static String TICKET;
     private static String COST_FIELD;
     private static String COST_TYPE;
