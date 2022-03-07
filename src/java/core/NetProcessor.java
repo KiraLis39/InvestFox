@@ -58,7 +58,7 @@ public class NetProcessor {
         if (!new File("./shares/").exists()) {
             Files.createDirectory(Paths.get("./shares/"));
         }
-
+        Out.Print(NetProcessor.class, Out.LEVEL.INFO, "Saving shares..");
         for (Component row : InvestFrame.getTableRows()) {
             ResultShareDTO strow = ((ShareTableRow) row).getResultDto();
             String res = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(strow);

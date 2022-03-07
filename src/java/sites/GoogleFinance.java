@@ -1,14 +1,13 @@
 package sites;
 
 import dto.ShareDTO;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import sites.impl.AbstractSite;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.stream.Stream;
 
 
 public class GoogleFinance extends AbstractSite {

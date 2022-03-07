@@ -14,7 +14,7 @@ import java.util.ArrayList;
 @ToString
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResultShareDTO implements Serializable, Comparable {
+public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> {
     //    @JsonProperty("Индекс")
     private short INDEX;
     //    @JsonProperty("Тикет")
@@ -99,7 +99,7 @@ public class ResultShareDTO implements Serializable, Comparable {
 
     private void calcResultCost(ArrayList<String> newCostList) {
         for (String cost : newCostList) {
-            Double aNew = Double.parseDouble(cost
+            double aNew = Double.parseDouble(cost
                             .replaceAll("\\[", "")
                             .replaceAll("]", "")
                             .replaceAll(",", ".")
@@ -110,7 +110,7 @@ public class ResultShareDTO implements Serializable, Comparable {
         }
     }
 
-    private void calcResultLot(Integer newLotData) throws Exception {
+    private void calcResultLot(Integer newLotData) {
         if (newLotData == -1) {return;}
         if (LOT_SIZE == 1) {
             LOT_SIZE = newLotData;
@@ -139,7 +139,7 @@ public class ResultShareDTO implements Serializable, Comparable {
         if (newData == null) {return;}
         if (COST_TYPE == null) {
             COST_TYPE = newData;
-        } else if (COST_TYPE != newData && !COST_TYPE.equals(newData)) {
+        } else if (!COST_TYPE.equals(newData)) {
             throw new Exception("Cost type is multiply: " + newData + " or " + COST_TYPE);
         }
     }
@@ -148,7 +148,7 @@ public class ResultShareDTO implements Serializable, Comparable {
         if (SECTOR == null) {
             SECTOR = newData;
         } else {
-            SECTOR.concat(newData);
+            SECTOR = SECTOR.concat(newData);
         }
     }
 
@@ -159,7 +159,7 @@ public class ResultShareDTO implements Serializable, Comparable {
             RECOMMENDATION = newRecList.toString();
         } else {
             for (String rec : newRecList) {
-                RECOMMENDATION.concat(" | " + rec);
+                RECOMMENDATION = RECOMMENDATION.concat(" | " + rec);
             }
         }
     }
@@ -172,7 +172,7 @@ public class ResultShareDTO implements Serializable, Comparable {
     }
 
     @Override
-    public int compareTo(Object other) {
-        return INDEX < ((ResultShareDTO)other).INDEX ? -1 : INDEX > ((ResultShareDTO)other).INDEX ? 1 : 0;
+    public int compareTo(ResultShareDTO other) {
+        return Short.compare(INDEX, other.INDEX);
     }
 }

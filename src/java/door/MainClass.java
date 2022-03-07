@@ -2,9 +2,9 @@ package door;
 
 import fox.Out;
 import gui.InvestFrame;
-import javax.swing.UIManager;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
+import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class MainClass {
     public static void main(String[] args) {

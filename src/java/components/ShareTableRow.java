@@ -111,7 +111,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 addChangeListener(e ->
                         {
                             getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
-                            resultDto.setINDEX(Short.valueOf(getValue().toString()));
+                            resultDto.setINDEX(Short.parseShort(getValue().toString()));
                             Component name = getColumnNamed("NAME");
                             Component ticker = getColumnNamed("TICKER");
                             name.setBackground(resultDto.getINDEX() == 2 ? Color.GREEN :
@@ -217,7 +217,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                         }
 
                         if (getName().equals("INDEX")) {
-                            resultDto.setINDEX(Short.valueOf(getText()));
+                            resultDto.setINDEX(Short.parseShort(getText()));
                         }
                     }
                 });
@@ -261,6 +261,6 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     public int compare(ShareTableRow o1, ShareTableRow o2) {
         short index1 = (short) ((JSpinner) o1.getColumnNamed("INDEX")).getValue();
         short index2 = (short) ((JSpinner) o2.getColumnNamed("INDEX")).getValue();
-        return index1 > index2 ? 1 : -1;
+        return index1 > index2 ? 1 : index1 == index2 ? 0 : -1;
     }
 }

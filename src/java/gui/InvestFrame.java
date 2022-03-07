@@ -3,7 +3,9 @@ package gui;
 import core.NetProcessor;
 import dto.ResultShareDTO;
 import dto.ShareDTO;
+import fox.Out;
 import registry.Registry;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -200,6 +202,8 @@ public class InvestFrame extends JFrame {
             public void windowClosing(WindowEvent e) {
                 try {
                     NetProcessor.save();
+                    Out.Print(InvestFrame.class, Out.LEVEL.INFO, "End of work!");
+                    Out.close();
                     System.exit(0);
                 } catch (Exception e2) {
                     e2.printStackTrace();
@@ -233,7 +237,7 @@ public class InvestFrame extends JFrame {
         Future<ResultShareDTO> fut = netProc.checkTicket(ticketField.getText().toUpperCase().trim());
         System.out.println("Scanning " + ticketField.getText().toUpperCase().trim() + "...");
         while(!fut.isDone()) {
-            Thread.sleep(300);
+            Thread.sleep(500);
         }
         updateDownPanel(fut.get());
     }

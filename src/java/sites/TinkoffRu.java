@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import registry.CostType;
 import sites.impl.AbstractSite;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
