@@ -5,7 +5,7 @@ import fox.FoxFontBuilder;
 import java.awt.*;
 
 public class Registry {
-    public static String version = "0.0.1";
+    public static String version = "1.0.1";
     public static Font btnsFont1 = FoxFontBuilder.setFoxFont(FoxFontBuilder.FONT.SEGOE_UI_SYMBOL, 20, true);
     public static Font btnsFont2 = FoxFontBuilder.setFoxFont(FoxFontBuilder.FONT.CORBEL, 16, true);
     public static Font btnsFont3, btnsFont4;

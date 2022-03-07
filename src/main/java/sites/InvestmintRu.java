@@ -1,9 +1,6 @@
 package sites;
 
-
-import components.FOptionPane;
 import dto.ShareDTO;
-import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;

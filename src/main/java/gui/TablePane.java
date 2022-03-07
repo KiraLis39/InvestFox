@@ -1,12 +1,12 @@
 package gui;
 
+import components.FOptionPane;
 import components.ShareTableRow;
 import components.TextTableRow;
 import core.NetProcessor;
 import dto.ResultShareDTO;
 import registry.CostType;
 import registry.Registry;
-import components.FOptionPane;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -49,7 +49,7 @@ public class TablePane extends JPanel {
                             String tickerInput = JOptionPane.showInputDialog(TablePane.this, "Тикер:", "Ввод тикера:", JOptionPane.INFORMATION_MESSAGE);
                             if (tickerInput != null && tickerInput.length() > 0) {
                                 for (Component row : getRows()) {
-                                    if (((ShareTableRow)row).getResultDto().getTICKER().equalsIgnoreCase(tickerInput)) {
+                                    if (((ShareTableRow) row).getResultDto().getTICKER().equalsIgnoreCase(tickerInput)) {
                                         new FOptionPane("Отказ:", "Такое уже есть.", null, null, true);
                                         return;
                                     }
@@ -58,8 +58,9 @@ public class TablePane extends JPanel {
                                 try {
                                     Future<ResultShareDTO> fut = netProc.checkTicket(tickerInput);
                                     System.out.println("Scanning " + tickerInput + "...");
-                                    while(!fut.isDone()) {
-                                        try {Thread.sleep(300);
+                                    while (!fut.isDone()) {
+                                        try {
+                                            Thread.sleep(300);
                                         } catch (InterruptedException interruptedException) {
                                             interruptedException.printStackTrace();
                                         }
@@ -95,7 +96,8 @@ public class TablePane extends JPanel {
                     {
                         setFont(Registry.btnsFont1);
                         addActionListener(e -> {
-                            try {NetProcessor.save();
+                            try {
+                                NetProcessor.save();
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
@@ -192,7 +194,11 @@ public class TablePane extends JPanel {
                     setOpaque(false);
 
                     add(new JSeparator(1), BorderLayout.WEST);
-                    lMoney = new JLabel() {{setForeground(Color.RED); setHorizontalAlignment(0); setFont(Registry.btnsFont6);}};
+                    lMoney = new JLabel() {{
+                        setForeground(Color.RED);
+                        setHorizontalAlignment(0);
+                        setFont(Registry.btnsFont6);
+                    }};
                     add(lMoney, BorderLayout.CENTER);
                 }}); // 12
 
@@ -200,7 +206,11 @@ public class TablePane extends JPanel {
                     setOpaque(false);
 
                     add(new JSeparator(1), BorderLayout.WEST);
-                    gMoney = new JLabel() {{setForeground(Color.GREEN); setHorizontalAlignment(0); setFont(Registry.btnsFont6);}};
+                    gMoney = new JLabel() {{
+                        setForeground(Color.GREEN);
+                        setHorizontalAlignment(0);
+                        setFont(Registry.btnsFont6);
+                    }};
                     add(gMoney, BorderLayout.CENTER);
                 }}); // 13
                 add(new JSeparator(1));

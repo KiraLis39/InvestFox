@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import components.FOptionPane;
 import components.ShareTableRow;
 import dto.ResultShareDTO;
 import dto.ShareDTO;
@@ -27,15 +26,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class NetProcessor {
-    private static ObjectMapper mapper = new ObjectMapper();
-    private static ExecutorService exec = Executors.newWorkStealingPool();
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ExecutorService exec = Executors.newWorkStealingPool();
 
     static {
         try {
@@ -50,50 +48,6 @@ public class NetProcessor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public Future<ResultShareDTO> checkTicket(String ticket) throws ExecutionException, InterruptedException {
-        return exec.submit(() -> {
-            Thread.sleep(1000);
-            Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("Check the ticket '%s'...", ticket));
-            return proceed(ticket);
-        });
-    }
-
-    private ResultShareDTO proceed(String ticket) {
-        Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("\nUpdate the ticket '%s'...", ticket));
-        ArrayList<AbstractSite> sites = new ArrayList<>(6) {
-            {
-                add(new DohodRu(ticket));
-                add(new GoogleFinance(ticket));
-                add(new InvestFutureRu(ticket));
-                add(new RbkRu(ticket));
-                add(new RuInvestingCom(ticket));
-                add(new TinkoffRu(ticket));
-                add(new InvestmintRu(ticket));
-            }
-        };
-
-        ResultShareDTO resultDTO = new ResultShareDTO();
-        InvestFrame.clearPanel();
-
-        for (AbstractSite site : sites) {
-            if (site.isActive()) {
-                ShareDTO data = null;
-                try {data = site.task();
-                } catch (SiteBlockedException e) {
-                    System.err.println("Возможно сайт заблокирован!");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (data != null) {
-                    InvestFrame.updatePanel(data);
-                    resultDTO.update(ticket, data);
-                }
-            }
-        }
-
-        return resultDTO;
     }
 
     public static ObjectMapper getMapper() {
@@ -128,5 +82,50 @@ public class NetProcessor {
         }
         Collections.sort(loading);
         tablePane.addShares(loading);
+    }
+
+    public Future<ResultShareDTO> checkTicket(String ticket) throws ExecutionException, InterruptedException {
+        return exec.submit(() -> {
+            Thread.sleep(1000);
+            Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("Check the ticket '%s'...", ticket));
+            return proceed(ticket);
+        });
+    }
+
+    private ResultShareDTO proceed(String ticket) {
+        Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("\nUpdate the ticket '%s'...", ticket));
+        ArrayList<AbstractSite> sites = new ArrayList<>(6) {
+            {
+                add(new DohodRu(ticket));
+                add(new GoogleFinance(ticket));
+                add(new InvestFutureRu(ticket));
+                add(new RbkRu(ticket));
+                add(new RuInvestingCom(ticket));
+                add(new TinkoffRu(ticket));
+                add(new InvestmintRu(ticket));
+            }
+        };
+
+        ResultShareDTO resultDTO = new ResultShareDTO();
+        InvestFrame.clearPanel();
+
+        for (AbstractSite site : sites) {
+            if (site.isActive()) {
+                ShareDTO data = null;
+                try {
+                    data = site.task();
+                } catch (SiteBlockedException e) {
+                    System.err.println("Возможно сайт заблокирован!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (data != null) {
+                    InvestFrame.updatePanel(data);
+                    resultDTO.update(ticket, data);
+                }
+            }
+        }
+
+        return resultDTO;
     }
 }

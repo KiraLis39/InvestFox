@@ -1,31 +1,16 @@
 package components;
 
 import dto.ResultShareDTO;
-import dto.ShareDTO;
 import gui.InvestFrame;
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.BitstreamException;
-import javazoom.jl.decoder.Header;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import registry.Registry;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Comparator;
 
 @Data
@@ -124,20 +109,20 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
                 ((JSpinner.DefaultEditor) getEditor()).getTextField().setHorizontalAlignment(JTextField.CENTER);
                 addChangeListener(e ->
-                    {
-                        getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
-                        resultDto.setINDEX(Short.valueOf(getValue().toString()));
-                        Component name = getColumnNamed("NAME");
-                        Component ticker = getColumnNamed("TICKER");
-                        name.setBackground(resultDto.getINDEX() == 2 ? Color.GREEN :
-                                (resultDto.getINDEX() == 1 ? Color.MAGENTA.darker() :
-                                        (resultDto.getINDEX() == 3 ? Color.RED :
-                                                (resultDto.getINDEX() == 4 ? Color.RED.darker() : Color.DARK_GRAY)
-                                        )
-                                )
-                        );
-                        ticker.setBackground(name.getBackground());
-                    }
+                        {
+                            getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
+                            resultDto.setINDEX(Short.valueOf(getValue().toString()));
+                            Component name = getColumnNamed("NAME");
+                            Component ticker = getColumnNamed("TICKER");
+                            name.setBackground(resultDto.getINDEX() == 2 ? Color.GREEN :
+                                    (resultDto.getINDEX() == 1 ? Color.MAGENTA.darker() :
+                                            (resultDto.getINDEX() == 3 ? Color.RED :
+                                                    (resultDto.getINDEX() == 4 ? Color.RED.darker() : Color.DARK_GRAY)
+                                            )
+                                    )
+                            );
+                            ticker.setBackground(name.getBackground());
+                        }
                 );
             }
         });
@@ -184,7 +169,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                     }
 
                     Component cjs = getColumnNamed("INDEX");
-                    if ((int) ((JSpinner)cjs).getValue() == 2) {
+                    if ((int) ((JSpinner) cjs).getValue() == 2) {
                         setBackground(Color.GREEN);
                         setForeground(Color.BLACK);
                     }
@@ -274,8 +259,8 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
     @Override
     public int compare(ShareTableRow o1, ShareTableRow o2) {
-        short index1 = (short) ((JSpinner)o1.getColumnNamed("INDEX")).getValue();
-        short index2 = (short) ((JSpinner)o2.getColumnNamed("INDEX")).getValue();
+        short index1 = (short) ((JSpinner) o1.getColumnNamed("INDEX")).getValue();
+        short index2 = (short) ((JSpinner) o2.getColumnNamed("INDEX")).getValue();
         return index1 > index2 ? 1 : -1;
     }
 }
