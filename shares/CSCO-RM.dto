@@ -1,0 +1,23 @@
+{
+  "ticker" : "CSCO-RM",
+  "sector" : "Информационные технологии",
+  "cost" : 3606.0,
+  "pay_DATE" : null,
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 3606.0,
+  "recommendation" : "[Покупать, Покупать]",
+  "dividend" : 0.0,
+  "source" : null,
+  "name" : "Cisco Systems Inc",
+  "index" : -1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Cisco Systems",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

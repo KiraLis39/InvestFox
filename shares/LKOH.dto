@@ -1,0 +1,23 @@
+{
+  "ticker" : "LKOH",
+  "sector" : "Энергетика",
+  "cost" : 4915.0,
+  "pay_DATE" : "2022-07-05T11:08:27",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 4915.0,
+  "recommendation" : "[Активно продавать, Нейтрально]",
+  "dividend" : 7.3575,
+  "source" : null,
+  "name" : "НК ЛУКОЙЛ (ПАО) - ао :: NK Lukoil PAO (LKOH) :: Лукойл :: ЛУКОЙЛ :: НК Лукойл ПАО :: ЛУКОЙЛ",
+  "index" : -1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "НК ЛУКОЙЛ",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

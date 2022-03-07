@@ -1,0 +1,23 @@
+{
+  "ticker" : "LSRG",
+  "sector" : "Недвижимость",
+  "cost" : 520.0,
+  "pay_DATE" : "2022-05-11T11:08:03",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 520.0,
+  "recommendation" : "[Активно продавать, Активно продавать]",
+  "dividend" : 10.02375,
+  "source" : null,
+  "name" : "Группа ЛСР (ПАО) ао :: Gruppa LSR PAO (LSRG) :: ЛСР ао :: Группа ЛСР :: Группа ЛСР :: Группа ЛСР",
+  "index" : -2,
+  "count" : 6,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Группа ЛСР",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

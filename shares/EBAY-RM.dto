@@ -1,0 +1,23 @@
+{
+  "ticker" : "EBAY-RM",
+  "sector" : "Потребительский сектор",
+  "cost" : 4463.0,
+  "pay_DATE" : null,
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 4463.0,
+  "recommendation" : "[Нейтрально, Активно продавать]",
+  "dividend" : 0.0,
+  "source" : null,
+  "name" : "eBay Inc",
+  "index" : 0,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "eBay",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

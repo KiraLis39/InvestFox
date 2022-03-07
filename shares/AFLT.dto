@@ -1,0 +1,23 @@
+{
+  "ticker" : "AFLT",
+  "sector" : "Промышленность",
+  "cost" : 36.730000000000004,
+  "pay_DATE" : "2022-07-05T11:08:13",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 10,
+  "lot_COST" : 367.30000000000007,
+  "recommendation" : "[Активно продавать, Покупать]",
+  "dividend" : 1.675,
+  "source" : null,
+  "name" : "Аэрофлот-росс.авиалин(ОАО)ао :: Aeroflot-Rossiyskiye Avialinii PAO (AFLT) :: Аэрофлот :: Аэрофлот :: ОАО Аэрофлот :: Аэрофлот",
+  "index" : -1,
+  "count" : 200,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Аэрофлот",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

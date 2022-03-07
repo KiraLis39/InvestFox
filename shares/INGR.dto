@@ -1,0 +1,23 @@
+{
+  "ticker" : "INGR",
+  "sector" : "Недвижимость",
+  "cost" : 788.7,
+  "pay_DATE" : null,
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 788.7,
+  "recommendation" : "[Активно продавать, Нейтрально]",
+  "dividend" : 4.945,
+  "source" : null,
+  "name" : "Ingrad PAO (INGR) :: ИНГРАД ПАО ао :: NA :: Инград ПАО :: Ingredion Inc",
+  "index" : -1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Ingrad PAO",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

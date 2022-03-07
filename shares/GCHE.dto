@@ -1,0 +1,23 @@
+{
+  "ticker" : "GCHE",
+  "sector" : "Производители товаров массового потребления",
+  "cost" : 2815.0,
+  "pay_DATE" : "2022-04-05T11:08:26",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 2815.0,
+  "recommendation" : "[Покупать, Активно покупать]",
+  "dividend" : 6.1265624999999995,
+  "source" : null,
+  "name" : "Группа Черкизово ПАО-ао :: Gruppa Cherkizovo PAO (GCHE) :: ЧеркизГ-ао :: Группа Черкизово :: ОАО Группа Черкизово :: Группа Черкизово",
+  "index" : -1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Черкизово",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

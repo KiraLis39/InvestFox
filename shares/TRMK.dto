@@ -1,0 +1,23 @@
+{
+  "ticker" : "TRMK",
+  "sector" : "Энергетика",
+  "cost" : 60.54,
+  "pay_DATE" : "2022-04-26T11:08:44",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 10,
+  "lot_COST" : 605.4,
+  "recommendation" : "[Нейтрально, Активно покупать]",
+  "dividend" : 27.729687499999997,
+  "source" : null,
+  "name" : "ПАО ТМК :: Trubnaya Metallurgicheskaya Kmpny PAO (TRMK) :: ТМК ао :: ТМК :: Трубная металлургическая компания :: Трубная Металлургическая Компания",
+  "index" : -1,
+  "count" : 110,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "ПАО ТМК",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

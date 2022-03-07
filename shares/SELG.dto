@@ -1,0 +1,23 @@
+{
+  "ticker" : "SELG",
+  "sector" : "Материалы",
+  "cost" : 44.55,
+  "pay_DATE" : "2022-06-25T11:08:36",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 10,
+  "lot_COST" : 445.5,
+  "recommendation" : "[Продавать, Активно покупать]",
+  "dividend" : 7.2875,
+  "source" : null,
+  "name" : "ПАО Селигдар ао :: Seligdar PAO (SELG) :: Селигдар :: Селигдар :: ОАО Селигдар :: Селигдар",
+  "index" : -1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Селигдар",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

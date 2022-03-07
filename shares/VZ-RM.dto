@@ -1,0 +1,23 @@
+{
+  "ticker" : "VZ-RM",
+  "sector" : "Услуги связи",
+  "cost" : 3408.0,
+  "pay_DATE" : null,
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 3408.0,
+  "recommendation" : "[Активно покупать, Активно покупать]",
+  "dividend" : 0.0,
+  "source" : null,
+  "name" : "Verizon Communications Inc",
+  "index" : -1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Verizon",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

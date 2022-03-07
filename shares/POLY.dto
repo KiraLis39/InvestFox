@@ -1,0 +1,23 @@
+{
+  "ticker" : "POLY",
+  "sector" : "Материалы",
+  "cost" : 836.75,
+  "pay_DATE" : "2022-05-06T11:08:35",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 836.75,
+  "recommendation" : "[Активно продавать, Активно продавать]",
+  "dividend" : 5.68375,
+  "source" : null,
+  "name" : "Polymetal International plc :: Polymetal International PLC (POLY) :: Polymetal :: Полиметалл :: Polymetal International PLC :: Polymetal",
+  "index" : -1,
+  "count" : 4,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Polymetal",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

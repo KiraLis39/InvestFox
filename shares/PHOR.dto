@@ -1,0 +1,23 @@
+{
+  "ticker" : "PHOR",
+  "sector" : "Материалы",
+  "cost" : 5025.0,
+  "pay_DATE" : "2022-06-07T11:08:29",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 5025.0,
+  "recommendation" : "[Активно продавать, Нейтрально]",
+  "dividend" : 7.7281249999999995,
+  "source" : null,
+  "name" : "ФосАгро ПАО ао :: PhosAgro PAO (PHOR) :: ФосАгро ао :: ФосАгро :: ОАО ФосАгро :: ФосАгро",
+  "index" : -1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "ФосАгро",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

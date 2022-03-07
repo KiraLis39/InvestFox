@@ -1,0 +1,23 @@
+{
+  "ticker" : "ALRS",
+  "sector" : "Материалы",
+  "cost" : 79.7775,
+  "pay_DATE" : "2022-07-04T11:08:13",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 10,
+  "lot_COST" : 797.7750000000001,
+  "recommendation" : "[Активно продавать, Активно покупать]",
+  "dividend" : 13.842500000000001,
+  "source" : null,
+  "name" : "АЛРОСА ПАО ао :: AK Alrosa PAO (ALRS) :: АЛРОСА ао :: АЛРОСА :: ОАО АК АЛРОСА :: АЛРОСА",
+  "index" : -1,
+  "count" : 50,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Алроса",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}

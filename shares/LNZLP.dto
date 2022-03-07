@@ -1,0 +1,23 @@
+{
+  "ticker" : "LNZLP",
+  "sector" : "Материалы",
+  "cost" : 1365.0,
+  "pay_DATE" : "2022-07-13T11:08:03",
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 1365.0,
+  "recommendation" : "[Активно продавать, Покупать]",
+  "dividend" : 97.70375,
+  "source" : null,
+  "name" : "Лензолото ПАО ап :: Лензол. ап :: Лензолото :: Lenzoloto PAO Preferred :: Лензолото - привилегированные акции",
+  "index" : -2,
+  "count" : 2,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "showed_NAME" : "Лензолото ПАО",
+  "stable_PAY" : null,
+  "stable_GROW" : null,
+  "comment" : null,
+  "info" : null,
+  "pay_SUM_ON_SHARE" : null
+}
