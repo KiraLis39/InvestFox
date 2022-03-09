@@ -13,6 +13,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -21,8 +22,8 @@ public class InvestFrame extends JFrame {
     private static JTextField ticketField;
     private static JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel, divLabel, payDateLabel;
     private static TablePane tablePane;
+    private static NetProcessor netProc = new NetProcessor();
 
-    private NetProcessor netProc = new NetProcessor();
 
     public InvestFrame() {
         setTitle("Invest Fox 2022 v." + Registry.version);
@@ -80,10 +81,10 @@ public class InvestFrame extends JFrame {
                                     {
                                         addActionListener(e -> {
                                             try {runScan();
-                                            } catch (ExecutionException executionException) {
-                                                executionException.printStackTrace();
-                                            } catch (InterruptedException interruptedException) {
-                                                interruptedException.printStackTrace();
+                                            } catch (ExecutionException exec) {
+                                                exec.printStackTrace();
+                                            } catch (InterruptedException intEx) {
+                                                intEx.printStackTrace();
                                             }
                                         });
                                     }
@@ -221,7 +222,7 @@ public class InvestFrame extends JFrame {
             e.printStackTrace();
         }
 
-        ticketField.setText("MRKP");
+        ticketField.setText("RASP");
     }
 
     public static List<Component> getTableRows() {
@@ -234,12 +235,25 @@ public class InvestFrame extends JFrame {
 
     // при нажатии на кнопку поиска:
     private void runScan() throws ExecutionException, InterruptedException {
-        Future<ResultShareDTO> fut = netProc.checkTicket(ticketField.getText().toUpperCase().trim());
+        clearPanel();
         System.out.println("Scanning " + ticketField.getText().toUpperCase().trim() + "...");
+
+        CompletableFuture<ResultShareDTO> fut = netProc.checkTicket(ticketField.getText().toUpperCase().trim(), true)
+//                .exceptionally(throwable -> null)
+                .handle((r, ex) -> {
+                    if (r != null) {
+                        return r;
+                    } else {
+                        Out.Print(InvestFrame.class, Out.LEVEL.WARN, "Problem: " + ex);
+                        return null;
+                    }
+                });
         while(!fut.isDone()) {
-            Thread.sleep(500);
+            Thread.yield();
         }
-        updateDownPanel(fut.get());
+        if (fut != null) {
+            updateDownPanel(fut.get());
+        }
     }
 
     private synchronized void updateDownPanel(ResultShareDTO result) {
@@ -257,19 +271,9 @@ public class InvestFrame extends JFrame {
         midPane.removeAll();
     }
 
-    public static void updatePanel(ShareDTO dto) {
+    public static void addPanel(ShareDTO dto) {
         midPane.add(new DataPanel(dto));
         midPane.revalidate();
-    }
-
-    private static ArrayList<DataPanel> getDataPanels() {
-        ArrayList<DataPanel> dpList = new ArrayList<>();
-        for (Component component : midPane.getComponents()) {
-            if (component instanceof DataPanel) {
-                dpList.add((DataPanel) component);
-            }
-        }
-        return dpList;
     }
 
     private static class DataPanel extends JPanel {
@@ -319,7 +323,7 @@ public class InvestFrame extends JFrame {
                         add(new JLabel(dto.getName()));
                         add(new JLabel(dto.getTicket()));
                         add(new JLabel(dto.getCoastList() + (dto.getCostType() == null ? "" : " " + dto.getCostType())));
-                        add(new JLabel(dto.getLotSize() + " шт."));
+                        add(new JLabel(dto.getLotSize() > -1 ? dto.getLotSize() + " шт." : "NA"));
                         add(new JLabel(dto.getDividendList() + (dto.getDividendList().size() == 0 ? "" : "%")));
                         add(new JLabel(dto.getPayDate() != null ? dto.getPayDate().toString() : "NA"));
                         add(new JLabel(dto.getRecommendation() != null ? Arrays.toString(dto.getRecommendation().toArray()) : "NA"));

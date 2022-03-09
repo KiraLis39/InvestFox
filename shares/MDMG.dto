@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "MDMG",
+  "lot_SIZE" : 1,
+  "sector" : "Здравоохранение HealthCare Медицинские услуги",
+  "recommendation" : "Активно продавать, Активно продавать",
+  "pay_DATE" : "2022-05-05T22:14:30",
+  "cost" : 550.0,
+  "dividend" : 1.9246875,
+  "lot_COST" : 550.0,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 5,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "MD MEDICAL GROUP INVESTMENTS PLC :: MD Medical Group Investments PLC (MDMG) :: ГДР MD Medical Group Inv. PLC :: Мать и дитя :: MD Medical Group Investments PLC DRC :: ГК Мать и дитя :: MD Medical Group, деп. расп.",
+  "showed_NAME" : " Мать и дитя",
+  "comment" : null,
+  "stable_GROW" : null
+}

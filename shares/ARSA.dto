@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "ARSA",
+  "lot_SIZE" : 100,
+  "sector" : "Финансы Financial",
+  "recommendation" : "Активно продавать, Продавать",
+  "pay_DATE" : null,
+  "cost" : 5.52,
+  "dividend" : 2.69,
+  "lot_COST" : 552.0,
+  "cost_TYPE" : "₽",
+  "index" : 1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "UK Arsagera PAO (ARSA) :: Арсагера :: NA :: ОАО УК Арсагера :: Арсагера",
+  "showed_NAME" : "Арсагера",
+  "comment" : null,
+  "stable_GROW" : null
+}

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "SBERP",
+  "lot_SIZE" : 10,
+  "sector" : "Финансы Financial Банки",
+  "recommendation" : "Продавать, Покупать, Покупать",
+  "pay_DATE" : "2022-05-12T21:08:30",
+  "cost" : 131.3,
+  "dividend" : 9.651875,
+  "lot_COST" : 1313.0,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 20,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Сбербанк России ПАО ап :: Сбербанк АП :: Сбербанк :: Сбербанк (прив.) :: Сбер Банк - привилегированные акции :: Сбербанк России, акция прив.",
+  "showed_NAME" : "Сбербанк прив.",
+  "comment" : "",
+  "stable_GROW" : null
+}

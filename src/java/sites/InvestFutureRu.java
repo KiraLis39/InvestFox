@@ -28,20 +28,15 @@ public class InvestFutureRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws IOException {
+    public ShareDTO task() throws Exception {
         Elements docElems;
         String temp;
-        String link = SOURCE_ONE_SUB + dto.getTicket();
-        System.out.println("ССЫЛКА: " + link);
-        try {
-            doc = Jsoup.connect(link).get();
-        } catch (Exception e) {
-            e.printStackTrace();
+        buildUrl(SOURCE_ONE_SUB + dto.getTicket());
+        Document doc = getDoc();
+        docElems = doc.select("#result_panel > div.nra_stat > table > tbody > tr");
+        if (docElems.size() == 0) {
             return null;
         }
-        docElems = doc.select("#result_panel > div.nra_stat > table > tbody > tr");
-
-        if (docElems.size() == 0) {return null;}
         temp = docElems.html()
                 .replaceAll("<", " ")
                 .replaceAll(">", " ")
@@ -64,10 +59,8 @@ public class InvestFutureRu extends AbstractSite {
         temp = docElems.outerHtml().split("\"")[1].split("/")[3];
         CODE = Integer.parseInt(temp);
 
-        link = SOURCE_ONE + CODE;
-        System.out.println("ССЫЛКА: " + link);
-        Document doc = Jsoup.connect(link).get();
-
+        buildUrl(SOURCE_ONE + CODE);
+        doc = getDoc();
         try {
             String s = doc.select("#result_panel > div").get(0).text().substring(doc.select("#result_panel > div").get(0).text().indexOf("составляет")).trim();
             if (s.split(" ")[2].equals("RUB")) {
@@ -88,12 +81,11 @@ public class InvestFutureRu extends AbstractSite {
 
         dto.addPaySumOnShare(doc.selectXpath("/html/body/div[1]/div/div[4]/div/div/div/div/div[2]/div[4]/div[3]/p[9]").text());
 
-        link = SOURCE_TWO + CODE;
-        System.out.println("ССЫЛКА: " + link);
-        Document docDiv = Jsoup.connect(link).get();
-        dto.addDividend(docDiv.text().split("Доля от прибыли")[1].split(" ")[1]);
-        dto.setLastRefresh(LocalDateTime.now());
+        buildUrl(SOURCE_TWO + CODE);
+        doc = getDoc();
+        dto.addDividend(doc.text().split("Доля от прибыли")[1].split(" ")[1]);
 
+        dto.setLastRefresh(LocalDateTime.now());
         return dto;
     }
 }

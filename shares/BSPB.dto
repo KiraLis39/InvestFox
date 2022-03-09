@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "BSPB",
+  "lot_SIZE" : 10,
+  "sector" : "Финансы Financial Банки",
+  "recommendation" : "Нейтрально, Активно покупать, Покупать",
+  "pay_DATE" : "2022-06-07T21:13:59",
+  "cost" : 66.98,
+  "dividend" : 8.574375,
+  "lot_COST" : 669.8000000000001,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 20,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "ПАО Банк Санкт-Петербург ао :: Bank Sankt-Peterburg PAO (BSPB) :: БСП ао :: NA :: ОАО Банк Санкт-Петербург :: Банк Санкт-Петербург :: Банк Санкт-Петербург, акция об.",
+  "showed_NAME" : "Банк Санкт-Петербург",
+  "comment" : "",
+  "stable_GROW" : null
+}

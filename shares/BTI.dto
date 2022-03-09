@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "BTI",
+  "lot_SIZE" : 1,
+  "sector" : "Consumer",
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 39.620000000000005,
+  "dividend" : 9.27,
+  "lot_COST" : 39.620000000000005,
+  "cost_TYPE" : "$",
+  "index" : 0,
+  "count" : 4,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "British American Tobacco PLC (BTI) :: British American Tobacco",
+  "showed_NAME" : "British American Tobacco",
+  "comment" : null,
+  "stable_GROW" : null
+}

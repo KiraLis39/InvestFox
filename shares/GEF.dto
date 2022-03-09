@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "GEF",
+  "lot_SIZE" : 1,
+  "sector" : "Materials",
+  "recommendation" : "Покупать",
+  "pay_DATE" : null,
+  "cost" : 56.605000000000004,
+  "dividend" : 3.27,
+  "lot_COST" : 56.605000000000004,
+  "cost_TYPE" : "$",
+  "index" : 1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Greif, Inc. Class A (GEF) :: NA :: Greif Inc",
+  "showed_NAME" : "Greif Inc.",
+  "comment" : null,
+  "stable_GROW" : null
+}

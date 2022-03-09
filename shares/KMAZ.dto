@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "KMAZ",
+  "lot_SIZE" : 10,
+  "sector" : "Промышленность Industrials Производство автотранспорта",
+  "recommendation" : "Продавать, Покупать",
+  "pay_DATE" : "2022-06-16T21:12:22",
+  "cost" : 81.5,
+  "dividend" : 0.7606328125000001,
+  "lot_COST" : 815.0,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 20,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "КАМАЗ(ОАО) :: Kamaz PAO (KMAZ) :: КАМАЗ :: КамАЗ :: ОАО КАМАЗ :: КАМАЗ :: КАМАЗ, акция об.",
+  "showed_NAME" : "Камаз",
+  "comment" : null,
+  "stable_GROW" : null
+}

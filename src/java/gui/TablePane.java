@@ -5,6 +5,7 @@ import components.ShareTableRow;
 import components.TextTableRow;
 import core.NetProcessor;
 import dto.ResultShareDTO;
+import fox.Out;
 import registry.CostType;
 import registry.Registry;
 
@@ -23,6 +24,7 @@ public class TablePane extends JPanel {
     private static JPanel contentTablePane;
     private static JToolBar toolBar;
     private static JLabel lMoney, gMoney;
+    private static JScrollPane scroll;
 
     public TablePane() {
         setLayout(new BorderLayout(0, 0));
@@ -43,6 +45,7 @@ public class TablePane extends JPanel {
 
                 JButton addShareBtn = new JButton("➕") {
                     {
+                        setToolTipText("Добавить строку/акцию");
                         setForeground(Color.GREEN.darker());
                         setFont(Registry.btnsFont1);
                         addActionListener(e -> {
@@ -56,20 +59,20 @@ public class TablePane extends JPanel {
                                 }
 
                                 try {
-                                    Future<ResultShareDTO> fut = netProc.checkTicket(tickerInput);
+                                    Future<ResultShareDTO> fut = netProc.checkTicket(tickerInput, false).exceptionally(throwable -> null);
                                     System.out.println("Scanning " + tickerInput + "...");
                                     while (!fut.isDone()) {
-                                        try {
-                                            Thread.sleep(300);
-                                        } catch (InterruptedException interruptedException) {
-                                            interruptedException.printStackTrace();
-                                        }
+                                        Thread.yield();
                                     }
-                                    addShare(fut.get());
+                                    if (fut != null) {
+                                        addShare(fut.get());
+                                    }
                                 } catch (ExecutionException executionException) {
                                     executionException.printStackTrace();
                                 } catch (InterruptedException interruptedException) {
                                     interruptedException.printStackTrace();
+                                } finally {
+                                    scroll.revalidate();
                                 }
                             }
                         });
@@ -94,6 +97,7 @@ public class TablePane extends JPanel {
 
                 JButton saveBtn = new JButton("\uD83D\uDCBE") {
                     {
+                        setToolTipText("Сохранить таблицу на диск");
                         setFont(Registry.btnsFont1);
                         addActionListener(e -> {
                             try {
@@ -106,43 +110,74 @@ public class TablePane extends JPanel {
                     }
                 };
 
-                JButton updAllBtn = new JButton("\uD83D\uDD04") {
+                JButton downloadBtn = new JButton("⮟") {
                     {
-                        setForeground(Color.ORANGE);
+                        setToolTipText("Загрузить данные из сети");
+                        setForeground(Color.BLUE);
                         setFont(Registry.btnsFont1);
                         addActionListener(e -> {
-
-                            ExecutorService es = Executors.newFixedThreadPool(4);
+                            ExecutorService es = Executors.newWorkStealingPool();
                             long was = System.currentTimeMillis();
 
                             for (Component row : getRows()) {
-                                es.execute(() -> {
+                                ShareTableRow nextRow = ((ShareTableRow) row);
+                                System.out.println("TablePane: calculating " + nextRow.getResultDto().getTICKER());
+                                CompletableFuture.supplyAsync(() -> {
                                     try {
-                                        ShareTableRow nextRow = ((ShareTableRow) row);
-                                        Future<ResultShareDTO> fut = netProc.checkTicket(nextRow.getResultDto().getTICKER());
-                                        System.out.println("TablePane: calculating " + nextRow.getResultDto().getTICKER());
-                                        while (!fut.isDone()) {
-                                            Thread.sleep(500);
-                                        }
-                                        System.out.println("TablePane: calculating " + nextRow.getResultDto().getTICKER() + " done!");
-                                        ResultShareDTO data = fut.get(10, TimeUnit.SECONDS);
+                                        ResultShareDTO data = netProc.checkTicket(nextRow.getResultDto().getTICKER(), false)
+                                                .handle((r, ex) -> {
+                                                    if (r != null) {return r;
+                                                    } else {
+                                                        Out.Print(TablePane.class, Out.LEVEL.WARN, "Problem: " + ex);
+                                                        return null;
+                                                    }
+                                                }).get();
                                         if (data != null) {
                                             nextRow.updateColumns(data);
+                                            System.out.println("TablePane: calculating " + nextRow.getResultDto().getTICKER() + " done!");
                                         }
-                                    } catch (Exception e2) {
-                                        e2.printStackTrace();
+                                        return data;
+                                    } catch (InterruptedException interruptedException) {
+                                        interruptedException.printStackTrace();
+                                    } catch (ExecutionException executionException) {
+                                        executionException.printStackTrace();
                                     }
-                                });
+                                    return null;
+                                }, es);
                             }
-                            es.shutdown();
 
-                            System.out.println("UPDATE TIME PAST: " + (System.currentTimeMillis() - was) + " ms.\n");
+                            try {
+                                es.shutdown();
+                                while (!es.awaitTermination(1, TimeUnit.SECONDS)) {
+                                    // TODO: how weak ui
+
+                                }
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            } finally {
+                                Long pass = System.currentTimeMillis() - was;
+                                System.err.println(String.format(
+                                        "\n=== UPDATE TIME PAST: %d min, %d sec ===\n",
+                                        TimeUnit.MILLISECONDS.toMinutes(pass),
+                                        TimeUnit.MILLISECONDS.toSeconds(pass) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
+                                ));
+                            }
                         });
+                    }
+                };
+
+                JButton updAllBtn = new JButton("\uD83D\uDD04") {
+                    {
+                        setToolTipText("Перерисовать стиль таблицы");
+                        setForeground(Color.ORANGE);
+                        setFont(Registry.btnsFont1);
+                        addActionListener(e -> reloadTableStyle());
                     }
                 };
 
 //                add(moveUpBtn);
                 add(addShareBtn);
+                add(downloadBtn);
                 add(updAllBtn);
                 add(new JSeparator(1));
                 add(saveBtn);
@@ -151,7 +186,7 @@ public class TablePane extends JPanel {
             }
         };
 
-        contentTablePane = new JPanel(new GridLayout(300, 1, 0, 3)) {
+        JPanel midPane = new JPanel(new BorderLayout()) {
             {
                 setBackground(Color.GRAY);
 
@@ -160,13 +195,21 @@ public class TablePane extends JPanel {
                         "<html>Цена за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
                         "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>", "<html>Стоимость</html>",
                         "<html>Прибыль/год</html>", "<html>Комментарий</html>", "<html>Р/Е</html>"
-                ));
-            }
-        };
+                ), BorderLayout.NORTH);
 
-        JScrollPane scroll = new JScrollPane(contentTablePane) {
-            {
-                getVerticalScrollBar().setUnitIncrement(24);
+                contentTablePane = new JPanel(new GridLayout(250, 1, 0, 1)) {
+                    {
+                        setBackground(Color.GRAY);
+                    }
+                };
+
+                scroll = new JScrollPane(contentTablePane) {
+                    {
+                        getVerticalScrollBar().setUnitIncrement(24);
+                    }
+                };
+
+                add(scroll, BorderLayout.CENTER);
             }
         };
 
@@ -219,8 +262,12 @@ public class TablePane extends JPanel {
         };
 
         add(toolBar, BorderLayout.NORTH);
-        add(scroll, BorderLayout.CENTER);
+        add(midPane, BorderLayout.CENTER);
         add(resultPane, BorderLayout.SOUTH);
+    }
+
+    private void reloadTableStyle() {
+        Arrays.stream(contentTablePane.getComponents()).filter(c -> c instanceof ShareTableRow).forEach(c -> ((ShareTableRow)c).validateRowStyle());
     }
 
     public void addShares(ArrayList<ResultShareDTO> loading) {
@@ -257,8 +304,7 @@ public class TablePane extends JPanel {
     }
 
     public List<Component> getRows() {
-        Component[] arr = contentTablePane.getComponents();
-        return Arrays.stream(arr).filter(c -> c instanceof ShareTableRow).collect(Collectors.toList());
+        return Arrays.stream(contentTablePane.getComponents()).filter(c -> c instanceof ShareTableRow).collect(Collectors.toList());
     }
 
     public static void clearRows() {

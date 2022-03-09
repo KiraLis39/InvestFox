@@ -5,10 +5,12 @@ import core.NetProcessor;
 import dto.ShareDTO;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import registry.CostType;
 import sites.impl.AbstractSite;
+import utils.JsonMapper;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -25,29 +27,20 @@ public class TinkoffRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws IOException {
-        String link = SOURCE_THREE + dto.getTicket();
-        System.out.println("ССЫЛКА: " + link);
-
-        try {
-            doc = Jsoup.connect(link).get();
-        } catch (SocketTimeoutException ste) {
-            System.out.println(ste.getMessage() + " > " + ste.getCause());
-            return null;
-        } catch (HttpStatusException hse) {
-            System.out.println(hse.getMessage() + " > " + hse.getCause());
-            return null;
-        }
-
+    public ShareDTO task() throws Exception {
+        buildUrl(SOURCE_THREE + dto.getTicket());
+        Document doc = getDoc();
         if (doc == null || doc.getAllElements().size() < 3) {
-            link = SOURCE_THREE + dto.getTicket() + "@DE";
-            doc = Jsoup.connect(link).get();
+            buildUrl(SOURCE_THREE + dto.getTicket() + "@DE");
+            doc = getDoc();
+        }
+        if (doc == null || doc.getAllElements().size() < 3) {
+            return null;
         }
 
-        Element aim = getISV();
-        String data = aim.toString().replace("<script>var initialState = '", "").replace("'</script>", "");
+        String data = getISV(doc.getAllElements()).toString().replace("<script>var initialState = '", "").replace("'</script>", "");
         String preparedData = data.replaceAll("\\\\{1,2}", "\\\\").replace("\\'", "'");
-        JsonNode tree = NetProcessor.getMapper().readTree(preparedData).path("stores").path("investSecurity").path(dto.getTicket());
+        JsonNode tree = JsonMapper.getMapper().readTree(preparedData).path("stores").path("investSecurity").path(dto.getTicket());
         if (tree.path("symbol").path("ticker").textValue() == null) {return null;}
 
         if (tree.path("symbol").path("ticker").textValue().equals(dto.getTicket())) {
@@ -64,24 +57,28 @@ public class TinkoffRu extends AbstractSite {
             if (costType == null) {
                 costType = tree.path("prices").path("last").path("currency").textValue();
             }
-            if (costType.equalsIgnoreCase("rub")) {
-                dto.setCostType(CostType.RUB.value());
-            } else if (costType.equalsIgnoreCase("usd")) {
-                dto.setCostType(CostType.USD.value());
-            } else if (costType.equalsIgnoreCase("eur")) {
-                dto.setCostType(CostType.EUR.value());
+            if (costType != null) {
+                if (costType.equalsIgnoreCase("rub")) {
+                    dto.setCostType(CostType.RUB.value());
+                } else if (costType.equalsIgnoreCase("usd")) {
+                    dto.setCostType(CostType.USD.value());
+                } else if (costType.equalsIgnoreCase("eur")) {
+                    dto.setCostType(CostType.EUR.value());
+                }
             }
 
             dto.setLotSize(tree.path("symbol").path("lotSize").asInt());
         }
 
         try {
-            String rec = NetProcessor.getMapper().readTree(preparedData)
+            String rec = JsonMapper.getMapper()
+                    .readTree(preparedData)
                     .path("stores")
                     .path("investPrognosis")
                     .path(dto.getTicket())
                     .path("consensus")
-                    .path("recommendation").textValue();
+                    .path("recommendation")
+                    .textValue();
             if (rec != null) {
                 dto.addRecommendation(rec);
             }
@@ -90,12 +87,10 @@ public class TinkoffRu extends AbstractSite {
         }
 
         dto.setLastRefresh(LocalDateTime.now());
-
         return dto;
     }
 
-    private Element getISV() {
-        Elements els = doc.getAllElements();
+    private Element getISV(Elements els) {
         for (Element el : els) {
             if (el.html().startsWith("var initialState")) {
                 return el;

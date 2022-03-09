@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "NVTK",
+  "lot_SIZE" : 1,
+  "sector" : "Энергетика Energy Нефтегазовая отрасль",
+  "recommendation" : "Активно продавать, Продавать, Покупать",
+  "pay_DATE" : "2022-05-07T21:11:28",
+  "cost" : 1132.1,
+  "dividend" : 3.8603125,
+  "lot_COST" : 1132.1,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 3,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "ПАО НОВАТЭК ао :: Novatek PAO (NVTK) :: Новатэк ао :: НОВАТЭК :: ОАО НОВАТЭК :: НОВАТЭК :: НОВАТЭК, акция об.",
+  "showed_NAME" : "НОВАТЭК",
+  "comment" : null,
+  "stable_GROW" : null
+}

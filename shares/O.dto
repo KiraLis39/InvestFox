@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "O",
+  "lot_SIZE" : 1,
+  "sector" : "RealEstate",
+  "recommendation" : "Покупать",
+  "pay_DATE" : null,
+  "cost" : 64.98,
+  "dividend" : 4.55,
+  "lot_COST" : 64.98,
+  "cost_TYPE" : "$",
+  "index" : 1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Realty Income Corp (O) :: Интер РАО :: Realty Income REIT",
+  "showed_NAME" : "Realty Income",
+  "comment" : null,
+  "stable_GROW" : null
+}

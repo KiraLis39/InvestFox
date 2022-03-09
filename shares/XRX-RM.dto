@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "XRX-RM",
+  "lot_SIZE" : 1,
+  "sector" : "Информационные технологии Компьютеры, периферия и комплектующие",
+  "recommendation" : "Нейтрально, Покупать",
+  "pay_DATE" : null,
+  "cost" : 1647.5,
+  "dividend" : 2.025,
+  "lot_COST" : 1647.5,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 1,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Xerox Corp :: Xerox Holdings Corporation, акция об.",
+  "showed_NAME" : "Xerox",
+  "comment" : "ПЕРЕВЕСТИ В ВТБ",
+  "stable_GROW" : null
+}

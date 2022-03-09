@@ -4,9 +4,10 @@ public enum CostType {
     RUB("₽"),
     EUR("€"),
     USD("$"),
-    GBP("?"),
-    CHF("?"),
-    JPY("?");
+    GBP("£"),
+    CHF("₣"),
+    JPY("¥"),
+    UNKNOWN("?");
 
     CostType(String value) {
         this.value = value;

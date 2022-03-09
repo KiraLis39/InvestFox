@@ -1,10 +1,5 @@
 package core;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import components.ShareTableRow;
 import dto.ResultShareDTO;
 import dto.ShareDTO;
@@ -14,6 +9,7 @@ import gui.TablePane;
 import sites.*;
 import sites.exceptions.SiteBlockedException;
 import sites.impl.AbstractSite;
+import utils.JsonMapper;
 
 import java.awt.*;
 import java.io.File;
@@ -22,37 +18,13 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class NetProcessor {
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final ExecutorService exec = Executors.newWorkStealingPool();
-
-    static {
-        try {
-            final JavaTimeModule timeModule = new JavaTimeModule();
-            timeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-            );
-            mapper.registerModule(timeModule);
-            mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static ObjectMapper getMapper() {
-        return mapper;
-    }
+    private static final int sitesCount = 8;
+    private static final ExecutorService exec = Executors.newFixedThreadPool(sitesCount + 4);
 
     public static void save() throws IOException {
         if (!new File("./shares/").exists()) {
@@ -61,7 +33,7 @@ public class NetProcessor {
         Out.Print(NetProcessor.class, Out.LEVEL.INFO, "Saving shares..");
         for (Component row : InvestFrame.getTableRows()) {
             ResultShareDTO strow = ((ShareTableRow) row).getResultDto();
-            String res = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(strow);
+            String res = JsonMapper.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(strow);
             try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("./shares/" + strow.getTICKER() + ".dto"))) {
                 osw.write(res);
             } catch (IOException e) {
@@ -78,23 +50,31 @@ public class NetProcessor {
         File[] shares = Paths.get("./shares/").toFile().listFiles();
         ArrayList<ResultShareDTO> loading = new ArrayList<>();
         for (File share : shares) {
-            loading.add(mapper.readValue(share, ResultShareDTO.class));
+            loading.add(JsonMapper.getMapper().readValue(share, ResultShareDTO.class));
         }
         Collections.sort(loading);
         tablePane.addShares(loading);
     }
 
-    public Future<ResultShareDTO> checkTicket(String ticket) throws ExecutionException, InterruptedException {
-        return exec.submit(() -> {
-            Thread.sleep(1000);
+    public CompletableFuture<ResultShareDTO> checkTicket(String ticket, boolean isHandle) {
+        return CompletableFuture.supplyAsync(() -> {
             Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("Check the ticket '%s'...", ticket));
-            return proceed(ticket);
+            return proceed(ticket, isHandle);
+        }, exec)
+//                .exceptionally(throwable -> null)
+                .handle((r, ex) -> {
+            if (r != null) {
+                return r;
+            } else {
+                Out.Print(NetProcessor.class, Out.LEVEL.WARN, "Problem: " + ex);
+                return null;
+            }
         });
     }
 
-    private ResultShareDTO proceed(String ticket) {
-        Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("\nUpdate the ticket '%s'...", ticket));
-        ArrayList<AbstractSite> sites = new ArrayList<>(6) {
+    private ResultShareDTO proceed(String ticket, boolean isHandle) {
+        ResultShareDTO resultDTO = new ResultShareDTO();
+        ArrayList<AbstractSite> sites = new ArrayList<>(sitesCount) {
             {
                 add(new DohodRu(ticket));
                 add(new GoogleFinance(ticket));
@@ -103,25 +83,28 @@ public class NetProcessor {
                 add(new RuInvestingCom(ticket));
                 add(new TinkoffRu(ticket));
                 add(new InvestmintRu(ticket));
+                add(new InvestfundsRu(ticket));
             }
         };
 
-        ResultShareDTO resultDTO = new ResultShareDTO();
-        InvestFrame.clearPanel();
-
         for (AbstractSite site : sites) {
             if (site.isActive()) {
-                ShareDTO data = null;
                 try {
-                    data = site.task();
-                } catch (SiteBlockedException e) {
-                    System.err.println("Возможно сайт заблокирован!");
-                } catch (IOException e) {
+                    ShareDTO data = site.task();
+                    if (data != null) {
+                        if (resultDTO.getCOST_TYPE() != null && data.getCostType() != null && !resultDTO.getCOST_TYPE().trim().equalsIgnoreCase(data.getCostType().trim())) {
+                            System.err.println("Cost type is multiply: " + resultDTO.getCOST_TYPE() + " or " + data.getCostType() + " (wrong company '" + data.getName() + "'?..)");
+                            continue;
+                        }
+                        if (isHandle) {
+                            InvestFrame.addPanel(data);
+                        }
+                        resultDTO.update(ticket, data);
+                    }
+                } catch (SiteBlockedException sbe) {
+                    sbe.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
-                }
-                if (data != null) {
-                    InvestFrame.updatePanel(data);
-                    resultDTO.update(ticket, data);
                 }
             }
         }

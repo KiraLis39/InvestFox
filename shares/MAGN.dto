@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "MAGN",
+  "lot_SIZE" : 10,
+  "sector" : "Materials",
+  "recommendation" : "Покупать",
+  "pay_DATE" : "2022-06-17T22:18:38",
+  "cost" : 47.676874999999995,
+  "dividend" : 9.2475,
+  "lot_COST" : 476.76874999999995,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 20,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Магнитогорск.мет.комб ПАО ао :: Magnitogorskiy Mtallurgchsky KmbntPAO (MAGN) :: ММК :: ММК :: Магнитогорский металлургический комбинат",
+  "showed_NAME" : "Магнитогорск.мет.комб",
+  "comment" : "",
+  "stable_GROW" : null
+}

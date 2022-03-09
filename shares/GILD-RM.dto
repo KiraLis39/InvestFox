@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "GILD-RM",
+  "lot_SIZE" : 1,
+  "sector" : "Здравоохранение Производство лекарств и биотехнологии",
+  "recommendation" : "Активно продавать, Активно продавать",
+  "pay_DATE" : null,
+  "cost" : 5185.0,
+  "dividend" : 2.31,
+  "lot_COST" : 5185.0,
+  "cost_TYPE" : "₽",
+  "index" : 1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Gilead Sciences Inc :: Gilead Sciences, акция об.",
+  "showed_NAME" : "Gilead Sciences",
+  "comment" : null,
+  "stable_GROW" : null
+}

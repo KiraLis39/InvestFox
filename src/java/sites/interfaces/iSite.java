@@ -5,6 +5,5 @@ import dto.ShareDTO;
 import java.io.IOException;
 
 public interface iSite {
-    ShareDTO task() throws IOException;
-//    public ShareDTO getDTO();
+    ShareDTO task() throws Exception;
 }

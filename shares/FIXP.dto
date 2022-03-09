@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "FIXP",
+  "lot_SIZE" : 1,
+  "sector" : "Consumer FMCG ретейл",
+  "recommendation" : "Покупать",
+  "pay_DATE" : "2022-03-11T20:21:45",
+  "cost" : 288.8,
+  "dividend" : 2.82125,
+  "lot_COST" : 288.8,
+  "cost_TYPE" : "₽",
+  "index" : -1,
+  "count" : 12,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Fix Price Group Ltd :: Fix Price Group Ltd - GDR (FIXP) :: ГДР FixPrice Group Ltd ORD SHS :: Fix Price :: Fix Price Group :: Фикс Прайс, деп. расп.",
+  "showed_NAME" : "Fix Price",
+  "comment" : null,
+  "stable_GROW" : null
+}

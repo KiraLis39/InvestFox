@@ -6,7 +6,9 @@ import core.NetProcessor;
 import dto.ShareDTO;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import sites.impl.AbstractSite;
+import utils.JsonMapper;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -25,32 +27,11 @@ public class RbkRu extends AbstractSite {
         dto.setTicket(ticket);
     }
 
-    public ShareDTO task() throws IOException {
-        String link = SOURCE_FIVE + dto.getTicket();
-        System.out.println("ССЫЛКА: " + link);
-        Connection conn = Jsoup.connect(link);
-        conn.ignoreContentType(true);
-        try {
-            doc = conn.get();
-        } catch (UnknownHostException uhe) {
-            uhe.printStackTrace();
-            return null;
-        }
+    public ShareDTO task() throws Exception {
+        buildUrl(SOURCE_FIVE + dto.getTicket());
+        Document doc = getDoc();
 
-//        mapper.writerWithDefaultPrettyPrinter().writeValue(System.out, dto);
-        JsonNode nodes = NetProcessor.getMapper().readTree(doc.text());
-        Iterator<JsonNode> nod = nodes.elements();
-        while (nod.hasNext()) {
-            JsonNode n = nod.next();
-            if (n.path("title").textValue().equals(dto.getTicket())) {
-                dto.addCoast(String.format("%.2f", n.get("price").asDouble()));
-                dto.setCostType(n.get("currency").textValue().equalsIgnoreCase("rub") ? "₽" : "other");
-//                nodes.get(1).get("dividends").toPrettyString()
-                if (n.get("dividends") != null) {
-                    dto.addDividend(calculateMiddleDividend(n.get("dividends")));
-                }
-            }
-        }
+        JsonNode nodes = JsonMapper.getMapper().readTree(doc.text());
         if (nodes.get(0) != null) {
             if (nodes.get(0).get("beauty_company_name") instanceof NullNode) {
                 dto.setName(nodes.get(0).get("company").get("title").textValue().replaceAll("«", "").replaceAll("»", "").replaceAll("'", "").replaceAll("\"", ""));
@@ -58,8 +39,20 @@ public class RbkRu extends AbstractSite {
                 dto.setName(nodes.get(0).get("beauty_company_name").textValue().replaceAll("«", "").replaceAll("»", "").replaceAll("'", "").replaceAll("\"", "")); //beauty_company_name
             }
         }
-        dto.setLastRefresh(LocalDateTime.now());
 
+        Iterator<JsonNode> nod = nodes.elements();
+        while (nod.hasNext()) {
+            JsonNode n = nod.next();
+            if (n.path("title").textValue().equals(dto.getTicket())) {
+                dto.addCoast(String.format("%.2f", n.get("price").asDouble()));
+                dto.setCostType(n.get("currency").textValue().equalsIgnoreCase("rub") ? "₽" : "other");
+                if (n.get("dividends") != null) {
+                    dto.addDividend(calculateMiddleDividend(n.get("dividends")));
+                }
+            }
+        }
+
+        dto.setLastRefresh(LocalDateTime.now());
         return dto;
     }
 

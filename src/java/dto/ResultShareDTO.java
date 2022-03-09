@@ -3,6 +3,7 @@ package dto;
 import components.FOptionPane;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import sites.exceptions.VariableLotException;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -92,6 +93,8 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
 
             calcResultRecommendation(newData.getRecommendation());
             calcResultPayDate(newData.getPayDate());
+        } catch (VariableLotException vle) {
+            vle.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,12 +113,12 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
         }
     }
 
-    private void calcResultLot(Integer newLotData) {
+    private void calcResultLot(Integer newLotData) throws VariableLotException {
         if (newLotData == -1) {return;}
         if (LOT_SIZE == 1) {
             LOT_SIZE = newLotData;
         } else if (LOT_SIZE.intValue() != newLotData.intValue()) {
-            new FOptionPane("Множественный результат;", "Лот: " + newLotData + " или " + LOT_SIZE);
+            throw new VariableLotException("Множественный результат. Лот: " + newLotData + " или " + LOT_SIZE);
         }
     }
 
@@ -148,18 +151,20 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
         if (SECTOR == null) {
             SECTOR = newData;
         } else {
-            SECTOR = SECTOR.concat(newData);
+            SECTOR = SECTOR.concat(" " + newData);
         }
     }
 
     private void calcResultRecommendation(ArrayList<String> newRecList) {
         if (newRecList.toString().equals("[]")) {return;}
 
-        if (RECOMMENDATION == null) {
-            RECOMMENDATION = newRecList.toString();
+        if (RECOMMENDATION == null && newRecList.size() > 0) {
+            RECOMMENDATION = newRecList.toString().replace("[", "").replace("]", "").trim();
         } else {
             for (String rec : newRecList) {
-                RECOMMENDATION = RECOMMENDATION.concat(" | " + rec);
+                if (rec != null && !rec.equals("null")) {
+                    RECOMMENDATION = RECOMMENDATION.concat(", " + rec);
+                }
             }
         }
     }

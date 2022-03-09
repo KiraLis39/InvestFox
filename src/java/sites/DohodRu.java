@@ -1,8 +1,7 @@
 package sites;
 
 import dto.ShareDTO;
-import org.jsoup.HttpStatusException;
-import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import sites.impl.AbstractSite;
 
 import java.io.IOException;
@@ -19,37 +18,32 @@ public class DohodRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws IOException {
-        String link = SOURCE_FOUR + dto.getTicket().toLowerCase();
-        System.out.println("ССЫЛКА: " + link);
-        try {
-            doc = Jsoup.connect(link).ignoreHttpErrors(true)
-                    .timeout(6_000)
-//                    .referrer("http://www.google.com")
-//                    .userAgent("Mozilla/5.0 (Windows10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102")
-//                    .userAgent("Chrome")
-                    .get();
-        } catch (HttpStatusException hse) {
-            hse.printStackTrace();
+    public ShareDTO task() throws Exception {
+        buildUrl(SOURCE_FOUR + dto.getTicket().toLowerCase());
+        Document doc = getDoc();
+        if (doc == null) {
             return null;
         }
+
         if (doc.getElementsByClass("container").size() > 0) {
             if (doc.getElementsByClass("container").get(0).text().startsWith("404")) {return null;}
         }
-
         dto.setName(doc.html().substring(doc.html().indexOf("leftside-col") + 28).split("</")[0].replaceAll("'", "").replaceAll("\"", ""));
-        dto.addDividend(doc.select("#dividends-brief > tbody > tr.frow > td").text().split(" ")[0].replaceAll("%", ""));
+        String div = doc.select("#dividends-brief > tbody > tr.frow > td").text().split(" ")[0].replaceAll("%", "");
+        if (div == null) {
+            div = doc.body().getElementsByClass("frow").get(0).childNodes().get(1).childNodes().get(0).toString();
+        }
+        dto.addDividend(div);
         dto.addPartOfProfit(doc.select("#dividends-brief > tbody > tr.frow > td.gray").text());
         dto.addStablePay(doc.select("#rightside-col > p:nth-child(2) > strong:nth-child(5) > span").text());
         dto.addStableGrow(doc.select("#rightside-col > p:nth-child(2) > strong:nth-child(7) > span").text());
         dto.addPaySum(doc.select("#leftside-col > p:nth-child(3) > strong:nth-child(5)").text());
 
-        String nextPaySum = null, nextDivPercent = null, payDate = null;
+        String nextDivPercent = null, payDate = null;
         String divData = doc.select("#leftside-col > p:nth-child(3) > strong").text();
         if (divData != null && !divData.isEmpty()) {
             try {
                 String[] data = doc.select("#leftside-col > p:nth-child(3) > strong").text().replaceAll(" руб.", "").split(" ");
-//                nextPaySum = data[2];
                 if (data.length > 4) {
                     nextDivPercent = data[3];
                     payDate = data[4];
@@ -66,7 +60,6 @@ public class DohodRu extends AbstractSite {
         }
 
         dto.setLastRefresh(LocalDateTime.now());
-
         return dto;
     }
 }

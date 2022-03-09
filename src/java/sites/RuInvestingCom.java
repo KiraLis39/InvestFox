@@ -3,6 +3,7 @@ package sites;
 import dto.ShareDTO;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import registry.CostType;
@@ -25,71 +26,73 @@ public class RuInvestingCom extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws IOException {
+    public ShareDTO task() throws Exception {
         int index = 0;
         String ticker = dto.getTicket();
-        String link = SOURCE + ticker;
+        Document doc;
         if (ticker.length() > 4 && ticker.endsWith("P")) {
             ticker = dto.getTicket().replace("P", "_p");
-            link = SOURCE + ticker;
         }
-        System.out.println("ССЫЛКА: " + link);
-        try {
-            doc = Jsoup.connect(link).get();
-            for (Element el : doc.getElementsByClass("fourth")) {
-                if (!el.text().contains("Москва")) {
-                    index++;
-                } else {break;}
-            }
+        buildUrl(SOURCE + ticker);
+        doc = getDoc();
 
-            if (doc.getElementsByClass("second").size() <= index) {return null;}
-
-            if (doc.getElementsByClass("second").get(index).text().equals(ticker)) {
-                String aim = doc.getElementsByClass("js-inner-all-results-quote-item row").get(index - 1).attr("href");
-                dto.setName(doc.getElementsByClass("third").get(index).text().replaceAll("'", "").replaceAll("\"", ""));
-                link = SOURCE_SUB + aim;
-                doc = Jsoup.connect(link)
-                        .ignoreHttpErrors(true)
-                        .timeout(16_000)
-//                        .userAgent("Mozilla/5.0 (Windows10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102")
-                        .get();
+        for (Element el : doc.getElementsByClass("fourth")) {
+            if (!el.text().contains("Москва")) {
+                index++;
+            } else {
+                break;
             }
-        } catch (HttpStatusException hse) {
-            hse.printStackTrace();
-            return null;
-        } catch (SocketTimeoutException ste) {
-            ste.printStackTrace();
+        }
+
+        if (doc.getElementsByClass("second").size() <= index) {
             return null;
         }
 
-        double test = -1;
-        String cost = null;
+        String tickerTest = doc.getElementsByClass("second").get(index).text();
+        if (tickerTest.equalsIgnoreCase(ticker) || tickerTest.equalsIgnoreCase(ticker + "DR")) {
+            String aim = doc.getElementsByClass("js-inner-all-results-quote-item row").get(index - 1).attr("href");
+            dto.setName(doc.getElementsByClass("third").get(index).text().replaceAll("'", "").replaceAll("\"", ""));
+
+            buildUrl((SOURCE_SUB + aim).replaceAll("//e", "/e"));
+            doc = getDoc();
+        } else {
+            return null;
+        }
+
         if (doc.getElementsByClass("text-2xl").size() > 0) {
-            cost = doc.getElementsByClass("text-2xl").get(index + 1).text().replace(".", "");
-        }
-        try {
-            test = Double.parseDouble(cost.replace(",", "."));
-        } catch (Exception e) {
+            double test = -1;
+            String cost = doc.getElementsByClass("text-2xl").get(index + 1).text().replace(".", "");
             try {
-                cost = doc.select("span").eachText().get(61);
                 test = Double.parseDouble(cost.replace(",", "."));
-            } catch (Exception e2) {
-                e2.printStackTrace();
-                return null;
+            } catch (Exception e) {
+                try {
+                    cost = doc.select("span").eachText().get(61);
+                    test = Double.parseDouble(cost.replace(",", "."));
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                    return null;
+                }
+            } finally {
+                if (test > -1) {
+                    dto.addCoast(test + "");
+                }
             }
         }
-        dto.addCoast(test + "");
 
         String ct = doc.getElementsByClass("instrument-metadata_text__2iS5i").get(4).text();
         if (ct == null) {
             ct = doc.select("span").eachText().get(66).equals("Цена в") ? doc.select("span").eachText().get(67) : "NA";
         }
-        if (ct.equalsIgnoreCase("rub")) {
-            dto.setCostType(CostType.RUB.value());
-        } else if (ct.equalsIgnoreCase("usd")) {
-            dto.setCostType(CostType.USD.value());
-        } else if (ct.equalsIgnoreCase("eur")) {
-            dto.setCostType(CostType.EUR.value());
+        if (ct != null) {
+            if (ct.equalsIgnoreCase("rub")) {
+                dto.setCostType(CostType.RUB.value());
+            } else if (ct.equalsIgnoreCase("usd")) {
+                dto.setCostType(CostType.USD.value());
+            } else if (ct.equalsIgnoreCase("eur")) {
+                dto.setCostType(CostType.EUR.value());
+            } else {
+                throw new RuntimeException(dto.getSource() + " Check the cost type!");
+            }
         }
 
         try {
@@ -120,9 +123,9 @@ public class RuInvestingCom extends AbstractSite {
             e.printStackTrace();
         }
 
-        String recomLink = link.split("\\?")[0] + "-technical";
-        doc = Jsoup.connect(recomLink).get();
         try {
+            buildUrl(getUrl().split("\\?")[0] + "-technical");
+            doc = getDoc();
             Elements indics = doc.getElementById("techinalContent").getElementsByClass("summaryTableLine");
             for (Element indic : indics) {
                 dto.addRecommendation(indic.getElementsByClass("bold").text());
@@ -132,7 +135,6 @@ public class RuInvestingCom extends AbstractSite {
         }
 
         dto.setLastRefresh(LocalDateTime.now());
-
         return dto;
     }
 }

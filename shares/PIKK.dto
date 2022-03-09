@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "PIKK",
+  "lot_SIZE" : 1,
+  "sector" : "Потребительский сектор RealEstate",
+  "recommendation" : "Активно продавать, Продавать, Покупать",
+  "pay_DATE" : "2022-05-17T21:12:50",
+  "cost" : 495.0,
+  "dividend" : 6.035,
+  "lot_COST" : 495.0,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 3,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Группа компания ПИК ПАО ао :: Pik-Spetsializirovannyi Zstryshchk PAO (PIKK) :: ПИК ао :: ПИК СЗ :: ОАО Группа Компаний ПИК :: ПИК",
+  "showed_NAME" : "ПИК",
+  "comment" : "",
+  "stable_GROW" : null
+}

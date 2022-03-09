@@ -1,15 +1,16 @@
 package sites;
 
 import dto.ShareDTO;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.HttpConnection;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import registry.CostType;
 import sites.exceptions.SiteBlockedException;
 import sites.impl.AbstractSite;
 
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 
 public class InvestmintRu extends AbstractSite {
@@ -17,38 +18,22 @@ public class InvestmintRu extends AbstractSite {
 
     public InvestmintRu(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        isActive = false;
         dto.setSource("investmint.ru");
         dto.setTicket(ticket);
     }
 
     @Override
-    public ShareDTO task() throws IOException {
+    public ShareDTO task() throws SiteBlockedException {
         boolean isRM = false;
         String ticker = dto.getTicket();
         if (ticker.endsWith("-RM")) {
             ticker = ticker.replace("RM", "spb");
             isRM = true;
         }
-        String link = SOURCE + ticker.toLowerCase();
-        System.out.println("ССЫЛКА: " + link);
-        try {
-            doc = Jsoup.connect(link)
-                    .ignoreHttpErrors(true)
-                    .ignoreContentType(true)
-                    .timeout(6_000)
-//                    .referrer("http://www.google.com")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
-//                    .userAgent("Chrome")
-                    .get();
 
-        } catch (HttpStatusException hse) {
-            if (hse.getStatusCode() == 403) {
-                System.err.println("Доступ запрещен!");
-                return null;
-            }
-        }
-
+        buildUrl(SOURCE + ticker.toLowerCase());
+        Document doc = getDoc();
         if (doc.text().startsWith("Ваш IP-адрес заблокирован")) {
             System.err.println("IP-адрес заблокирован!");
             return null;
@@ -67,8 +52,7 @@ public class InvestmintRu extends AbstractSite {
             }
         }
         if (doc.getElementsByClass("mb-0").size() == 0) {
-//            new FOptionPane("Проверьте ссылку", "Возможно сайт заблокирован!", null, null, false);
-            throw new SiteBlockedException();
+            throw new SiteBlockedException("Something wrong with " + dto.getTicket() + " by " + dto.getSource());
         }
         if (name == null) {
             dto.setName(doc.getElementsByClass("mb-0").get(0).text().replace("Дивиденды ", "").replaceAll("'", "").replaceAll("\"", ""));
@@ -88,7 +72,7 @@ public class InvestmintRu extends AbstractSite {
         }
 
         for (Element el : doc.getElementsByClass("num150")) {
-            if (el.getElementsByAttribute("class").get(0).attributes().toString().replace("class=", "").replace("\"","").trim().equals("num150")) {
+            if (el.getElementsByAttribute("class").get(0).attributes().toString().replace("class=", "").replace("\"", "").trim().equals("num150")) {
                 dto.addDividend(el.text().replace("%", ""));
             }
         }
@@ -100,10 +84,9 @@ public class InvestmintRu extends AbstractSite {
                 if (row.text().contains("Акций в лоте")) {
                     for (Node childNode : row.childNodes()) {
                         if (childNode.toString().contains("Акций в лоте")) {
-                            dto.setLotSize(
-                                    Integer.parseInt(
-                                            childNode.childNodes().get(3).childNodes().get(0).toString().replace("\n", "").trim()
-                                    ));
+                            dto.setLotSize(Integer.parseInt(childNode.childNodes().get(3).childNodes().get(0)
+                                    .toString().replace("\n", "").trim())
+                            );
                             break;
                         }
                     }
@@ -111,24 +94,22 @@ public class InvestmintRu extends AbstractSite {
             }
         }
 
-        String recommendation = null;
         try {
-            recommendation = doc.getElementsByClass("table-responsive")
+            String recommendation = doc.getElementsByClass("table-responsive")
                     .get(4).getElementsByTag("table")
                     .get(0).childNodes()
                     .get(3).childNodes()
                     .get(1).childNodes()
                     .get(5).childNode(0)
                     .childNodes().get(0).toString();
+            if (recommendation != null) {
+                dto.addRecommendation(recommendation);
+            }
         } catch (Exception e) {
-            System.out.println("Нет рекомендаций investmint: " + link);
+            /* IGNORE RECOMMENDATIONS ABSENT */
         }
 
-        if (recommendation != null) {
-            dto.addRecommendation(recommendation);
-        }
         dto.setLastRefresh(LocalDateTime.now());
-
         return dto;
     }
 }

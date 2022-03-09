@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "ETLN",
+  "lot_SIZE" : 1,
+  "sector" : "Недвижимость RealEstate Строительство зданий",
+  "recommendation" : "Активно продавать, Активно продавать",
+  "pay_DATE" : null,
+  "cost" : 52.22,
+  "dividend" : 36.7875,
+  "lot_COST" : 52.22,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 38,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Etalon Group PLC (ETLN) :: ГДР Etalon Group Ltd. ORD SHS :: ГК Эталон :: Etalon Group :: ГДР Etalon Group PLC :: Эталон Груп, деп. расп.",
+  "showed_NAME" : "Etalon Group",
+  "comment" : null,
+  "stable_GROW" : null
+}

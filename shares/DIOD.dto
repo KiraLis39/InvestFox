@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "DIOD",
+  "lot_SIZE" : 1,
+  "sector" : "Здравоохранение",
+  "recommendation" : "Продавать, Покупать",
+  "pay_DATE" : null,
+  "cost" : 6.6825,
+  "dividend" : 8.84,
+  "lot_COST" : 6.6825,
+  "cost_TYPE" : "₽",
+  "index" : 0,
+  "count" : 700,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Diod PAO (DIOD) :: iЗаводДИОД :: NA :: Завод экологической техники экопитания ДИОД",
+  "showed_NAME" : "Диод",
+  "comment" : "",
+  "stable_GROW" : null
+}

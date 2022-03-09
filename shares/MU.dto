@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "MU",
+  "lot_SIZE" : 1,
+  "sector" : null,
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 69.31,
+  "dividend" : 0.0,
+  "lot_COST" : 69.31,
+  "cost_TYPE" : "€",
+  "index" : 1,
+  "count" : 0,
+  "pay_SUM" : null,
+  "part_OF_PROFIT" : null,
+  "stable_PAY" : null,
+  "info" : null,
+  "source" : null,
+  "name" : "Micron Technology, Inc. (MU)",
+  "showed_NAME" : "Micron Technology",
+  "comment" : null,
+  "stable_GROW" : null
+}
