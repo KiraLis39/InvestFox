@@ -23,7 +23,7 @@ public class TablePane extends JPanel {
     private NetProcessor netProc = new NetProcessor();
     private static JPanel contentTablePane;
     private static JToolBar toolBar;
-    private static JLabel lMoney, gMoney;
+    private static JLabel lMoney, gMoney, sCount;
     private static JScrollPane scroll;
 
     public TablePane() {
@@ -217,9 +217,18 @@ public class TablePane extends JPanel {
             {
                 setBackground(Color.DARK_GRAY.darker());
                 setPreferredSize(new Dimension(0, 27));
-                setBorder(new EmptyBorder(0, -6, 0, 6));
+                setBorder(new EmptyBorder(0, -9, 0, 6));
 
-                add(new JSeparator(1));
+                add(new JPanel(new BorderLayout(0, 0)) {{
+                    setOpaque(false);
+
+                    sCount = new JLabel() {{
+                        setForeground(Color.RED);
+                        setHorizontalAlignment(0);
+                        setFont(Registry.btnsFont6);
+                    }};
+                    add(sCount, BorderLayout.CENTER);
+                }}); // 12
                 add(new JSeparator(1));
                 add(new JSeparator(1));
 
@@ -284,6 +293,7 @@ public class TablePane extends JPanel {
     public void updateResults() {
         lMoney.setText(String.format("%.2f ", calcLostMoney()) + CostType.RUB.value());
         gMoney.setText(String.format("%.2f ", calcGetMoney()) + CostType.RUB.value());
+        sCount.setText("Count: " + getRows().size());
     }
 
     private Double calcGetMoney() {

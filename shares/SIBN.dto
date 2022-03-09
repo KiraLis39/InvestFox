@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "SIBN",
+  "pay_DATE" : "2022-06-25T13:40:20",
+  "sector" : "Энергетика Energy",
+  "dividend" : 7.5028125,
+  "cost" : 400.45,
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 1,
+  "lot_COST" : 400.45,
+  "recommendation" : "Активно продавать, Продавать, Покупать",
+  "part_OF_PROFIT" : null,
+  "source" : null,
+  "stable_GROW" : null,
+  "pay_SUM" : null,
+  "count" : 0,
+  "index" : 1,
+  "showed_NAME" : "Газпром нефть",
+  "stable_PAY" : null,
+  "name" : "Газпром нефть (ПАО)-ао :: Gazprom Neft PAO (SIBN) :: Газпрнефть :: Газпром нефть :: Газпром нефть :: Газпром нефть",
+  "comment" : null,
+  "info" : null
+}

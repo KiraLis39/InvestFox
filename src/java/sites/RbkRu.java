@@ -7,6 +7,7 @@ import dto.ShareDTO;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import registry.CostType;
 import sites.impl.AbstractSite;
 import utils.JsonMapper;
 
@@ -45,7 +46,17 @@ public class RbkRu extends AbstractSite {
             JsonNode n = nod.next();
             if (n.path("title").textValue().equals(dto.getTicket())) {
                 dto.addCoast(String.format("%.2f", n.get("price").asDouble()));
-                dto.setCostType(n.get("currency").textValue().equalsIgnoreCase("rub") ? "₽" : "other");
+
+                if (n.get("currency").textValue().equalsIgnoreCase("rub")) {
+                    dto.setCostType(CostType.RUB.value());
+                } else if (n.get("currency").textValue().equalsIgnoreCase("usd")) {
+                    dto.setCostType(CostType.USD.value());
+                } else if (n.get("currency").textValue().equalsIgnoreCase("eur")) {
+                    dto.setCostType(CostType.EUR.value());
+                } else {
+                    dto.setCostType(CostType.UNKNOWN.value());
+                }
+
                 if (n.get("dividends") != null) {
                     dto.addDividend(calculateMiddleDividend(n.get("dividends")));
                 }

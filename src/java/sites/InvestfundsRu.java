@@ -1,6 +1,7 @@
 package sites;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import core.NetProcessor;
 import dto.ShareDTO;
 import org.jsoup.nodes.Document;
@@ -14,7 +15,11 @@ import utils.JsonMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class InvestfundsRu extends AbstractSite {
     private static final String SOURCE = "https://investfunds.ru";
@@ -42,15 +47,17 @@ public class InvestfundsRu extends AbstractSite {
             return null;
         }
 
+        if (tree.path("total").intValue() == 0) {
+            System.err.println(dto.getSource() + " не нашла " + dto.getTicket());
+            return null;
+        }
         if (tree.path("currentCount").intValue() > 0) {
-            String tv = tree.path("currentResults").findPath("trading_grounds").findPath("ticker").textValue();
-            if (tv == null) {
-                System.err.println(dto.getSource() + ": Неожиданная ошибка! Проверить!");
-                return null;
-            }
             boolean tickerExists = tree.path("currentResults").findPath("trading_grounds").findPath("ticker").textValue().equalsIgnoreCase(dto.getTicket());
+            if (!tickerExists) {
+                tickerExists = tree.path("currentResults").findValues("ticker").stream().filter(s -> s.textValue().equalsIgnoreCase(dto.getTicket())).findAny().isPresent();
+            }
             if (tickerExists) {
-                int count = 0;
+                int count = 0, index = 0;
                 for (String ticker : tree.findValuesAsText("ticker")) {
                     if (ticker.equalsIgnoreCase(dto.getTicket())) {
                         count++;
@@ -64,27 +71,26 @@ public class InvestfundsRu extends AbstractSite {
                 }
 
                 tree = tree.path("currentResults");
-                String name = tree.get(0).path("name").textValue();
-                dto.setName(name);
-
-                int index = -1, id = -1;
-                for (JsonNode node : tree) {
-                    for (JsonNode tgNode : node.path("trading_grounds")) {
-                        index++;
-                        if (tgNode.path("ticker").textValue().equalsIgnoreCase(dto.getTicket())) {
-                            id = Integer.parseInt(tgNode.path("id").textValue());
-                            break;
+                ArrayList<JsonNode> resArr = new ArrayList<>();
+                Iterator<JsonNode> tel = tree.elements();
+                while (tel.hasNext()) {
+                    JsonNode nex = tel.next();
+                    if (nex.has("trading_grounds")) {
+                        if (nex.path("trading_grounds").get(0).has("ticker") && nex.path("trading_grounds").get(0).path("ticker").textValue().equals(dto.getTicket())) {
+                            resArr.add(nex);
                         }
                     }
+                }
 
-                    if (index > -1) {
-                        String newLink = tree.findValuesAsText("url").get(index); // tree.get(0).path("url").textValue()
-                        buildUrl(SOURCE + newLink + id);
-                        doc = getDoc();
-                        break;
-                    } else {
-                        return null;
-                    }
+                if (resArr.size() > 0) {
+                    String newLink;
+                    newLink = resArr.get(0).path("url").textValue();
+                    index = Integer.parseInt(resArr.get(0).path("trading_grounds").get(0).path("id").textValue());
+                    dto.setName(resArr.get(0).path("name").textValue());
+                    buildUrl(SOURCE + newLink + index);
+                    doc = getDoc();
+                } else {
+                    return null;
                 }
             } else {
                 System.err.println(dto.getSource() + " не нашла тикер " + dto.getTicket());
@@ -107,45 +113,34 @@ public class InvestfundsRu extends AbstractSite {
                     dto.addCoast(cost.replace(CostType.USD.name(), "").trim());
                     dto.setCostType(CostType.USD.value());
                 } else {
-                    int tmp, tryIndex = 0;
-                    String sc = "";
-                    while (true) {
-                        try {
-                            tmp = Integer.parseInt(cost.split(" ")[tryIndex]);
-                            sc += tmp;
-                            tryIndex++;
-                        } catch (Exception e) {
-                            dto.addCoast(sc.trim());
-                            break;
-                        }
+                    System.err.println(dto.getSource() + " нашла тикер, но валюта не ясна '" + cost + "'. Уточникте код.");
+                }
+            }
+        }
+
+        if (dto.getCoastList().size() > 0 || dto.getCostType() != null) {
+            Elements els = doc.getElementsByClass("item");
+            if (els.size() == 0) {
+                throw new RuntimeException("WTF");
+            }
+            Element el = els.stream().filter(element -> element.text().startsWith("Торговый лот")).findAny().orElse(null);
+            if (el != null) {
+                dto.setLotSize((int) Double.parseDouble(el.text().replace("Торговый лот", "").replace(" ", "")));
+            }
+
+            List<Node> tmp = doc.getElementsByClass("mainParam").get(0).childNodes();
+            for (int i = 0; i < tmp.size(); i++) {
+                List<Node> tmp2 = tmp.get(i).childNodes();
+                if (tmp2.size() > 0) {
+                    TextNode tn = (TextNode) tmp2.get(1).childNodes().get(0);
+                    if (tn.text().startsWith("Див. доходность ")) {
+                        dto.addDividend(((TextNode) tmp2.get(3).childNodes().get(0)).text().replace("%", "").trim());
                     }
-                    dto.setCostType(CostType.UNKNOWN.value());
+                    if (tn.text().startsWith("Отрасль")) {
+                        dto.setSector(((TextNode) tmp2.get(3).childNodes().get(0)).text().trim());
+                    }
                 }
             }
-        }
-
-        List<Node> tmp = doc.getElementsByClass("mainParam").get(0).childNodes();
-        for (int i = 0; i < tmp.size(); i++) {
-            List<Node> tmp2 = tmp.get(i).childNodes();
-            if (tmp2.size() > 0) {
-                TextNode tn = (TextNode) tmp2.get(1).childNodes().get(0);
-                if (tn.text().startsWith("Див. доходность ")) {
-                    dto.addDividend(((TextNode) tmp2.get(3).childNodes().get(0)).text().replace("%", "").trim());
-                }
-                if (tn.text().startsWith("Отрасль")) {
-                    dto.setSector(((TextNode) tmp2.get(3).childNodes().get(0)).text().trim());
-                }
-            }
-        }
-
-        Elements els = doc.getElementsByClass("item");
-        if (els.size() == 0) {
-            throw new RuntimeException("WTF");
-        }
-
-        Element el = els.stream().filter(element -> element.text().startsWith("Торговый лот")).findAny().orElse(null);
-        if (el != null) {
-            dto.setLotSize((int) Double.parseDouble(el.text().replace("Торговый лот", "").replace(" ", "")));
         }
 
         dto.setLastRefresh(LocalDateTime.now());

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "ticker" : "IRAO",
+  "pay_DATE" : "2022-06-07T15:03:45",
+  "sector" : "Коммунальные услуги Utilities Электроэнергетика",
+  "dividend" : 6.203749999999999,
+  "cost" : 2.57909375,
+  "cost_TYPE" : "₽",
+  "lot_SIZE" : 100,
+  "lot_COST" : 257.909375,
+  "recommendation" : "Нейтрально, Активно покупать, Покупать",
+  "part_OF_PROFIT" : null,
+  "source" : null,
+  "stable_GROW" : null,
+  "pay_SUM" : null,
+  "count" : 0,
+  "index" : 1,
+  "showed_NAME" : "Интер РАО",
+  "stable_PAY" : null,
+  "name" : "Интер РАО ПАО ао :: Inter RAO YEES PAO (IRAO) :: ИнтерРАОао :: Интер РАО :: Интер РАО ЕЭС ОАО :: Интер РАО ЕЭС :: ИНТЕР РАО, акция об.",
+  "comment" : null,
+  "info" : null
+}
