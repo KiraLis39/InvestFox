@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "SAMG",
+  "sector" : "Финансовые рынки",
+  "cost_TYPE" : "$",
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 17.035,
+  "lot_COST" : 17.035,
+  "dividend" : 4.025,
+  "name" : "Silvercrest Asset Management Group Inc (SAMG) :: NA :: Silvercrest Asset Management Group, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Silvercrest Asset",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "CF",
+  "sector" : "Materials",
+  "cost_TYPE" : "$",
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 96.06,
+  "lot_COST" : 96.06,
+  "dividend" : 1.26,
+  "name" : "CF Industries Holdings, Inc. (CF) :: NA :: CF Industries Holdings",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "CF Industries",
+  "index" : 2,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

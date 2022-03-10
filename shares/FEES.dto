@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 10000,
+  "ticker" : "FEES",
+  "sector" : "Коммунальные услуги Utilities Электроэнергетика",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Продавать, Активно покупать",
+  "pay_DATE" : "2022-07-16T15:27:29",
+  "cost" : 0.0928875,
+  "lot_COST" : 928.875,
+  "dividend" : 15.688125,
+  "name" : "ФСК ЕЭС ПАО ао :: FSK YeES PAO (FEES) :: ФСК ЕЭС ао :: ФСК ЕЭС :: ФСК ЕЭС ОАО :: ФСК ЕЭС :: ФСК ЕЭС, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "ФСК ЕЭС",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

@@ -15,8 +15,9 @@ import java.util.Comparator;
 public class TextTableRow extends JPanel implements Comparator<ShareTableRow> {
 
     public TextTableRow(String... values) {
-        setLayout(new GridLayout(1, 15, 0, 0));
+        setLayout(new GridLayout(1, values.length, 0, 0));
         setAlignmentY(JPanel.CENTER_ALIGNMENT);
+        setBackground(Color.BLACK);
 
         for (String value : values) {
             add(new JLabel(value) {{

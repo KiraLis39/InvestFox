@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1000,
+  "ticker" : "MSRS",
+  "sector" : "Коммунальные услуги Utilities Электроэнергетика",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Продавать, Активно покупать",
+  "pay_DATE" : "2022-06-01T15:38:54",
+  "cost" : 0.811296875,
+  "lot_COST" : 811.296875,
+  "dividend" : 6.4265625,
+  "name" : "ПАО МОЭСК ао :: Rosseti Moskovskiy Region PAO (MSRS) :: МОЭСК :: Россети Московский регион :: МОЭСК ОАО :: МОЭСК :: Россети Московский регион, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "МОЭСК",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

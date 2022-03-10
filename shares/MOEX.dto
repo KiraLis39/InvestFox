@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 10,
+  "ticker" : "MOEX",
+  "sector" : "Financial Финансовые рынки",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Покупать",
+  "pay_DATE" : "2022-05-15T15:39:31",
+  "cost" : 95.51,
+  "lot_COST" : 955.1,
+  "dividend" : 8.996875,
+  "name" : "ОАО Московская Биржа :: Moskovskaya Birzha MMVB-RTS PAO (MOEX) :: МосБиржа :: Московская биржа :: Московская Биржа :: Московская Биржа, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : " МосБиржа",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

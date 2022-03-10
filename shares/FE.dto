@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "FE",
+  "sector" : "Utilities",
+  "cost_TYPE" : "$",
+  "recommendation" : "Держать",
+  "pay_DATE" : null,
+  "cost" : 44.31,
+  "lot_COST" : 44.31,
+  "dividend" : 3.52,
+  "name" : "FirstEnergy Corp. (FE) :: ФСК ЕЭС :: FirstEnergy",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "FirstEnergy",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

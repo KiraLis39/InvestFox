@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 100,
+  "ticker" : "SNGSP",
+  "sector" : "Энергетика Energy Нефтегазовая отрасль",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Активно продавать, Продавать, Покупать",
+  "pay_DATE" : "2022-07-20T15:25:15",
+  "cost" : 29.9853125,
+  "lot_COST" : 2998.53125,
+  "dividend" : 14.958124999999999,
+  "name" : "Сургутнефтегаз ПАО ап :: Сургнфгз-п :: Сургутнефтегаз :: Сургутнефтегаз (прив.) :: Сургутнефтегаз - привилегированные акции :: Сургутнефтегаз, акция прив.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Сургутнефтегаз",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 10,
+  "ticker" : "MTLRP",
+  "sector" : "Материалы Materials Черная металлургия",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Нейтрально, Активно покупать",
+  "pay_DATE" : "2022-07-13T15:25:08",
+  "cost" : 222.0,
+  "lot_COST" : 2220.0,
+  "dividend" : 5.7,
+  "name" : "Мечел ПАО ап :: Мечел ап :: Мечел :: Мечел ПАО (прив.) :: Мечел - Привилегированные акции :: Мечел, акция прив.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Мечел",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

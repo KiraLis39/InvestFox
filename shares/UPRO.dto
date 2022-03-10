@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1000,
+  "ticker" : "UPRO",
+  "sector" : "Коммунальные услуги Utilities Электроэнергетика",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Продавать, Продавать, Покупать",
+  "pay_DATE" : "2022-06-22T15:25:16",
+  "cost" : 1.64909375,
+  "lot_COST" : 1649.09375,
+  "dividend" : 16.7596875,
+  "name" : "Юнипро ПАО ао :: Yunipro PAO (UPRO) :: Юнипро ао :: Юнипро :: Юнипро ПАО :: Юнипро :: Юнипро, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Юнипро",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 100,
+  "ticker" : "RZSB",
+  "sector" : "Коммунальные услуги Utilities Электроэнергетика",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Нейтрально, Активно покупать",
+  "pay_DATE" : null,
+  "cost" : 15.54,
+  "lot_COST" : 1554.0,
+  "dividend" : 8.1725,
+  "name" : "Ryazanskaya Energtchsky Sbytvy Kmpay PAO (RZSB) :: РязЭнСб :: NA :: Рязанская энергетическая сбытовая компания :: Рязанская энергетическая сбытовая компания :: Рязанская ЭСК, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "РязаньЭнерго",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

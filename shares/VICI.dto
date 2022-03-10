@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "VICI",
+  "sector" : "RealEstate Недвижимость и фонды недвижимости",
+  "cost_TYPE" : "$",
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 27.35,
+  "lot_COST" : 27.35,
+  "dividend" : 4.640000000000001,
+  "name" : "VICI Properties Inc (VICI) :: NA :: VICI Properties REIT :: VICI Properties Inc, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "VICI Properties",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

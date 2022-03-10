@@ -6,10 +6,13 @@ import dto.ShareDTO;
 import fox.Out;
 import registry.Registry;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,33 +26,39 @@ public class InvestFrame extends JFrame {
     private static JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel, divLabel, payDateLabel;
     private static TablePane tablePane;
     private static NetProcessor netProc = new NetProcessor();
-
+    private static ImageIcon ico_01, ico_02, ico_03, ico_04;
 
     public InvestFrame() {
         setTitle("Invest Fox 2022 v." + Registry.version);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setMinimumSize(new Dimension(1280, 768));
-        setPreferredSize(new Dimension(1920, 768));
+        setPreferredSize(new Dimension(1600, 800));
         setResizable(true);
+
+        try {loadIcons();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         JTabbedPane tabPane = new JTabbedPane(JTabbedPane.BOTTOM, 0) {
             {
-                setBackground(Color.DARK_GRAY);
-                getContentPane().setBackground(Color.DARK_GRAY);
+                setBackground(Color.BLACK);
+                getContentPane().setBackground(Color.BLACK);
+                setBorder(new EmptyBorder(0, 0, 6, 0));
 
-                JPanel basePane = new JPanel(new BorderLayout(0, 0)) {
+                JPanel basePane = new JPanel(new BorderLayout(0, 1)) {
                     {
-                        setBackground(Color.DARK_GRAY);
-
                         JPanel upPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)) {
                             {
                                 setBackground(Color.BLACK);
-                                setBorder(new EmptyBorder(0, 3, 0, 0));
+                                setBorder(new EmptyBorder(0, 1, 0, 0));
 
-                                add(new JLabel("Тикер:") {{setForeground(Color.WHITE);}});
                                 ticketField = new JTextField() {
                                     {
-                                        setColumns(8);
+                                        setFont(Registry.btnsFont4);
+                                        setColumns(6);
+                                        setHorizontalAlignment(0);
+                                        setAlignmentY(1);
                                         addFocusListener(new FocusAdapter() {
                                             @Override
                                             public void focusGained(FocusEvent e) {
@@ -77,8 +86,13 @@ public class InvestFrame extends JFrame {
                                     }
                                 };
 
-                                JButton updateButton = new JButton("check") {
+                                JButton updateButton = new JButton("Сканировать") {
                                     {
+//                                        setOpaque(false);
+//                                        setBackground(Color.WHITE);
+//                                        setForeground(Color.BLACK);
+                                        setFocusPainted(false);
+                                        setFont(Registry.btnsFont4);
                                         addActionListener(e -> {
                                             try {runScan();
                                             } catch (ExecutionException exec) {
@@ -97,12 +111,13 @@ public class InvestFrame extends JFrame {
 
                         midPane = new JPanel(new GridLayout(2, 0, 0, 0)) {
                             {
-                                setBackground(Color.DARK_GRAY);
+                                setBackground(Color.DARK_GRAY.darker());
                             }
                         };
 
                         JPanel downPane = new JPanel(new BorderLayout(0, 0)) {
                             {
+                                setPreferredSize(new Dimension(0, 170));
                                 setBackground(Color.PINK.darker());
                                 setBorder(new EmptyBorder(3, 6, 3, 6));
 
@@ -190,10 +205,15 @@ public class InvestFrame extends JFrame {
 
                 tablePane = new TablePane();
 
-                addTab("Анализ", null, basePane, "Анализ конкретных акций");
-                addTab("Сводка", null, tablePane, "Сводка по текущей ситуации");
-                addTab("Портфель", null, null, "Состояние рынка и портфеля");
-                addTab("План", null, null, "Мой план");
+                addTab("Анализ", ico_01, basePane, "Анализ конкретных акций");
+                addTab("Сводка", ico_02, tablePane, "Сводка по текущей ситуации");
+                addTab("Портфель", ico_03, new JLabel("NA"), "Состояние рынка и портфеля");
+                addTab("План ", ico_04, new JLabel("NA"), "Мой план");
+
+                setBackgroundAt(0, new Color(255, 200, 200));
+                setBackgroundAt(1, new Color(200, 200, 255));
+                setBackgroundAt(2, new Color(190, 255, 200));
+                setBackgroundAt(3, new Color(255, 255, 175));
             }
         };
         add(tabPane);
@@ -216,13 +236,19 @@ public class InvestFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        try {
-            NetProcessor.load(tablePane);
+        try {NetProcessor.load(tablePane);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         ticketField.setText("RASP");
+    }
+
+    private void loadIcons() throws IOException {
+        ico_01 = new ImageIcon(ImageIO.read(new File("./resources/pic/scan.png")));
+        ico_02 = new ImageIcon(ImageIO.read(new File("./resources/pic/table.png")));
+        ico_03 = new ImageIcon(ImageIO.read(new File("./resources/pic/portfel.png")));
+        ico_04 = new ImageIcon(ImageIO.read(new File("./resources/pic/plan.png")));
     }
 
     public static List<Component> getTableRows() {
@@ -251,7 +277,7 @@ public class InvestFrame extends JFrame {
         while(!fut.isDone()) {
             Thread.yield();
         }
-        if (fut != null) {
+        if (fut.get() != null) {
             updateDownPanel(fut.get());
         }
     }
@@ -282,15 +308,16 @@ public class InvestFrame extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            g.setColor(Color.GRAY.darker());
+            g.fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);
             g.setColor(Color.WHITE);
-            g.drawRoundRect(2, 2, getWidth() - 4, getHeight() - 4, 6, 6);
+            g.drawRoundRect(1, 1, getWidth() - 2, getHeight() - 2, 3, 3);
         }
 
         public DataPanel(ShareDTO dto) {
             this.dto = dto;
 
-            setBorder(new EmptyBorder(6, 3, 0, 3));
-            setBackground(Color.GRAY);
+            setBorder(new EmptyBorder(9, 6, 0, 3));
 
             if (dto == null) {
                 setLayout(new BorderLayout());

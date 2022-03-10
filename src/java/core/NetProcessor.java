@@ -92,7 +92,9 @@ public class NetProcessor {
                 try {
                     ShareDTO data = site.task();
                     if (data != null) {
-                        if (resultDTO.getCOST_TYPE() != null && data.getCostType() != null && !resultDTO.getCOST_TYPE().trim().equalsIgnoreCase(data.getCostType().trim())) {
+                        if (resultDTO.getCOST_TYPE() != null && data.getCostType() != null
+                                && !resultDTO.getCOST_TYPE().trim().equalsIgnoreCase(data.getCostType().trim())
+                        ) {
                             System.err.println("Cost type is multiply: " + resultDTO.getCOST_TYPE() + " or " + data.getCostType() + " (wrong company '" + data.getName() + "'?..)");
                             continue;
                         }
@@ -109,6 +111,6 @@ public class NetProcessor {
             }
         }
 
-        return resultDTO;
+        return resultDTO.getNAME() == null && resultDTO.getCOST() == null ? null : resultDTO;
     }
 }

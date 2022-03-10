@@ -32,7 +32,9 @@ public class TablePane extends JPanel {
 
         toolBar = new JToolBar("Можно тягать!") {
             {
-                setBorder(new EmptyBorder(0, 0, 1, 0));
+                setOrientation(1);
+                setBackground(Color.BLACK);
+                setBorder(new EmptyBorder(0, 0, 0, 0));
 
 //                moveUpBtn = new JButton("Поднять") {
 //                    {
@@ -64,8 +66,10 @@ public class TablePane extends JPanel {
                                     while (!fut.isDone()) {
                                         Thread.yield();
                                     }
-                                    if (fut != null) {
+                                    if (fut.get() != null) {
                                         addShare(fut.get());
+                                    } else {
+                                        new FOptionPane("Провал!", "Не было найдено никакой информации.");
                                     }
                                 } catch (ExecutionException executionException) {
                                     executionException.printStackTrace();
@@ -188,18 +192,28 @@ public class TablePane extends JPanel {
 
         JPanel midPane = new JPanel(new BorderLayout()) {
             {
-                setBackground(Color.GRAY);
-
-                add(new TextTableRow("<html>Индекс</html>", "<html>Сектор</html>", "<html>Эмитент</html>",
-                        "<html>Тикер</html>", "<html>Цена</html>", "<html>Тип цены</html>", "<html>Лот</html>",
-                        "<html>Цена за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
-                        "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>", "<html>Стоимость</html>",
-                        "<html>Прибыль/год</html>", "<html>Комментарий</html>", "<html>Р/Е</html>"
-                ), BorderLayout.NORTH);
-
-                contentTablePane = new JPanel(new GridLayout(250, 1, 0, 1)) {
+                JPanel upPane = new JPanel(new BorderLayout()) {
                     {
-                        setBackground(Color.GRAY);
+                        setOpaque(false);
+
+                        add(new TextTableRow("<html>Индекс</html>"
+                        ) {{setBorder(new EmptyBorder(0, 0, 0 ,0));}}, BorderLayout.WEST);
+
+                        add(new TextTableRow("<html>Сектор</html>", "<html>Эмитент</html>",
+                                "<html>Тикер</html>", "<html>Цена</html>", "<html>Тип цены</html>", "<html>Лот</html>",
+                                "<html>Цена за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
+                                "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>", "<html>Стоимость</html>",
+                                "<html>Прибыль/год</html>", "<html>Комментарий</html>"
+                        ) {{setBorder(new EmptyBorder(0, 0, 0 ,16));}}, BorderLayout.CENTER);
+
+                        add(new TextTableRow("<html>P/E</html>"
+                        ) {{setBorder(new EmptyBorder(0, 0, 0 ,36));}}, BorderLayout.EAST);
+                    }
+                };
+
+                contentTablePane = new JPanel(new GridLayout(230, 1, 0, 1)) {
+                    {
+                        setBackground(Color.DARK_GRAY.darker());
                     }
                 };
 
@@ -209,15 +223,17 @@ public class TablePane extends JPanel {
                     }
                 };
 
+                add(upPane, BorderLayout.NORTH);
                 add(scroll, BorderLayout.CENTER);
             }
         };
 
         JPanel resultPane = new JPanel(new GridLayout(1, 15, 0, 0)) {
             {
+//                setOpaque(false);
                 setBackground(Color.DARK_GRAY.darker());
-                setPreferredSize(new Dimension(0, 27));
-                setBorder(new EmptyBorder(0, -9, 0, 6));
+                setPreferredSize(new Dimension(0, 26));
+                setBorder(new EmptyBorder(0, 0, 0, 15));
 
                 add(new JPanel(new BorderLayout(0, 0)) {{
                     setOpaque(false);
@@ -270,7 +286,7 @@ public class TablePane extends JPanel {
             }
         };
 
-        add(toolBar, BorderLayout.NORTH);
+        add(toolBar, BorderLayout.EAST);
         add(midPane, BorderLayout.CENTER);
         add(resultPane, BorderLayout.SOUTH);
     }

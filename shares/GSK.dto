@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "GSK",
+  "sector" : "HealthCare null",
+  "cost_TYPE" : "$",
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 41.01,
+  "lot_COST" : 41.01,
+  "dividend" : 5.46,
+  "name" : "GlaxoSmithKline plc (GSK) :: NA :: GlaxoSmithKline PLC :: Glaxosmithkline plc, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "GlaxoSmithKline",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

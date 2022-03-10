@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "PPL-RM",
+  "sector" : "Коммунальные услуги Электроэнергетика",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Продавать, Продавать",
+  "pay_DATE" : null,
+  "cost" : 1900.0,
+  "lot_COST" : 1900.0,
+  "dividend" : 2.765,
+  "name" : "PPL Corporation :: PPL Corporation, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "PPL Corp",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

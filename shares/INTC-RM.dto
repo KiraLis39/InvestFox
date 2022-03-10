@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "INTC-RM",
+  "sector" : "Информационные технологии Полупроводники",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Активно продавать, Активно продавать",
+  "pay_DATE" : null,
+  "cost" : 3201.0,
+  "lot_COST" : 3201.0,
+  "dividend" : 1.48,
+  "name" : "Intel Corporation :: Intel, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Intel",
+  "index" : 2,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

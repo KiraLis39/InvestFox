@@ -5,6 +5,7 @@ import gui.InvestFrame;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import registry.CostType;
 import registry.Registry;
 
 import javax.swing.*;
@@ -16,17 +17,46 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
 
+import static registry.CostType.*;
+
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     private ResultShareDTO resultDto;
+    private JPanel midPane, leftPane, rightPane;
 
     public ShareTableRow(ResultShareDTO resultDto) {
         this.resultDto = resultDto;
 
+        if (resultDto == null) {
+            throw new RuntimeException("ShareTableRow: resultDto is NULL!");
+        }
+
         setPreferredSize(new Dimension(0, 35));
-        setLayout(new GridLayout(1, 15, 1, 0));
         setBackground(Color.BLACK);
+        setLayout(new BorderLayout());
+
+        leftPane = new JPanel(new BorderLayout()) {
+            {
+                setOpaque(false);
+            }
+        };
+
+        midPane = new JPanel(new GridLayout(1, 14, 1, 0)) {
+            {
+                setOpaque(false);
+            }
+        };
+
+        rightPane = new JPanel(new BorderLayout()) {
+            {
+                setOpaque(false);
+            }
+        };
+
+        add(leftPane, BorderLayout.WEST);
+        add(midPane, BorderLayout.CENTER);
+        add(rightPane, BorderLayout.EAST);
 
         loadColumns();
     }
@@ -98,12 +128,12 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     }
 
     private void addSpinnerColumn(String name, short index) {
-        this.add(new JSpinner(new SpinnerNumberModel(index, -2, 6, 1)) {
+        leftPane.add(new JSpinner(new SpinnerNumberModel(index, -2, 6, 1)) {
             {
                 setName(name);
                 setBorder(null);
                 setFont(Registry.btnsFont2);
-                getEditor().getComponent(0).setForeground(Color.WHITE);
+//                getEditor().getComponent(0).setForeground(Color.WHITE);
                 getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.BLACK);
                 ((JSpinner.DefaultEditor) getEditor()).getTextField().setHorizontalAlignment(JTextField.CENTER);
                 addChangeListener(e ->
@@ -130,7 +160,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     }
 
     private void addEditableColumn(String name, String text, String tooltip, Color color, boolean editable) {
-        this.add(new JTextField(text) {
+        midPane.add(new JTextField(text) {
             {
                 setName(name);
                 setBorder(null);
@@ -203,6 +233,14 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
     private Component getColumnNamed(String name) {
         for (Component comp : getComponents()) {
+            if (comp instanceof JPanel) {
+                for (Component comp2 : ((JPanel) comp).getComponents()) {
+                    if (comp2.getName().equals(name)) {
+                        return comp2;
+                    }
+                }
+                continue;
+            }
             if (comp.getName().equals(name)) {
                 return comp;
             }
@@ -223,7 +261,12 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     }
 
     private void addTextColumn(String name, String text, String tooltip, Color foreground) {
-        this.add(new JLabel(text) {{
+        JComponent c = midPane;
+        if (name.equals("PE")) {
+            c = rightPane;
+            c.setPreferredSize(new Dimension(50, 0));
+        }
+        c.add(new JLabel(text) {{
             setName(name);
             setForeground(foreground == null ? Color.WHITE : foreground);
             setHorizontalAlignment(0);
@@ -323,9 +366,17 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         ((JLabel) getColumnNamed("COST")).setHorizontalAlignment(JLabel.RIGHT);
 
         //
-        getColumnNamed("COST_TYPE").setForeground(Color.YELLOW);
-        ((JLabel) getColumnNamed("COST_TYPE")).setBorder(new EmptyBorder(0, 3, 0, 0));
-        ((JLabel) getColumnNamed("COST_TYPE")).setHorizontalAlignment(JLabel.LEFT);
+        JLabel ct = ((JLabel)getColumnNamed("COST_TYPE"));
+        ct.setForeground(Color.WHITE);
+        if (ct.getText().equalsIgnoreCase(RUB.value())) {
+            ct.setForeground(Color.YELLOW.darker());
+        } else if (ct.getText().equalsIgnoreCase(USD.value())) {
+            ct.setForeground(Color.GREEN.darker());
+        } else if (ct.getText().equalsIgnoreCase(EUR.value())) {
+            ct.setForeground(Color.CYAN.darker());
+        }
+        ct.setBorder(new EmptyBorder(0, 3, 0, 0));
+        ct.setHorizontalAlignment(JLabel.LEFT);
 
         //
         getColumnNamed("LOT_SIZE").setForeground(new Color(0.65f, 0.2f, 1.0f));

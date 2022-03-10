@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 100,
+  "ticker" : "BISVP",
+  "sector" : "Услуги связи Telecom Связь и телекоммуникация",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Нейтрально, Активно покупать",
+  "pay_DATE" : "2023-01-13T19:13:12",
+  "cost" : 6.81,
+  "lot_COST" : 681.0,
+  "dividend" : 11.1175,
+  "name" : "Башинформсвязь (ПАО) ап :: БашИнСв ап :: NA :: Башинформсвязь (прив.) :: Башинформсвязь - Акции привилегированные :: Башинформсвязь, акция прив.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Башинформсвязь (ПАО) ап",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

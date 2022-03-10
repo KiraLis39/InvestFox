@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "FTS",
+  "sector" : null,
+  "cost_TYPE" : "$",
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 46.82,
+  "lot_COST" : 46.82,
+  "dividend" : 0.0,
+  "name" : "Fortis Inc (FTS) :: NA",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Fortis",
+  "index" : 2,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

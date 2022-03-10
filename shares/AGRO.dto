@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "AGRO",
+  "sector" : "Производители товаров массового потребления Consumer null",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Нейтрально, Покупать",
+  "pay_DATE" : "2022-04-01T15:41:00",
+  "cost" : 864.8,
+  "lot_COST" : 864.8,
+  "dividend" : 18.35125,
+  "name" : "ГДР ROS AGRO PLC ORD SHS :: Ros Agro PLC (AGRO) :: AGRO-гдр :: Русагро :: РОС АГРО ПЛС :: РусАгро :: Agrometal, акция об.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "ROS AGRO",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

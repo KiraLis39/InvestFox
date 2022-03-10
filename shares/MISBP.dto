@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 100,
+  "ticker" : "MISBP",
+  "sector" : "Коммунальные услуги Utilities Электроэнергетика",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Покупать, Покупать",
+  "pay_DATE" : null,
+  "cost" : 9.5,
+  "lot_COST" : 950.0,
+  "dividend" : 0.0,
+  "name" : "МариЭнСб-п :: NA :: TNS Energo Mariy El PAO Preferred :: ТНС энерго Марий Эл - привилегированные акции :: ТНС энерго Марий Эл, акция прив.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "МариЭнСб-п",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

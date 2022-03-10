@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "MET",
+  "sector" : "Financial",
+  "cost_TYPE" : "$",
+  "recommendation" : "Держать",
+  "pay_DATE" : null,
+  "cost" : 64.64,
+  "lot_COST" : 64.64,
+  "dividend" : 1.9300000000000002,
+  "name" : "Metlife Inc (MET) :: MetLife :: MetLife",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Metlife",
+  "index" : 2,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 10,
+  "ticker" : "KAZTP",
+  "sector" : "Материалы Materials Химическая и нефтехимическая промышленность",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Нейтрально, Активно покупать",
+  "pay_DATE" : "2022-05-11T15:25:06",
+  "cost" : 305.4,
+  "lot_COST" : 3054.0,
+  "dividend" : 4.651249999999999,
+  "name" : "Куйбышевазот ОАО ап :: Куйбазот-п :: NA :: Куйбышевазот (прив.) ПАО :: КуйбышевАзот - Акции привилегированные :: Куйбышевазот, акция прив.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Куйбышевазот",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1000,
+  "ticker" : "RSTIP",
+  "sector" : "Коммунальные услуги Utilities Электроэнергетика",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Покупать, Активно покупать",
+  "pay_DATE" : "2022-07-08T15:28:10",
+  "cost" : 1.4837500000000001,
+  "lot_COST" : 1483.7500000000002,
+  "dividend" : 4.24375,
+  "name" : "Российские сети ОАО ап :: Россети ап :: Российские сети :: Rossiyskiye Seti PAO Preferred :: Российские сети - акции привилегированные :: Россети, акция прив.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Российские сети",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

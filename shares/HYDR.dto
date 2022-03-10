@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1000,
+  "ticker" : "HYDR",
+  "sector" : "Коммунальные услуги Utilities",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Активно продавать, Активно продавать, Покупать",
+  "pay_DATE" : "2022-07-10T19:16:28",
+  "cost" : 0.6534125,
+  "lot_COST" : 653.4124999999999,
+  "dividend" : 6.878125,
+  "name" : "ПАО РусГидро :: FGK Rusgidro PAO (HYDR) :: РусГидро :: РусГидро :: FGK Rusgidro PAO :: РусГидро",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "РусГидро",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

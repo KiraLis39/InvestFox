@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 1,
+  "ticker" : "XOM",
+  "sector" : "Energy null",
+  "cost_TYPE" : "$",
+  "recommendation" : null,
+  "pay_DATE" : null,
+  "cost" : 85.48249999999999,
+  "lot_COST" : 85.48249999999999,
+  "dividend" : 2.745,
+  "name" : "Exxon Mobil Corp (XOM) :: Exxon Mobil :: Exxon Mobil Corporation :: Exxon Mobil, деп. расп.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Exxon Mobil",
+  "index" : 2,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}

@@ -1,0 +1,23 @@
+{
+  "pay_SUM_ON_SHARE" : null,
+  "lot_SIZE" : 100,
+  "ticker" : "KRKOP",
+  "sector" : "Промышленность Прочее машиностроение и приборостроение",
+  "cost_TYPE" : "₽",
+  "recommendation" : "Продавать, Активно покупать",
+  "pay_DATE" : null,
+  "cost" : 8.74,
+  "lot_COST" : 874.0,
+  "dividend" : 0.0,
+  "name" : "ТКЗКК ап :: NA :: ОАО ТКЗ Красный котельщик (прив.) :: Красный котельщик, акция прив.",
+  "part_OF_PROFIT" : null,
+  "stable_GROW" : null,
+  "showed_NAME" : "Красный котельщик",
+  "index" : 1,
+  "info" : null,
+  "count" : 0,
+  "source" : null,
+  "stable_PAY" : null,
+  "pay_SUM" : null,
+  "comment" : null
+}
