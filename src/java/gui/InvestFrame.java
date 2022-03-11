@@ -23,7 +23,8 @@ import java.util.concurrent.Future;
 public class InvestFrame extends JFrame {
     private static JPanel midPane;
     private static JTextField ticketField;
-    private static JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel, divLabel, payDateLabel;
+    private static JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel, divLabel, payDateLabel,
+            usdValueLabel, eurValueLabel;
     private static TablePane tablePane;
     private static NetProcessor netProc = new NetProcessor();
     private static ImageIcon ico_01, ico_02, ico_03, ico_04;
@@ -48,7 +49,7 @@ public class InvestFrame extends JFrame {
 
                 JPanel basePane = new JPanel(new BorderLayout(0, 1)) {
                     {
-                        JPanel upPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)) {
+                        JPanel upPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 0)) {
                             {
                                 setBackground(Color.BLACK);
                                 setBorder(new EmptyBorder(0, 1, 0, 0));
@@ -104,8 +105,30 @@ public class InvestFrame extends JFrame {
                                     }
                                 };
 
+                                JPanel valutePane = new JPanel(new FlowLayout(FlowLayout.LEFT, 9, 0)) {
+                                    {
+                                        setOpaque(false);
+                                        setBorder(BorderFactory.createSoftBevelBorder(1));
+
+                                        usdValueLabel = new JLabel("USD: ") {
+                                            {
+                                                setForeground(Color.WHITE);
+                                            }
+                                        };
+                                        eurValueLabel = new JLabel("EUR: ") {
+                                            {
+                                                setForeground(Color.WHITE);
+                                            }
+                                        };
+
+                                        add(usdValueLabel);
+                                        add(eurValueLabel);
+                                    }
+                                };
+
                                 add(ticketField);
                                 add(updateButton);
+                                add(valutePane);
                             }
                         };
 
@@ -242,6 +265,12 @@ public class InvestFrame extends JFrame {
         }
 
         ticketField.setText("RASP");
+        loadValutes();
+    }
+
+    private void loadValutes() {
+        usdValueLabel.setText("USD: 0");
+        eurValueLabel.setText("EUR: 0");
     }
 
     private void loadIcons() throws IOException {

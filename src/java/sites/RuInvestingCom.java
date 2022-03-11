@@ -67,6 +67,9 @@ public class RuInvestingCom extends AbstractSite {
             } catch (Exception e) {
                 try {
                     cost = doc.select("span").eachText().get(61);
+                    if (cost.contains(".") && cost.contains(",")) {
+                        cost = cost.replace(".", "");
+                    }
                     test = Double.parseDouble(cost.replace(",", "."));
                 } catch (Exception e2) {
                     e2.printStackTrace();

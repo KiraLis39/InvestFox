@@ -62,7 +62,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     }
 
     public void loadColumns() {
-        double sharePay = resultDto.getCOST() / 100D * resultDto.getDIVIDEND();
+        double sharePay = resultDto.getCOST() / 100D * (resultDto.getDIVIDEND() == null ? 0 : resultDto.getDIVIDEND());
         double allSharePay = sharePay * resultDto.getCOUNT() / 0.87D; // -13%
         double allCost = resultDto.getCOST() * resultDto.getCOUNT();
         double PE = resultDto.getCOST() / sharePay;
@@ -293,54 +293,58 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
         //
         Component name = getColumnNamed("NAME");
-        name.setBackground(resultDto.getINDEX() == 2 ? Color.GREEN :
-                (resultDto.getINDEX() == 1 ? Color.MAGENTA.darker() :
-                        (resultDto.getINDEX() == 3 ? Color.RED :
-                                (resultDto.getINDEX() == 4 ? Color.RED.darker() : Color.DARK_GRAY))));
-        getColumnNamed("TICKER").setBackground(name.getBackground());
+        double cost = resultDto.getCOST();
+        int count = resultDto.getCOUNT();
 
-        //
-        getColumnNamed("NAME").setBackground(resultDto.getCOUNT() > 0 ? Color.DARK_GRAY : (resultDto.getCOST() > 15_000 ? Color.RED.darker().darker() :
-                (resultDto.getCOST() > 10_000 ? Color.RED.darker() : (Color.MAGENTA.darker().darker()))));
-        getColumnNamed("NAME").setForeground(resultDto.getCOUNT() > 0 ? Color.WHITE : (resultDto.getCOST() > 15_000 ? Color.WHITE :
-                (resultDto.getCOST() > 10_000 ? Color.WHITE : (Color.YELLOW))));
+        if (cost > 30_000) {
+            name.setBackground(Color.RED);
+            name.setForeground(Color.BLACK);
+        } else if (cost > 15_000) {
+            name.setBackground(Color.RED.darker().darker());
+            name.setForeground(Color.GRAY);
+        } else if (cost > 10_000) {
+            name.setBackground(Color.RED.darker());
+            name.setForeground(Color.WHITE);
+        } else if (count == 0) {
+            name.setBackground(Color.MAGENTA.darker().darker().darker());
+            name.setForeground(Color.WHITE);
+        }
 
         switch ((int) ((JSpinner) getColumnNamed("INDEX")).getValue()) {
             case 6 -> {
-                getColumnNamed("NAME").setBackground(Color.BLACK);
-                getColumnNamed("NAME").setForeground(Color.DARK_GRAY);
+                name.setBackground(Color.BLACK);
+                name.setForeground(Color.DARK_GRAY);
             }
             case 5 -> {
-                getColumnNamed("NAME").setBackground(Color.BLACK);
-                getColumnNamed("NAME").setForeground(Color.RED.darker());
+                name.setBackground(Color.BLACK);
+                name.setForeground(Color.RED.darker());
             }
             case 4 -> {
-                getColumnNamed("NAME").setBackground(Color.RED.darker().darker());
-                getColumnNamed("NAME").setForeground(Color.GRAY);
+                name.setBackground(Color.RED.darker().darker());
+                name.setForeground(Color.GRAY);
             }
             case 3 -> {
-                getColumnNamed("NAME").setBackground(Color.RED.darker());
-                getColumnNamed("NAME").setForeground(Color.WHITE);
+                name.setBackground(Color.RED.darker());
+                name.setForeground(Color.WHITE);
             }
             case 2 -> {
-                getColumnNamed("NAME").setBackground(Color.GREEN);
-                getColumnNamed("NAME").setForeground(Color.BLACK);
+                name.setBackground(Color.GREEN);
+                name.setForeground(Color.BLACK);
             }
             case 1 -> {
-                getColumnNamed("NAME").setBackground(Color.MAGENTA.darker().darker().darker());
-                getColumnNamed("NAME").setForeground(Color.YELLOW);
+                name.setBackground(Color.MAGENTA.darker().darker().darker());
+                name.setForeground(Color.YELLOW);
             }
             case 0 -> {
-                getColumnNamed("NAME").setBackground(Color.GRAY);
-                getColumnNamed("NAME").setForeground(Color.BLACK);
+                name.setBackground(Color.DARK_GRAY.darker());
+                name.setForeground(Color.WHITE);
             }
 //            case -1 -> {}
 //            case -2 -> {}
             default -> {}
         }
-
-        getColumnNamed("TICKER").setBackground(getColumnNamed("NAME").getBackground());
-        getColumnNamed("TICKER").setForeground(getColumnNamed("NAME").getForeground());
+        getColumnNamed("TICKER").setBackground(name.getBackground());
+        getColumnNamed("TICKER").setForeground(name.getForeground());
 
         //
         getColumnNamed("INDEX").setBackground((int) ((JSpinner) getColumnNamed("INDEX")).getValue() == 2 ? Color.GREEN : Color.WHITE);

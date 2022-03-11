@@ -30,21 +30,33 @@ public class GoogleFinance extends AbstractSite {
             buildUrl(SOURCE_SIX + dto.getTicket().toUpperCase() + ":MCX");
             doc = getDoc();
             doc.text().substring(0, doc.text().indexOf("Stock"));
+            if (doc.getElementsByClass("e1AOyf").text().contains("We couldn't find any match for your search")) {
+                throw new Exception();
+            }
         } catch (Exception e) {
             try {
                 buildUrl(SOURCE_SIX + dto.getTicket().toUpperCase() + ":NYSE");
                 doc = getDoc();
                 doc.text().substring(0, doc.text().indexOf("Stock"));
+                if (doc.getElementsByClass("e1AOyf").text().contains("We couldn't find any match for your search")) {
+                    throw new Exception();
+                }
             } catch (Exception e2) {
                 try {
                     buildUrl(SOURCE_SIX + dto.getTicket().toUpperCase() + ":VIE");
                     doc = getDoc();
                     doc.text().substring(0, doc.text().indexOf("Stock"));
+                    if (doc.getElementsByClass("e1AOyf").text().contains("We couldn't find any match for your search")) {
+                        throw new Exception();
+                    }
                 } catch (Exception e3) {
                     try {
                         buildUrl(SOURCE_SIX + dto.getTicket().toUpperCase() + ":NASDAQ");
                         doc = getDoc();
                         doc.text().substring(0, doc.text().indexOf("Stock"));
+                        if (doc.getElementsByClass("e1AOyf").text().contains("We couldn't find any match for your search")) {
+                            throw new Exception();
+                        }
                     } catch (Exception e4) {
                         System.err.println(dto.getSource() + " не нашла тикер " + dto.getTicket());
                         return null;

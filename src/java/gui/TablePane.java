@@ -239,7 +239,7 @@ public class TablePane extends JPanel {
                     setOpaque(false);
 
                     sCount = new JLabel() {{
-                        setForeground(Color.RED);
+                        setForeground(Color.GRAY);
                         setHorizontalAlignment(0);
                         setFont(Registry.btnsFont6);
                     }};

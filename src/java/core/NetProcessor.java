@@ -82,7 +82,6 @@ public class NetProcessor {
                 add(new RbkRu(ticket));
                 add(new RuInvestingCom(ticket));
                 add(new TinkoffRu(ticket));
-                add(new InvestmintRu(ticket));
                 add(new InvestfundsRu(ticket));
             }
         };
