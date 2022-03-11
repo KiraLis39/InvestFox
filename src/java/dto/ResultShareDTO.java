@@ -35,7 +35,7 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
     //    @JsonProperty("Размер лота")
     private Integer LOT_SIZE = 1;
     //    @JsonProperty("Дивиденты")
-    private Double DIVIDEND;
+    private double DIVIDEND;
     //    @JsonProperty("Количество")
     private int COUNT;
     //    @JsonProperty("Выплата")
@@ -133,7 +133,7 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
                     .replaceAll("]", "")
                     .replaceAll(",", ".")
             );
-            DIVIDEND = DIVIDEND == null ? d : (DIVIDEND + d) / 2D;
+            DIVIDEND = (DIVIDEND + d) / 2D;
         }
 
     }

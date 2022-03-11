@@ -23,7 +23,7 @@ public class TablePane extends JPanel {
     private NetProcessor netProc = new NetProcessor();
     private static JPanel contentTablePane;
     private static JToolBar toolBar;
-    private static JLabel lMoney, gMoney, sCount;
+    private static JLabel lMoney, gMoney, sCount, shBye;
     private static JScrollPane scroll;
 
     public TablePane() {
@@ -201,7 +201,7 @@ public class TablePane extends JPanel {
 
                         add(new TextTableRow("<html>Сектор</html>", "<html>Эмитент</html>",
                                 "<html>Тикер</html>", "<html>Цена</html>", "<html>Тип цены</html>", "<html>Лот</html>",
-                                "<html>Цена за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
+                                "<html>Рублей за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
                                 "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>", "<html>Стоимость</html>",
                                 "<html>Прибыль/год</html>", "<html>Комментарий</html>"
                         ) {{setBorder(new EmptyBorder(0, 0, 0 ,16));}}, BorderLayout.CENTER);
@@ -233,7 +233,7 @@ public class TablePane extends JPanel {
 //                setOpaque(false);
                 setBackground(Color.DARK_GRAY.darker());
                 setPreferredSize(new Dimension(0, 26));
-                setBorder(new EmptyBorder(0, 0, 0, 15));
+                setBorder(new EmptyBorder(0, 0, 0, 0));
 
                 add(new JPanel(new BorderLayout(0, 0)) {{
                     setOpaque(false);
@@ -257,7 +257,17 @@ public class TablePane extends JPanel {
                 add(new JSeparator(1));
 
                 add(new JSeparator(1));
-                add(new JSeparator(1));
+                add(new JPanel(new BorderLayout(0, 0)) {{
+                    setOpaque(false);
+
+                    add(new JSeparator(1), BorderLayout.WEST);
+                    shBye = new JLabel() {{
+                        setForeground(Color.ORANGE);
+                        setHorizontalAlignment(0);
+                        setFont(Registry.btnsFont6);
+                    }};
+                    add(shBye, BorderLayout.CENTER);
+                }});
                 add(new JPanel(new BorderLayout(0, 0)) {{
                     setOpaque(false);
 
@@ -310,6 +320,7 @@ public class TablePane extends JPanel {
         lMoney.setText(String.format("%.2f ", calcLostMoney()) + CostType.RUB.value());
         gMoney.setText(String.format("%.2f ", calcGetMoney()) + CostType.RUB.value());
         sCount.setText("Count: " + getRows().size());
+        shBye.setText("NA шт.");
     }
 
     private Double calcGetMoney() {

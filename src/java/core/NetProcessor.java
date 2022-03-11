@@ -6,6 +6,7 @@ import dto.ShareDTO;
 import fox.Out;
 import gui.InvestFrame;
 import gui.TablePane;
+import org.jsoup.nodes.Document;
 import sites.*;
 import sites.exceptions.SiteBlockedException;
 import sites.impl.AbstractSite;
@@ -25,21 +26,29 @@ import java.util.concurrent.*;
 public class NetProcessor {
     private static final int sitesCount = 8;
     private static final ExecutorService exec = Executors.newFixedThreadPool(sitesCount + 4);
+    private static double usdValue, eurValue;
 
-    public static void save() throws IOException {
+
+    public static int save() throws IOException {
         if (!new File("./shares/").exists()) {
             Files.createDirectory(Paths.get("./shares/"));
         }
         Out.Print(NetProcessor.class, Out.LEVEL.INFO, "Saving shares..");
+        int fails = 0;
         for (Component row : InvestFrame.getTableRows()) {
             ResultShareDTO strow = ((ShareTableRow) row).getResultDto();
             String res = JsonMapper.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(strow);
             try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("./shares/" + strow.getTICKER() + ".dto"))) {
                 osw.write(res);
             } catch (IOException e) {
-                throw e;
+                fails++;
+                e.printStackTrace();
             }
         }
+        if (fails > 0) {
+            System.err.println("Не удалось сохранить акций: " + fails);
+        }
+        return fails;
     }
 
     public static void load(TablePane tablePane) throws IOException {
@@ -111,5 +120,44 @@ public class NetProcessor {
         }
 
         return resultDTO.getNAME() == null && resultDTO.getCOST() == null ? null : resultDTO;
+    }
+
+    public void loadValutes() {
+        Document doc;
+        AbstractSite as = new AbstractSite() {
+            @Override
+            public ShareDTO task() throws Exception {
+                return null;
+            }
+        };
+
+        String usdLink = "https://www.google.com/search?q=1+%D0%B4%D0%BE%D0%BB%D0%BB%D0%B0%D1%80";
+        as.setUrl(usdLink);
+        doc = as.getDoc();
+        if (doc.body().getElementsByClass("b1hJbf").size() > 0) {
+            if (doc.body().getElementsByClass("b1hJbf").get(0).childNodes().size() > 0) {
+                String usdCost = doc.body().getElementsByClass("b1hJbf")
+                        .get(0).childNodes().get(1).childNodes().get(0).childNodes().get(0).toString().replace(",", ".");
+                usdValue = Double.parseDouble(usdCost);
+            }
+        }
+
+        String eurLink = "https://www.google.com/search?q=1+%D0%B5%D0%B2%D1%80%D0%BE";
+        as.setUrl(eurLink);
+        doc = as.getDoc();
+        if (doc.body().getElementsByClass("b1hJbf").size() > 0) {
+            if (doc.body().getElementsByClass("b1hJbf").get(0).childNodes().size() > 0) {
+                String eurCost = doc.body().getElementsByClass("b1hJbf")
+                        .get(0).childNodes().get(1).childNodes().get(0).childNodes().get(0).toString().replace(",", ".");
+                eurValue = Double.parseDouble(eurCost);
+            }
+        }
+    }
+
+    public static double getUSDValue() {
+        return usdValue;
+    }
+    public static double getEURValue() {
+        return eurValue;
     }
 }

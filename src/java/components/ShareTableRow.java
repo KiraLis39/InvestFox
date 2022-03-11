@@ -1,5 +1,6 @@
 package components;
 
+import core.NetProcessor;
 import dto.ResultShareDTO;
 import gui.InvestFrame;
 import lombok.AccessLevel;
@@ -62,9 +63,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     }
 
     public void loadColumns() {
-        double sharePay = resultDto.getCOST() / 100D * (resultDto.getDIVIDEND() == null ? 0 : resultDto.getDIVIDEND());
-        double allSharePay = sharePay * resultDto.getCOUNT() / 0.87D; // -13%
-        double allCost = resultDto.getCOST() * resultDto.getCOUNT();
+        double sharePay = resultDto.getCOST() / 100D * resultDto.getDIVIDEND();
         double PE = resultDto.getCOST() / sharePay;
 
         addSpinnerColumn("INDEX", resultDto.getINDEX());
@@ -74,12 +73,34 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         addTextColumn("COST", String.format("%.2f", resultDto.getCOST()));
         addTextColumn("COST_TYPE", resultDto.getCOST_TYPE());
         addTextColumn("LOT_SIZE", resultDto.getLOT_SIZE() + "");
-        addTextColumn("LOT_COST", String.format("%.2f", resultDto.getLOT_COST()));
+
+        Double uniCost = resultDto.getLOT_COST();
+        String costType = resultDto.getCOST_TYPE();
+        double lotCost = uniCost;
+        double allCost = resultDto.getCOST() * resultDto.getCOUNT();
+        double allSharePay = sharePay * resultDto.getCOUNT();
+        if (uniCost != null && uniCost > 0 && !costType.equals(RUB)) {
+            if (costType.equals(USD.value())) {
+                lotCost = NetProcessor.getUSDValue() * uniCost;
+
+                allCost = resultDto.getCOST() * NetProcessor.getUSDValue() * resultDto.getCOUNT();
+                allSharePay = sharePay * NetProcessor.getUSDValue() * resultDto.getCOUNT();
+            } else if (costType.equals(EUR.value())) {
+                lotCost = NetProcessor.getEURValue() * uniCost;
+
+                allCost = resultDto.getCOST() * NetProcessor.getEURValue() * resultDto.getCOUNT();
+                allSharePay = sharePay * NetProcessor.getUSDValue() * resultDto.getCOUNT();
+            }
+        }
+        addTextColumn("LOT_COST", String.format("%.2f", lotCost));
+
         addTextColumn("DIVIDEND", String.format("%.2f", resultDto.getDIVIDEND()), Color.GREEN);
         addTextColumn("SHARE_PAY", String.format("%.2f", sharePay), Color.YELLOW);
         addEditableColumn("COUNT", resultDto.getCOUNT() > 0 ? resultDto.getCOUNT() + "" : "");
+
         addTextColumn("ALL_COST", String.format("%.2f", allCost), Color.RED);
-        addTextColumn("ALL_PAY", String.format("%.2f", allSharePay), Color.GREEN);
+        addTextColumn("ALL_PAY", String.format("%.2f", allSharePay / 0.87D), Color.GREEN); // -13%
+
         addEditableColumn("COMMENT", resultDto.getCOMMENT(), resultDto.getCOMMENT());
 
         if (Double.valueOf(PE).isInfinite()) {

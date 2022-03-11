@@ -26,7 +26,7 @@ public class RuInvestingCom extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws Exception {
+    public ShareDTO task() {
         int index = 0;
         String ticker = dto.getTicket();
         Document doc;
@@ -50,7 +50,8 @@ public class RuInvestingCom extends AbstractSite {
 
         String tickerTest = doc.getElementsByClass("second").get(index).text();
         if (tickerTest.equalsIgnoreCase(ticker) || tickerTest.equalsIgnoreCase(ticker + "DR")) {
-            String aim = doc.getElementsByClass("js-inner-all-results-quote-item row").get(index - 1).attr("href");
+            String aim = doc.getElementsByClass("js-inner-all-results-quote-item row")
+                    .get(index - 1).attr("href").replace("`", "%60");
             dto.setName(doc.getElementsByClass("third").get(index).text().replaceAll("'", "").replaceAll("\"", ""));
 
             buildUrl((SOURCE_SUB + aim).replaceAll("//e", "/e"));

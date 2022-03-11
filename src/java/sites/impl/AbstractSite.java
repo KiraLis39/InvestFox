@@ -27,7 +27,7 @@ public abstract class AbstractSite implements iSite {
         System.out.println("ССЫЛКА: " + this.url);
     }
 
-    protected Document getDoc() {
+    public Document getDoc() {
         try {
             HttpConnection conn = (HttpConnection) Jsoup.newSession();
 //            conn.newRequest();

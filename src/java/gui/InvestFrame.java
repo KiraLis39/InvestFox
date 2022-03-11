@@ -13,21 +13,21 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
-public class InvestFrame extends JFrame {
+public class InvestFrame extends JFrame implements WindowListener {
     private static JPanel midPane;
     private static JTextField ticketField;
     private static JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel, divLabel, payDateLabel,
             usdValueLabel, eurValueLabel;
     private static TablePane tablePane;
-    private static NetProcessor netProc = new NetProcessor();
+    private static final NetProcessor netProc = new NetProcessor();
     private static ImageIcon ico_01, ico_02, ico_03, ico_04;
+    private static Thread valuteThread;
+
 
     public InvestFrame() {
         setTitle("Invest Fox 2022 v." + Registry.version);
@@ -36,10 +36,7 @@ public class InvestFrame extends JFrame {
         setPreferredSize(new Dimension(1600, 800));
         setResizable(true);
 
-        try {loadIcons();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        preInit();
 
         JTabbedPane tabPane = new JTabbedPane(JTabbedPane.BOTTOM, 0) {
             {
@@ -70,7 +67,8 @@ public class InvestFrame extends JFrame {
                                             @Override
                                             public void keyPressed(KeyEvent e) {
                                                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                                                    try {runScan();
+                                                    try {
+                                                        runScan();
                                                     } catch (ExecutionException executionException) {
                                                         executionException.printStackTrace();
                                                     } catch (InterruptedException interruptedException) {
@@ -95,7 +93,8 @@ public class InvestFrame extends JFrame {
                                         setFocusPainted(false);
                                         setFont(Registry.btnsFont4);
                                         addActionListener(e -> {
-                                            try {runScan();
+                                            try {
+                                                runScan();
                                             } catch (ExecutionException exec) {
                                                 exec.printStackTrace();
                                             } catch (InterruptedException intEx) {
@@ -105,7 +104,7 @@ public class InvestFrame extends JFrame {
                                     }
                                 };
 
-                                JPanel valutePane = new JPanel(new FlowLayout(FlowLayout.LEFT, 9, 0)) {
+                                JPanel valutePane = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0)) {
                                     {
                                         setOpaque(false);
                                         setBorder(BorderFactory.createSoftBevelBorder(1));
@@ -240,37 +239,37 @@ public class InvestFrame extends JFrame {
             }
         };
         add(tabPane);
+        ticketField.setText("RASP");
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                try {
-                    NetProcessor.save();
-                    Out.Print(InvestFrame.class, Out.LEVEL.INFO, "End of work!");
-                    Out.close();
-                    System.exit(0);
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
-        });
+        addWindowListener(this);
 
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
 
-        try {NetProcessor.load(tablePane);
+        postInit();
+    }
+
+    private void preInit() {
+        try {
+            valuteThread = new Thread(() -> netProc.loadValutes());
+            valuteThread.start(); // получаем курс валют
+
+            loadIcons(); // подгружаем иконки приложения
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void postInit() {
+        try {
+            valuteThread.join(); // ждем конца сбора данных валют и отображаем ниже:
+            usdValueLabel.setText("<html><p style=\"color:#8F8\"><b>USD: </b></p>" + netProc.getUSDValue());
+            eurValueLabel.setText("<html><p style=\"color:#88F\"><b>EUR: </b></p>" + netProc.getEURValue());
+            NetProcessor.load(tablePane);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        ticketField.setText("RASP");
-        loadValutes();
-    }
-
-    private void loadValutes() {
-        usdValueLabel.setText("USD: 0");
-        eurValueLabel.setText("EUR: 0");
     }
 
     private void loadIcons() throws IOException {
@@ -303,7 +302,7 @@ public class InvestFrame extends JFrame {
                         return null;
                     }
                 });
-        while(!fut.isDone()) {
+        while (!fut.isDone()) {
             Thread.yield();
         }
         if (fut.get() != null) {
@@ -330,6 +329,24 @@ public class InvestFrame extends JFrame {
         midPane.add(new DataPanel(dto));
         midPane.revalidate();
     }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        try {
+            NetProcessor.save();
+            Out.Print(InvestFrame.class, Out.LEVEL.INFO, "End of work.");
+            System.exit(Out.close());
+        } catch (Exception e2) {
+            e2.printStackTrace();
+            Out.Print(InvestFrame.class, Out.LEVEL.INFO, "Exit failed!");
+        }
+    }
+    public void windowOpened(WindowEvent e) {}
+    public void windowClosed(WindowEvent e) {}
+    public void windowIconified(WindowEvent e) {}
+    public void windowDeiconified(WindowEvent e) {}
+    public void windowActivated(WindowEvent e) {}
+    public void windowDeactivated(WindowEvent e) {}
 
     private static class DataPanel extends JPanel {
         private final ShareDTO dto;
@@ -391,6 +408,8 @@ public class InvestFrame extends JFrame {
             }
         }
 
-        public ShareDTO getDTO() {return dto;}
+        public ShareDTO getDTO() {
+            return dto;
+        }
     }
 }
