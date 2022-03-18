@@ -1,8 +1,6 @@
 package components;
 
 import core.NetProcessor;
-import gui.InvestFrame;
-import gui.TablePane;
 import registry.Registry;
 
 import javax.swing.*;
@@ -32,9 +30,7 @@ public class TextTableRow extends JPanel implements Comparator<ShareTableRow> {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             try {
-                                NetProcessor.save();
-                                TablePane.clearRows();
-                                NetProcessor.load(InvestFrame.getTablePane());
+                                NetProcessor.reload();
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }

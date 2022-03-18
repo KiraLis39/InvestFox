@@ -21,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NetProcessor {
     private static final int sitesCount = 8;
@@ -65,20 +67,26 @@ public class NetProcessor {
         tablePane.addShares(loading);
     }
 
+    public static void reload() throws IOException {
+        save();
+        TablePane.clearRows();
+        load(InvestFrame.getTablePane());
+    }
+
     public CompletableFuture<ResultShareDTO> checkTicket(String ticket, boolean isHandle) {
         return CompletableFuture.supplyAsync(() -> {
-            Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("Check the ticket '%s'...", ticket));
-            return proceed(ticket, isHandle);
-        }, exec)
+                    Out.Print(NetProcessor.class, Out.LEVEL.INFO, String.format("Check the ticket '%s'...", ticket));
+                    return proceed(ticket, isHandle);
+                }, exec)
 //                .exceptionally(throwable -> null)
                 .handle((r, ex) -> {
-            if (r != null) {
-                return r;
-            } else {
-                Out.Print(NetProcessor.class, Out.LEVEL.WARN, "Problem: " + ex);
-                return null;
-            }
-        });
+                    if (r != null) {
+                        return r;
+                    } else {
+                        Out.Print(NetProcessor.class, Out.LEVEL.WARN, "Problem: " + ex);
+                        return null;
+                    }
+                });
     }
 
     private ResultShareDTO proceed(String ticket, boolean isHandle) {
@@ -131,26 +139,20 @@ public class NetProcessor {
             }
         };
 
-        String usdLink = "https://www.google.com/search?q=1+%D0%B4%D0%BE%D0%BB%D0%BB%D0%B0%D1%80";
+        String usdLink = "https://ru.investing.com/currencies/usd-rub";
         as.setUrl(usdLink);
         doc = as.getDoc();
-        if (doc.body().getElementsByClass("b1hJbf").size() > 0) {
-            if (doc.body().getElementsByClass("b1hJbf").get(0).childNodes().size() > 0) {
-                String usdCost = doc.body().getElementsByClass("b1hJbf")
-                        .get(0).childNodes().get(1).childNodes().get(0).childNodes().get(0).toString().replace(",", ".");
-                usdValue = Double.parseDouble(usdCost);
-            }
+        if (doc != null) {
+            String usdCost = doc.getElementsByClass("text-2xl").get(2).text();
+            usdValue = Double.parseDouble(usdCost.replace(",", "."));
         }
 
-        String eurLink = "https://www.google.com/search?q=1+%D0%B5%D0%B2%D1%80%D0%BE";
+        String eurLink = "https://ru.investing.com/currencies/eur-rub";
         as.setUrl(eurLink);
         doc = as.getDoc();
-        if (doc.body().getElementsByClass("b1hJbf").size() > 0) {
-            if (doc.body().getElementsByClass("b1hJbf").get(0).childNodes().size() > 0) {
-                String eurCost = doc.body().getElementsByClass("b1hJbf")
-                        .get(0).childNodes().get(1).childNodes().get(0).childNodes().get(0).toString().replace(",", ".");
-                eurValue = Double.parseDouble(eurCost);
-            }
+        if (doc != null) {
+            String eurCost = doc.getElementsByClass("text-2xl").get(2).text();
+            eurValue = Double.parseDouble(eurCost.replace(",", "."));
         }
     }
 

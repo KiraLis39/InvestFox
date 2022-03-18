@@ -6,7 +6,6 @@ import gui.InvestFrame;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import registry.CostType;
 import registry.Registry;
 
 import javax.swing.*;
@@ -40,6 +39,8 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         leftPane = new JPanel(new BorderLayout()) {
             {
                 setOpaque(false);
+                setBorder(null);
+                setPreferredSize(new Dimension(45, 0));
             }
         };
 
@@ -52,6 +53,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         rightPane = new JPanel(new BorderLayout()) {
             {
                 setOpaque(false);
+                setPreferredSize(new Dimension(45, 0));
             }
         };
 
@@ -70,7 +72,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         addTextColumn("SECTOR", resultDto.getSECTOR());
         addEditableColumn("NAME", resultDto.getSHOWED_NAME(), "<html>" + resultDto.getNAME().replace(" :: ", "<br>"));
         addEditableColumn("TICKER", resultDto.getTICKER(), null, Color.WHITE, false);
-        addTextColumn("COST", String.format("%.2f", resultDto.getCOST()));
+        addTextColumn("COST", String.format("%,.2f", resultDto.getCOST()));
         addTextColumn("COST_TYPE", resultDto.getCOST_TYPE());
         addTextColumn("LOT_SIZE", resultDto.getLOT_SIZE() + "");
 
@@ -92,14 +94,14 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 allSharePay = sharePay * NetProcessor.getUSDValue() * resultDto.getCOUNT();
             }
         }
-        addTextColumn("LOT_COST", String.format("%.2f", lotCost));
+        addTextColumn("LOT_COST", String.format("%,.2f", lotCost));
 
         addTextColumn("DIVIDEND", String.format("%.2f", resultDto.getDIVIDEND()), Color.GREEN);
         addTextColumn("SHARE_PAY", String.format("%.2f", sharePay), Color.YELLOW);
         addEditableColumn("COUNT", resultDto.getCOUNT() > 0 ? resultDto.getCOUNT() + "" : "");
 
-        addTextColumn("ALL_COST", String.format("%.2f", allCost), Color.RED);
-        addTextColumn("ALL_PAY", String.format("%.2f", allSharePay / 0.87D), Color.GREEN); // -13%
+        addTextColumn("ALL_COST", String.format("%,.2f", allCost), Color.RED);
+        addTextColumn("ALL_PAY", String.format("%,.2f", allSharePay / 0.87D), Color.GREEN); // -13%
 
         addEditableColumn("COMMENT", resultDto.getCOMMENT(), resultDto.getCOMMENT());
 
@@ -252,7 +254,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         });
     }
 
-    private Component getColumnNamed(String name) {
+    public Component getColumnNamed(String name) {
         for (Component comp : getComponents()) {
             if (comp instanceof JPanel) {
                 for (Component comp2 : ((JPanel) comp).getComponents()) {
@@ -285,7 +287,6 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         JComponent c = midPane;
         if (name.equals("PE")) {
             c = rightPane;
-            c.setPreferredSize(new Dimension(50, 0));
         }
         c.add(new JLabel(text) {{
             setName(name);
@@ -308,9 +309,25 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         boolean peIsInfinite = Double.valueOf(resultDto.getCOST() / (resultDto.getCOST() / 100D * resultDto.getDIVIDEND())).isInfinite();
         ((JLabel) getColumnNamed("PE"))
                 .setText(peIsInfinite ? "0"
-                                : String.format("%.2f", (resultDto.getCOST() / (resultDto.getCOST() / 100D * resultDto.getDIVIDEND())))
+                        : String.format("%.2f", (resultDto.getCOST() / (resultDto.getCOST() / 100D * resultDto.getDIVIDEND())))
                 );
-        getColumnNamed("PE").setForeground(peIsInfinite ? Color.RED : Color.WHITE);
+
+        JLabel peLabel = (JLabel) getColumnNamed("PE");
+        double deLabel = Double.parseDouble(peLabel.getText().replace(",", "."));
+        if (peIsInfinite) {
+            peLabel.setForeground(Color.RED);
+        } else if (deLabel < 5) {
+            peLabel.setForeground(new Color(0.0f, 1.0f, 0.0f));
+        } else if (deLabel < 10) {
+            peLabel.setForeground(new Color(0.0f, 1.0f, 0.5f));
+        } else if (deLabel < 15) {
+            peLabel.setForeground(new Color(0.0f, 0.5f, 1.0f));
+        } else if (deLabel < 30) {
+            peLabel.setForeground(new Color(0.5f, 0.0f, 1.0f));
+        } else {
+            peLabel.setForeground(new Color(1.0f, 0.0f, 0.5f));
+        }
+
 
         //
         Component name = getColumnNamed("NAME");
@@ -361,15 +378,18 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 name.setForeground(Color.WHITE);
             }
 //            case -1 -> {}
-//            case -2 -> {}
-            default -> {}
+            case -2 -> {
+//                name.setBackground(Color.BLACK);
+                name.setForeground(Color.ORANGE);
+            }
+            default -> {
+            }
         }
         getColumnNamed("TICKER").setBackground(name.getBackground());
         getColumnNamed("TICKER").setForeground(name.getForeground());
 
-        //
-        getColumnNamed("INDEX").setBackground((int) ((JSpinner) getColumnNamed("INDEX")).getValue() == 2 ? Color.GREEN : Color.WHITE);
-        getColumnNamed("INDEX").setForeground((int) ((JSpinner) getColumnNamed("INDEX")).getValue() == 2 ? Color.BLACK : Color.WHITE);
+//        getColumnNamed("INDEX").setBackground((int) ((JSpinner) getColumnNamed("INDEX")).getValue() == 2 ? Color.GREEN : Color.WHITE);
+//        getColumnNamed("INDEX").setForeground((int) ((JSpinner) getColumnNamed("INDEX")).getValue() == 2 ? Color.BLACK : Color.WHITE);
 
         //
         getColumnNamed("COUNT").setForeground(Color.ORANGE);

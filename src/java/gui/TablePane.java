@@ -25,6 +25,9 @@ public class TablePane extends JPanel {
     private static JToolBar toolBar;
     private static JLabel lMoney, gMoney, sCount, shBye;
     private static JScrollPane scroll;
+    private static ArrayList<Component> searchResultList;
+    private static int searchedIndex;
+
 
     public TablePane() {
         setLayout(new BorderLayout(0, 0));
@@ -99,6 +102,14 @@ public class TablePane extends JPanel {
 //                    }
 //                };
 
+                JButton searchBtn = new JButton("\uD83D\uDD0E") {
+                    {
+                        setForeground(Color.BLUE);
+                        setFont(Registry.btnsFont1);
+                        addActionListener(e -> showSearchDialog());
+                    }
+                };
+
                 JButton saveBtn = new JButton("\uD83D\uDCBE") {
                     {
                         setToolTipText("Сохранить таблицу на диск");
@@ -154,7 +165,6 @@ public class TablePane extends JPanel {
                                 es.shutdown();
                                 while (!es.awaitTermination(1, TimeUnit.SECONDS)) {
                                     // TODO: how weak ui
-
                                 }
                             } catch (Exception e1) {
                                 e1.printStackTrace();
@@ -165,6 +175,11 @@ public class TablePane extends JPanel {
                                         TimeUnit.MILLISECONDS.toMinutes(pass),
                                         TimeUnit.MILLISECONDS.toSeconds(pass) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
                                 ));
+                                try {
+                                    NetProcessor.reload();
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
                             }
                         });
                     }
@@ -185,6 +200,8 @@ public class TablePane extends JPanel {
                 add(updAllBtn);
                 add(new JSeparator(1));
                 add(saveBtn);
+                add(new JSeparator(1));
+                add(searchBtn);
 //                add(removeBtn);
 //                add(moveDownBtn);
             }
@@ -219,6 +236,7 @@ public class TablePane extends JPanel {
 
                 scroll = new JScrollPane(contentTablePane) {
                     {
+                        setBorder(null);
                         getVerticalScrollBar().setUnitIncrement(24);
                     }
                 };
@@ -317,10 +335,21 @@ public class TablePane extends JPanel {
     }
 
     public void updateResults() {
-        lMoney.setText(String.format("%.2f ", calcLostMoney()) + CostType.RUB.value());
-        gMoney.setText(String.format("%.2f ", calcGetMoney()) + CostType.RUB.value());
+        lMoney.setText(String.format("%,.2f ", calcLostMoney()) + CostType.RUB.value());
+        gMoney.setText(String.format("%,.2f ", calcGetMoney()) + CostType.RUB.value());
         sCount.setText("Count: " + getRows().size());
-        shBye.setText("NA шт.");
+        shBye.setText(calcSharesBayedCount() + " шт.");
+    }
+
+    private int calcSharesBayedCount() {
+        int count = 0;
+        for (ShareTableRow row : getRows().toArray(new ShareTableRow[0])) {
+            String tmp = ((JTextField) row.getColumnNamed("COUNT")).getText();
+            if (!tmp.isEmpty()) {
+                count += Integer.parseInt(tmp);
+            }
+        }
+        return count;
     }
 
     private Double calcGetMoney() {
@@ -348,6 +377,69 @@ public class TablePane extends JPanel {
         for (Component component : contentTablePane.getComponents()) {
             if (component instanceof ShareTableRow) {
                 contentTablePane.remove(component);
+            }
+        }
+    }
+
+    public void showSearchDialog() {
+        searchedIndex = 0;
+        searchResultList = new ArrayList<>();
+        String searchResult = JOptionPane.showInternalInputDialog(scroll,
+                null, null, JOptionPane.QUESTION_MESSAGE);
+        if (searchResult == null || searchResult.isEmpty()) {
+            return;
+        }
+        for (Component shareTableRow : getRows()) {
+            for (Component rowComp : ((JPanel) shareTableRow).getComponents()) {
+                if (rowComp instanceof JPanel) {
+                    for (Component comp : ((JPanel) rowComp).getComponents()) {
+                        searchInto(comp, searchResult, searchResultList);
+                    }
+                    continue;
+                }
+                searchInto(rowComp, searchResult, searchResultList);
+            }
+        }
+        if (searchResultList.size() > 0) {
+            showNextSearched();
+        }
+    }
+
+    void showNextSearched() {
+        if (searchResultList.size() == 0) {
+            return;
+        }
+
+        scroll.getViewport().setViewPosition(new Point(0, 0));
+        searchResultList.get(searchedIndex).requestFocusInWindow();
+
+        Rectangle sElem = new Rectangle(searchResultList.get(searchedIndex).getLocationOnScreen());
+        Double pos = sElem.getCenterY() - scroll.getViewport().getViewRect().getCenterY();
+        scroll.getViewport().setViewPosition(new Point(0, pos < 0 ? 0 : pos.intValue()));
+        if (searchedIndex + 1 == searchResultList.size()) {
+            searchedIndex = 0;
+        } else {
+            searchedIndex++;
+        }
+    }
+
+    private void searchInto(Component comp, String searchResult, ArrayList<Component> resultList) {
+        if (comp.getName().contains(searchResult)) {
+            resultList.add(comp);
+        }
+        if (comp instanceof JTextArea) {
+            if (((JTextArea) comp).getText() != null && ((JTextArea) comp).getText().contains(searchResult)) {
+                resultList.add(comp);
+            }
+        }
+        if (comp instanceof JTextField) {
+            if (((JTextField) comp).getText() != null && ((JTextField) comp).getText().contains(searchResult)) {
+                resultList.add(comp);
+            }
+        }
+        if (comp instanceof JLabel) {
+            if (((JLabel) comp).getText() != null && ((JLabel) comp).getText().contains(searchResult)) {
+                resultList.add(comp);
             }
         }
     }

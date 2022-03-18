@@ -1,6 +1,5 @@
 package dto;
 
-import components.FOptionPane;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import sites.exceptions.VariableLotException;
@@ -150,7 +149,7 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
     private void calcResultSector(String newData) {
         if (SECTOR == null) {
             SECTOR = newData;
-        } else {
+        } else if (!newData.equalsIgnoreCase("null")) {
             SECTOR = SECTOR.concat(" " + newData);
         }
     }
@@ -178,6 +177,10 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
 
     @Override
     public int compareTo(ResultShareDTO other) {
-        return Short.compare(INDEX, other.INDEX);
+        int indComp = Short.compare(INDEX, other.INDEX);
+        if (indComp != 0) {
+            return indComp;
+        }
+        return Double.compare(other.LOT_COST, LOT_COST);
     }
 }

@@ -3,6 +3,7 @@ package gui;
 import core.NetProcessor;
 import dto.ResultShareDTO;
 import dto.ShareDTO;
+import fox.InputAction;
 import fox.Out;
 import registry.Registry;
 
@@ -18,15 +19,17 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class InvestFrame extends JFrame implements WindowListener {
+public class InvestFrame extends JFrame implements WindowListener, ComponentListener {
     private static JPanel midPane;
     private static JTextField ticketField;
     private static JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel, divLabel, payDateLabel,
             usdValueLabel, eurValueLabel;
     private static TablePane tablePane;
+    private static PortfelPane portfelPane;
     private static final NetProcessor netProc = new NetProcessor();
     private static ImageIcon ico_01, ico_02, ico_03, ico_04;
     private static Thread valuteThread;
+    private static JTabbedPane tabPane;
 
 
     public InvestFrame() {
@@ -38,7 +41,7 @@ public class InvestFrame extends JFrame implements WindowListener {
 
         preInit();
 
-        JTabbedPane tabPane = new JTabbedPane(JTabbedPane.BOTTOM, 0) {
+        tabPane = new JTabbedPane(JTabbedPane.BOTTOM, 0) {
             {
                 setBackground(Color.BLACK);
                 getContentPane().setBackground(Color.BLACK);
@@ -226,10 +229,11 @@ public class InvestFrame extends JFrame implements WindowListener {
                 };
 
                 tablePane = new TablePane();
+                portfelPane = new PortfelPane();
 
                 addTab("Анализ", ico_01, basePane, "Анализ конкретных акций");
                 addTab("Сводка", ico_02, tablePane, "Сводка по текущей ситуации");
-                addTab("Портфель", ico_03, new JLabel("NA"), "Состояние рынка и портфеля");
+                addTab("Портфель", ico_03, portfelPane, "Состояние портфеля");
                 addTab("План ", ico_04, new JLabel("NA"), "Мой план");
 
                 setBackgroundAt(0, new Color(255, 200, 200));
@@ -242,6 +246,7 @@ public class InvestFrame extends JFrame implements WindowListener {
         ticketField.setText("RASP");
 
         addWindowListener(this);
+        addComponentListener(this);
 
         pack();
         setLocationRelativeTo(null);
@@ -270,6 +275,20 @@ public class InvestFrame extends JFrame implements WindowListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        InputAction.add("tabedPane", tablePane);
+        InputAction.set("tabedPane", "showSearchDialog", KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tablePane.showSearchDialog();
+            }
+        });
+        InputAction.set("tabedPane", "showNextSearch", KeyEvent.VK_F3, 0, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tablePane.showNextSearched();
+            }
+        });
     }
 
     private void loadIcons() throws IOException {
@@ -341,12 +360,41 @@ public class InvestFrame extends JFrame implements WindowListener {
             Out.Print(InvestFrame.class, Out.LEVEL.INFO, "Exit failed!");
         }
     }
-    public void windowOpened(WindowEvent e) {}
-    public void windowClosed(WindowEvent e) {}
-    public void windowIconified(WindowEvent e) {}
-    public void windowDeiconified(WindowEvent e) {}
-    public void windowActivated(WindowEvent e) {}
-    public void windowDeactivated(WindowEvent e) {}
+
+    public void windowOpened(WindowEvent e) {
+    }
+
+    public void windowClosed(WindowEvent e) {
+    }
+
+    public void windowIconified(WindowEvent e) {
+    }
+
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    public void windowActivated(WindowEvent e) {
+    }
+
+    public void windowDeactivated(WindowEvent e) {
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            portfelPane.updatePanesDim();
+        });
+    }
+
+    public void componentMoved(ComponentEvent e) {
+    }
+
+    public void componentShown(ComponentEvent e) {
+    }
+
+    public void componentHidden(ComponentEvent e) {
+    }
+
 
     private static class DataPanel extends JPanel {
         private final ShareDTO dto;

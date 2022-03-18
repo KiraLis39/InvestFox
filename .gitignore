@@ -20,6 +20,8 @@ bin/
 ### Folders ###
 shares/
 *.dto
+* log.html
+log/
 
 ### IntelliJ IDEA ###
 .idea

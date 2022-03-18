@@ -20,4 +20,6 @@ public class Registry {
 
     public static Font btnsFont5 = FoxFontBuilder.setFoxFont(FoxFontBuilder.FONT.CORBEL, 12, false);
     public static Font btnsFont6 = FoxFontBuilder.setFoxFont(FoxFontBuilder.FONT.CONSOLAS, 14, true);
+    public static Font btnsFont7 = FoxFontBuilder.setFoxFont(FoxFontBuilder.FONT.PAPYRYS, 32, true);
+    public static Font btnsFont8 = FoxFontBuilder.setFoxFont(FoxFontBuilder.FONT.PAPYRYS, 24, true);
 }
