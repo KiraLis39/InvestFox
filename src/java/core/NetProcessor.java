@@ -31,7 +31,7 @@ public class NetProcessor {
     private static double usdValue, eurValue;
 
 
-    public static int save() throws IOException {
+    public static int saveTable() throws IOException {
         if (!new File("./shares/").exists()) {
             Files.createDirectory(Paths.get("./shares/"));
         }
@@ -53,7 +53,7 @@ public class NetProcessor {
         return fails;
     }
 
-    public static void load(TablePane tablePane) throws IOException {
+    public static void loadTable(TablePane tablePane) throws IOException {
         if (!new File("./shares/").exists()) {
             return;
         }
@@ -68,9 +68,9 @@ public class NetProcessor {
     }
 
     public static void reload() throws IOException {
-        save();
+        saveTable();
         TablePane.clearRows();
-        load(InvestFrame.getTablePane());
+        loadTable(InvestFrame.getTablePane());
     }
 
     public CompletableFuture<ResultShareDTO> checkTicket(String ticket, boolean isHandle) {

@@ -8,13 +8,18 @@ import registry.Registry;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.IOException;
+
+import static gui.MyFields.textLabel;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PortfelPane extends JPanel {
-
     JLabel needGets, currentMonth;
-    JPanel redPane, bluePane, orangePane, downPane;
+    JPanel downPane;
+    MtsPanel mtsPane;
+    VtbPanel vtbPane;
+    TinkoffPanel tinkPane;
     int titleWidth = 250;
 
     public PortfelPane() {
@@ -24,468 +29,13 @@ public class PortfelPane extends JPanel {
             {
                 setBackground(Color.BLACK);
 
-                redPane = new JPanel(new BorderLayout(0, 0)) {
-                    {
-                        setBackground(Color.RED.darker().darker());
+                mtsPane = new MtsPanel(new BorderLayout(0, 0), PortfelPane.this);
+                vtbPane = new VtbPanel(new BorderLayout(0, 0), PortfelPane.this);
+                tinkPane = new TinkoffPanel(new BorderLayout(0, 0), PortfelPane.this);
 
-                        JPanel centerPane = new JPanel(new GridLayout(1, 5, 0, 0)) {
-                            {
-                                setBackground(Color.DARK_GRAY.darker());
-                                setBorder(new EmptyBorder(0, -1, -1, 0));
-
-                                JPanel orangeCenterPane1 = new JPanel(new GridLayout(6, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Ветвь:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel(" Высокие технологии", JLabel.LEFT, Color.white));
-                                        add(textLabel(" Информатика", JLabel.LEFT, Color.white));
-                                        add(textLabel(" Российские акции", JLabel.LEFT, Color.white));
-                                        add(textLabel(" Биотехнологии", JLabel.LEFT, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.RED.darker().darker());
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane2 = new JPanel(new GridLayout(6, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Вложено:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.RED.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane3 = new JPanel(new GridLayout(6, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("На сегодня:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.RED.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane4 = new JPanel(new GridLayout(6, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Прибыль:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.RED.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane5 = new JPanel(new GridLayout(6, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Прибыль %:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.RED.darker().darker());
-                                                setBorder(new EmptyBorder(1, 1, 2, 0));
-                                                add(new JPanel(new BorderLayout(0, 0)) {
-                                                    {
-                                                        setBackground(Color.BLACK);
-                                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                };
-
-                                add(orangeCenterPane1);
-                                add(orangeCenterPane2);
-                                add(orangeCenterPane3);
-                                add(orangeCenterPane4);
-                                add(orangeCenterPane5);
-                            }
-                        };
-
-                        JPanel titlePane = new JPanel(new BorderLayout(0, 0)) {
-                            {
-                                setBackground(Color.RED.darker().darker());
-                                setPreferredSize(new Dimension(titleWidth, 0));
-                                add(textLabel("МТС", JLabel.CENTER, Color.RED, Registry.btnsFont7), BorderLayout.CENTER);
-                                add(textLabel("ВСЕГО:", JLabel.CENTER, Color.RED, Registry.btnsFont8), BorderLayout.SOUTH);
-                            }
-                        };
-
-                        add(titlePane, BorderLayout.WEST);
-                        add(centerPane, BorderLayout.CENTER);
-                    }
-                };
-                bluePane = new JPanel(new BorderLayout(0, 0)) {
-                    {
-                        setBackground(Color.BLUE.darker().darker());
-
-                        JPanel centerPane = new JPanel(new GridLayout(1, 5, 0, 0)) {
-                            {
-                                setBackground(Color.DARK_GRAY.darker());
-                                setBorder(new EmptyBorder(0, -1, 0, 0));
-
-                                JPanel orangeCenterPane1 = new JPanel(new GridLayout(3, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Ветвь:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel(" Акции+ETF", JLabel.LEFT, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLUE.darker().darker());
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane2 = new JPanel(new GridLayout(3, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Вложено:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLUE.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane3 = new JPanel(new GridLayout(3, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("На сегодня:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLUE.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane4 = new JPanel(new GridLayout(3, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Прибыль:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLUE.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane5 = new JPanel(new GridLayout(3, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Прибыль %:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLUE.darker().darker());
-                                                setBorder(new EmptyBorder(1, 1, 1, 0));
-                                                add(new JPanel(new BorderLayout(0, 0)) {
-                                                    {
-                                                        setBackground(Color.BLACK);
-                                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                };
-
-                                add(orangeCenterPane1);
-                                add(orangeCenterPane2);
-                                add(orangeCenterPane3);
-                                add(orangeCenterPane4);
-                                add(orangeCenterPane5);
-                            }
-                        };
-
-                        JPanel titlePane = new JPanel(new BorderLayout(0, 0)) {
-                            {
-                                setBackground(Color.BLUE.darker().darker());
-                                setPreferredSize(new Dimension(titleWidth, 0));
-                                add(textLabel("ВТБ", JLabel.CENTER, new Color(0.8f, 0.8f, 1.0f), Registry.btnsFont7), BorderLayout.CENTER);
-                                add(textLabel("ВСЕГО:", JLabel.CENTER, new Color(0.8f, 0.8f, 1.0f), Registry.btnsFont8), BorderLayout.SOUTH);
-                            }
-                        };
-
-                        add(titlePane, BorderLayout.WEST);
-                        add(centerPane, BorderLayout.CENTER);
-                    }
-                };
-                orangePane = new JPanel(new BorderLayout(0, 0)) {
-                    {
-                        setBackground(Color.ORANGE.darker().darker());
-
-                        JPanel centerPane = new JPanel(new GridLayout(1, 5, 0, 0)) {
-                            {
-                                setBackground(Color.DARK_GRAY.darker());
-                                setBorder(new EmptyBorder(0, -1, -1, 0));
-
-                                JPanel orangeCenterPane1 = new JPanel(new GridLayout(5, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Ветвь:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel(" ETF", JLabel.LEFT, Color.white));
-                                        add(textLabel(" Акции", JLabel.LEFT, Color.white));
-                                        add(textLabel(" Детский портфель", JLabel.LEFT, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.ORANGE.darker().darker());
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane2 = new JPanel(new GridLayout(5, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Вложено:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.ORANGE.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane3 = new JPanel(new GridLayout(5, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("На сегодня:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.ORANGE.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane4 = new JPanel(new GridLayout(5, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Прибыль:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.ORANGE.darker().darker());
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                    }
-                                };
-                                JPanel orangeCenterPane5 = new JPanel(new GridLayout(5, 1, 0, 0)) {
-                                    {
-                                        setOpaque(false);
-
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("Прибыль %:", JLabel.CENTER, Color.YELLOW));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.BLACK);
-                                                add(textLabel("-", JLabel.CENTER, Color.white));
-                                            }
-                                        });
-                                        add(new JPanel(new BorderLayout(0, 0)) {
-                                            {
-                                                setBackground(Color.ORANGE.darker().darker());
-                                                setBorder(new EmptyBorder(1, 1, 2, 0));
-                                                add(new JPanel(new BorderLayout(0, 0)) {
-                                                    {
-                                                        setBackground(Color.BLACK);
-                                                        add(textLabel("-", JLabel.CENTER, Color.white));
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                };
-
-                                add(orangeCenterPane1);
-                                add(orangeCenterPane2);
-                                add(orangeCenterPane3);
-                                add(orangeCenterPane4);
-                                add(orangeCenterPane5);
-                            }
-                        };
-
-                        JPanel titlePane = new JPanel(new BorderLayout(0, 0)) {
-                            {
-                                setBackground(Color.ORANGE.darker().darker());
-                                setPreferredSize(new Dimension(titleWidth, 0));
-                                add(textLabel("Тинькофф", JLabel.CENTER, Color.ORANGE, Registry.btnsFont7), BorderLayout.CENTER);
-                                add(textLabel("ВСЕГО:", JLabel.CENTER, Color.ORANGE, Registry.btnsFont8), BorderLayout.SOUTH);
-                            }
-                        };
-
-                        add(titlePane, BorderLayout.WEST);
-                        add(centerPane, BorderLayout.CENTER);
-                    }
-                };
-
-                add(redPane);
-                add(bluePane);
-                add(orangePane);
+                add(mtsPane);
+                add(vtbPane);
+                add(tinkPane);
             }
         };
 
@@ -647,46 +197,37 @@ public class PortfelPane extends JPanel {
         add(downPane, BorderLayout.SOUTH);
     }
 
-    private Component textLabel(String text, int align) {
-        return textLabel(text, null, align, null);
-    }
-
-    private Component textLabel(String text, int align, Color foreground) {
-        return textLabel(text, null, align, foreground);
-    }
-
-    private Component textLabel(String text, int align, Color foreground, Font font) {
-        return textLabel(text, null, align, foreground, font);
-    }
-
-    private Component textLabel(String text, String tooltip, int align, Color foreground) {
-        return textLabel(text, tooltip, align, foreground, null);
-    }
-
-    private Component textLabel(String text, String tooltip, int align, Color foreground, Font font) {
-        return new JLabel(text) {
-            {
-                setHorizontalAlignment(align);
-                if (tooltip != null) {
-                    setToolTipText("Ежегодная безопасная выемка 4%");
-                }
-                if (foreground != null) {
-                    setForeground(foreground);
-                }
-                if (font != null) {
-                    setFont(font);
-                }
-            }
-        };
-    }
-
     public void updatePanesDim() {
-        redPane.setPreferredSize(new Dimension(getWidth(), (int) ((getHeight() - downPane.getHeight()) * 0.44f)));
-        bluePane.setPreferredSize(new Dimension(getWidth(), (int) ((getHeight() - downPane.getHeight()) * 0.215f)));
-        orangePane.setPreferredSize(new Dimension(getWidth(), (int) ((getHeight() - downPane.getHeight()) * 0.345f)));
+        mtsPane.setPreferredSize(new Dimension(getWidth(), (int) ((getHeight() - downPane.getHeight()) * 0.44f)));
+        vtbPane.setPreferredSize(new Dimension(getWidth(), (int) ((getHeight() - downPane.getHeight()) * 0.215f)));
+        tinkPane.setPreferredSize(new Dimension(getWidth(), (int) ((getHeight() - downPane.getHeight()) * 0.345f)));
 
-        redPane.revalidate();
-        bluePane.revalidate();
-        orangePane.revalidate();
+        mtsPane.revalidate();
+        vtbPane.revalidate();
+        tinkPane.revalidate();
+    }
+
+    public int saveBrokers() {
+        int err = 0;
+        try {
+            mtsPane.preSave();
+        } catch (IOException e) {
+            e.printStackTrace();
+            err++;
+        }
+        try {
+            vtbPane.preSave();
+        } catch (IOException e) {
+            e.printStackTrace();
+            err++;
+        }
+        try {
+            tinkPane.preSave();
+        } catch (IOException e) {
+            e.printStackTrace();
+            err++;
+        }
+
+        return err;
     }
 }

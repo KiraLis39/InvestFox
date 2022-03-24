@@ -1,6 +1,7 @@
 package gui;
 
 import core.NetProcessor;
+import door.MainClass;
 import dto.ResultShareDTO;
 import dto.ShareDTO;
 import fox.InputAction;
@@ -255,6 +256,10 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
         postInit();
     }
 
+    public static PortfelPane getPortfel() {
+        return portfelPane;
+    }
+
     private void preInit() {
         try {
             valuteThread = new Thread(() -> netProc.loadValutes());
@@ -271,7 +276,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
             valuteThread.join(); // ждем конца сбора данных валют и отображаем ниже:
             usdValueLabel.setText("<html><p style=\"color:#8F8\"><b>USD: </b></p>" + netProc.getUSDValue());
             eurValueLabel.setText("<html><p style=\"color:#88F\"><b>EUR: </b></p>" + netProc.getEURValue());
-            NetProcessor.load(tablePane);
+            NetProcessor.loadTable(tablePane);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -351,14 +356,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
     @Override
     public void windowClosing(WindowEvent e) {
-        try {
-            NetProcessor.save();
-            Out.Print(InvestFrame.class, Out.LEVEL.INFO, "End of work.");
-            System.exit(Out.close());
-        } catch (Exception e2) {
-            e2.printStackTrace();
-            Out.Print(InvestFrame.class, Out.LEVEL.INFO, "Exit failed!");
-        }
+        MainClass.exit();
     }
 
     public void windowOpened(WindowEvent e) {

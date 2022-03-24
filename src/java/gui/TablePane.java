@@ -116,7 +116,7 @@ public class TablePane extends JPanel {
                         setFont(Registry.btnsFont1);
                         addActionListener(e -> {
                             try {
-                                NetProcessor.save();
+                                NetProcessor.saveTable();
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }

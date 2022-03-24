@@ -1,5 +1,6 @@
 package door;
 
+import core.NetProcessor;
 import fox.Out;
 import gui.InvestFrame;
 import render.foxLFui.FoxLookAndFeel;
@@ -37,5 +38,18 @@ public class MainClass {
 
 //            MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
 //            UIManager.setLookAndFeel(new MetalLookAndFeel());
+    }
+
+    public static void exit() {
+        try {
+            int err = 0;
+            err += NetProcessor.saveTable();
+            err += InvestFrame.getPortfel().saveBrokers();
+            Out.Print(InvestFrame.class, Out.LEVEL.INFO, "End of work.");
+            System.exit(err + Out.close());
+        } catch (Exception e2) {
+            e2.printStackTrace();
+            Out.Print(InvestFrame.class, Out.LEVEL.INFO, "Exit failed!");
+        }
     }
 }

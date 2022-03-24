@@ -149,7 +149,7 @@ public class ResultShareDTO implements Serializable, Comparable<ResultShareDTO> 
     private void calcResultSector(String newData) {
         if (SECTOR == null) {
             SECTOR = newData;
-        } else if (!newData.equalsIgnoreCase("null")) {
+        } else if (newData != null && !newData.equalsIgnoreCase("null")) {
             SECTOR = SECTOR.concat(" " + newData);
         }
     }
