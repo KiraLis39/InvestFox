@@ -1,8 +1,6 @@
 package sites;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import core.NetProcessor;
 import dto.ShareDTO;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,13 +11,10 @@ import registry.CostType;
 import sites.impl.AbstractSite;
 import utils.JsonMapper;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class InvestfundsRu extends AbstractSite {
     private static final String SOURCE = "https://investfunds.ru";

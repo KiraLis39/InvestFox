@@ -1,10 +1,7 @@
 package sites;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import core.NetProcessor;
 import dto.ShareDTO;
-import org.jsoup.HttpStatusException;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -12,8 +9,6 @@ import registry.CostType;
 import sites.impl.AbstractSite;
 import utils.JsonMapper;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 
 public class TinkoffRu extends AbstractSite {

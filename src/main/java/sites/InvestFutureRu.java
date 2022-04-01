@@ -1,13 +1,11 @@
 package sites;
 
 import dto.ShareDTO;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import registry.CostType;
 import sites.impl.AbstractSite;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;

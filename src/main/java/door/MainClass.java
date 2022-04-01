@@ -3,13 +3,13 @@ package door;
 import core.NetProcessor;
 import fox.Out;
 import gui.InvestFrame;
-import render.foxLFui.FoxLookAndFeel;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 
 public class MainClass {
+
     public static void main(String[] args) {
         Out.setEnabled(true);
         Out.setLogsCountAllow(6);
@@ -26,13 +26,7 @@ public class MainClass {
         } catch (Exception e2) {
             try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e3) {
-                try {UIManager.setLookAndFeel(new FoxLookAndFeel());
-                } catch (Exception e) {
-//                    e2.printStackTrace();
-//                    e3.printStackTrace();
-//                    e.printStackTrace();
-                    Out.Print(MainClass.class, Out.LEVEL.WARN, "Has a some problem with a loading UI manager: " + e.getMessage());
-                }
+                Out.Print(MainClass.class, Out.LEVEL.WARN, "Has a some problem with a loading UI manager: " + e3.getMessage());
             }
         }
 

@@ -2,17 +2,12 @@ package sites;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
-import core.NetProcessor;
 import dto.ShareDTO;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import registry.CostType;
 import sites.impl.AbstractSite;
 import utils.JsonMapper;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;

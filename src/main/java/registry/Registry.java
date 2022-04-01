@@ -12,10 +12,10 @@ public class Registry {
 
     static {
         int ruf = FoxFontBuilder.addNewFont("Lucida Sans Unicode");
-        btnsFont3 = FoxFontBuilder.setFoxFont(ruf, 18, true);
+        btnsFont3 = FoxFontBuilder.setFoxFont(ruf, 18, true, GraphicsEnvironment.getLocalGraphicsEnvironment());
 
         ruf = FoxFontBuilder.addNewFont("Propaganda");
-        btnsFont4 = FoxFontBuilder.setFoxFont(ruf, 10, false);
+        btnsFont4 = FoxFontBuilder.setFoxFont(ruf, 10, false, GraphicsEnvironment.getLocalGraphicsEnvironment());
     }
 
     public static Font btnsFont5 = FoxFontBuilder.setFoxFont(FoxFontBuilder.FONT.CORBEL, 12, false);
