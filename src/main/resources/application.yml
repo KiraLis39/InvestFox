@@ -1,0 +1,28 @@
+logging:
+  level:
+    root: INFO
+
+server:
+  port: 8080
+  error:
+    whitelabel:
+      # false - для отображения фактического ответа сервера, вместо белой страницы с описанием:
+      enabled: false
+
+spring:
+  application:
+    name: InvestFox2023
+    version: 0.0.1
+
+  main:
+    allow-circular-references: false
+    lazy-initialization: false
+    allow-bean-definition-overriding: false
+#  datasource:
+#    url: jdbc:postgresql://${DB_SERVER:localhost:5432}/${POSTGRES_DB:test_db}
+#    username: ${POSTGRES_USER:postgres}
+#    password: ${POSTGRES_PASSWORD:postgres}
+
+app:
+  sites:
+    count: 8
