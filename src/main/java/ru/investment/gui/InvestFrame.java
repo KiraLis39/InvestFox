@@ -1,12 +1,14 @@
 package ru.investment.gui;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import ru.investment.MainClass;
-import ru.investment.core.NetProcessor;
-import ru.investment.dto.ResultShareDTO;
-import ru.investment.dto.ShareDTO;
-import ru.investment.utils.Constant;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.investment.NetProcessor;
+import ru.investment.ShareCollectedDTO;
+import ru.investment.config.ApplicationProperties;
+import ru.investment.config.constants.Constant;
+import ru.investment.entity.dto.ShareDTO;
+import ru.investment.gui.components.ShareTableRow;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,21 +23,32 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
+@RequiredArgsConstructor
+@org.springframework.stereotype.Component
 public class InvestFrame extends JFrame implements WindowListener, ComponentListener {
-    private static final NetProcessor netProc = new NetProcessor();
-    private static JPanel baseMidPane;
-    private static JTextField ticketField;
-    private static JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel, divLabel, payDateLabel,
-            usdValueLabel, eurValueLabel;
-    private static TablePane tablePane;
-    private static PortfelPane portfelPane;
-    private ImageIcon ico_01, ico_02, ico_03, ico_04;
+    private final transient ApplicationProperties props; // @Bean
+    private final transient NetProcessor netProc; // @Bean
+    private final BrokersPane brokersPane; // @Bean
+    private final TablePane tablePane; // @Bean
+    private JPanel baseMidPane;
+    private JTextField ticketField;
+    private JLabel titleLabel, recomLabel, sectorLabel, lotLabel, costLabel, lotCostLabel,
+            divLabel, payDateLabel, usdValueLabel, eurValueLabel;
+    private ImageIcon ico01, ico02, ico03, ico04;
     private transient Thread valuteThread;
-    @Value("${spring.application.version}")
-    private String version;
 
-    public InvestFrame() {
-        setTitle("Invest Fox 2023 v." + version);
+    public void clearPanel() {
+        baseMidPane.removeAll();
+    }
+
+    public void addPanel(ShareDTO dto) {
+        baseMidPane.add(new DataPanel(dto));
+        baseMidPane.revalidate();
+    }
+
+    @Autowired
+    public void init() {
+        setTitle("Invest Fox 2023 v." + props.getVersion());
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setMinimumSize(new Dimension(1280, 768));
         setPreferredSize(new Dimension(1600, 800));
@@ -43,9 +56,6 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
         preInit();
 
-        // setOpaque(false);
-        // setBackground(Color.WHITE);
-        // setForeground(Color.BLACK);
         JTabbedPane tabPane = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT) {
             {
                 setBackground(Color.BLACK);
@@ -61,7 +71,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
                                 ticketField = new JTextField() {
                                     {
-                                        setFont(Constant.btnsFont4);
+                                        setFont(Constant.fontPrimaryHeaders);
                                         setColumns(6);
                                         setHorizontalAlignment(0);
                                         setAlignmentY(1);
@@ -93,11 +103,8 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
                                 JButton updateButton = new JButton("Сканировать") {
                                     {
-//                                        setOpaque(false);
-//                                        setBackground(Color.WHITE);
-//                                        setForeground(Color.BLACK);
                                         setFocusPainted(false);
-                                        setFont(Constant.btnsFont4);
+                                        setFont(Constant.fontPrimaryHeaders);
                                         addActionListener(e -> {
                                             try {
                                                 runScan();
@@ -221,13 +228,10 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                     }
                 };
 
-                tablePane = new TablePane();
-                portfelPane = new PortfelPane();
-
-                addTab("Анализ", ico_01, basePane, "Анализ конкретных акций");
-                addTab("Сводка", ico_02, tablePane, "Сводка по текущей ситуации");
-                addTab("Портфель", ico_03, portfelPane, "Состояние портфеля");
-                addTab("План ", ico_04, new JLabel("NA"), "Мой план");
+                addTab("Анализ", ico01, basePane, "Анализ конкретных акций");
+                addTab("Сводка", ico02, tablePane, "Сводка по текущей ситуации");
+                addTab("Портфель", ico03, brokersPane, "Состояние портфеля");
+                addTab("План ", ico04, new JLabel("NA"), "Мой план");
 
                 setBackgroundAt(0, new Color(255, 200, 200));
                 setBackgroundAt(1, new Color(200, 200, 255));
@@ -248,35 +252,26 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
         postInit();
     }
 
-    public static PortfelPane getPortfel() {
-        return portfelPane;
+    public BrokersPane getPortfel() {
+        return brokersPane;
     }
 
-    public static List<Component> getTableRows() {
+    public List<ShareTableRow> getTableRows() {
         return tablePane.getRows();
     }
 
-    public static TablePane getTablePane() {
+    public TablePane getTablePane() {
         return tablePane;
-    }
-
-    public static void clearPanel() {
-        baseMidPane.removeAll();
-    }
-
-    public static void addPanel(ShareDTO dto) {
-        baseMidPane.add(new DataPanel(dto));
-        baseMidPane.revalidate();
     }
 
     private void preInit() {
         try {
-            valuteThread = new Thread(netProc::loadValutes);
+            valuteThread = new Thread(netProc::loadVaults);
             valuteThread.start(); // получаем курс валют
 
             loadIcons(); // подгружаем иконки приложения
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Exception here: {}", e.getMessage());
         }
     }
 
@@ -308,22 +303,22 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
     private void loadIcons() throws IOException {
         InputStream strRes = getClass().getResourceAsStream("/img/scan.png");
         if (strRes != null) {
-            ico_01 = new ImageIcon(ImageIO.read(strRes));
+            ico01 = new ImageIcon(ImageIO.read(strRes));
         }
 
         strRes = getClass().getResourceAsStream("/img/table.png");
         if (strRes != null) {
-            ico_02 = new ImageIcon(ImageIO.read(strRes));
+            ico02 = new ImageIcon(ImageIO.read(strRes));
         }
 
         strRes = getClass().getResourceAsStream("/img/portfel.png");
         if (strRes != null) {
-            ico_03 = new ImageIcon(ImageIO.read(strRes));
+            ico03 = new ImageIcon(ImageIO.read(strRes));
         }
 
         strRes = getClass().getResourceAsStream("/img/plan.png");
         if (strRes != null) {
-            ico_04 = new ImageIcon(ImageIO.read(strRes));
+            ico04 = new ImageIcon(ImageIO.read(strRes));
         }
     }
 
@@ -332,7 +327,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
         clearPanel();
         log.info("Scanning " + ticketField.getText().toUpperCase().trim() + "...");
 
-        CompletableFuture<ResultShareDTO> fut = netProc.checkTicket(ticketField.getText().toUpperCase().trim(), true)
+        CompletableFuture<ShareCollectedDTO> fut = netProc.checkTicket(ticketField.getText().toUpperCase().trim(), true)
 //                .exceptionally(throwable -> null)
                 .handle((r, ex) -> {
                     if (r != null) {
@@ -350,20 +345,20 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
         }
     }
 
-    private synchronized void updateDownPanel(ResultShareDTO result) {
+    private synchronized void updateDownPanel(ShareCollectedDTO result) {
         titleLabel.setText(String.format("<html>Обобщение по тикету: <font color=\"#FFF\"><b>'%s'", result.getTicker()));
         sectorLabel.setText(String.format("<html>Сектор: <font color=\"#FFF\"><b>%s", result.getSector()));
         lotLabel.setText(String.format("<html>Лот: <font color=\"#FFF\"><b>%s", result.getLotSize() + " шт."));
         costLabel.setText(String.format("<html>Цена: <font color=\"#FFF\"><b>%.2f (%s)", result.getCost(), result.getCostType()).replace("[", "").replace("]", ""));
         lotCostLabel.setText(String.format("<html>Цена за лот: <font color=\"#FFF\"><b>%.2f (%s)", result.getLotCost(), result.getCostType()));
         divLabel.setText(String.format("<html>Дивиденды: <font color=\"#FFF\"><b>%.2f ", result.getDividend()).replace("[", "").replace("]", "") + "%");
-        payDateLabel.setText(String.format("<html>Дата выплаты: <font color=\"#FFF\"><b>%s", result.getPayDate() == null ? "" : result.getPayDate().toLocalDate()));
+        payDateLabel.setText(String.format("<html>Дата выплаты: <font color=\"#FFF\"><b>%s", result.getNextPayDate() == null ? "" : result.getNextPayDate().toLocalDate()));
         recomLabel.setText(String.format("<html>Рекомендация: <font color=\"#FFF\"><b>%s", result.getRecommendation()));
     }
 
     @Override
     public void windowClosing(WindowEvent e) {
-        MainClass.exit();
+        netProc.exit();
     }
 
     public void windowOpened(WindowEvent e) {
@@ -386,7 +381,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
     @Override
     public void componentResized(ComponentEvent e) {
-        SwingUtilities.invokeLater(() -> portfelPane.updatePanesDim());
+        SwingUtilities.invokeLater(brokersPane::updatePanesDim);
     }
 
     public void componentMoved(ComponentEvent e) {
@@ -433,12 +428,12 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                         add(new JLabel(dto.getSource()));
                         add(new JLabel(dto.getSector()));
                         add(new JLabel(dto.getName()));
-                        add(new JLabel(dto.getTicket()));
-                        add(new JLabel(dto.getCoastList() + (dto.getCostType() == null ? "" : " " + dto.getCostType())));
+                        add(new JLabel(dto.getTicker()));
+                        add(new JLabel(dto.getCoasts() + (dto.getCostType() == null ? "" : " " + dto.getCostType())));
                         add(new JLabel(dto.getLotSize() > -1 ? dto.getLotSize() + " шт." : "NA"));
-                        add(new JLabel(dto.getDividendList() + (dto.getDividendList().size() == 0 ? "" : "%")));
+                        add(new JLabel(dto.getDividends() + (dto.getDividends().isEmpty() ? "" : "%")));
                         add(new JLabel(dto.getPayDate() != null ? dto.getPayDate().toString() : "NA"));
-                        add(new JLabel(dto.getRecommendation() != null ? Arrays.toString(dto.getRecommendation().toArray()) : "NA"));
+                        add(new JLabel(dto.getRecomendations() != null ? Arrays.toString(dto.getRecomendations().toArray()) : "NA"));
                     }
                 };
 

@@ -1,14 +1,18 @@
 package ru.investment.gui;
 
+import fox.components.FOptionPane;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.investment.components.ShareTableRow;
-import ru.investment.components.TextTableRow;
-import ru.investment.components.other.FOptionPane;
-import ru.investment.core.NetProcessor;
-import ru.investment.dto.ResultShareDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import ru.investment.NetProcessor;
+import ru.investment.ShareCollectedDTO;
+import ru.investment.config.constants.Constant;
 import ru.investment.enums.CostType;
-import ru.investment.utils.Constant;
+import ru.investment.gui.components.ShareTableRow;
+import ru.investment.gui.components.TextTableRow;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -17,79 +21,63 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Stream;
 
 @Slf4j
+@RequiredArgsConstructor
+@org.springframework.stereotype.Component
 public class TablePane extends JPanel {
     private static JPanel contentTablePane;
     private static JLabel lMoney, gMoney, sCount, shBye;
     private static JScrollPane scroll;
     private static int searchedIndex;
-    private final NetProcessor netProc = new NetProcessor();
+    private final transient NetProcessor netProcessor;
+    private InvestFrame investFrame;
     private ArrayList<Component> searchResultList;
 
+    public static void clearRows() {
+        for (Component component : contentTablePane.getComponents()) {
+            if (component instanceof ShareTableRow) {
+                contentTablePane.remove(component);
+            }
+        }
+    }
 
-    public TablePane() {
+    @Autowired
+    public void setInvestFrame(@Lazy InvestFrame investFrame) {
+        this.investFrame = investFrame;
+    }
+
+    @PostConstruct
+    public void init() {
         setLayout(new BorderLayout(0, 0));
         setBackground(Color.DARK_GRAY);
+        setFocusable(true);
 
-        //                moveUpBtn = new JButton("Поднять") {
-        //                    {
-        //                        setBackground(Color.RED);
-        //                        setForeground(Color.BLUE);
-        //                        setFont(Registry.btnsFont2);
-        //                        addActionListener(e -> getSelectedItem().moveSelectedUp());
-        //                    }
-        //                };
-        //                removeShareBtn = new JButton("- трек") {
-        //                    {
-        //                        setForeground(Color.RED);
-        //                        setFont(Registry.btnsFont2);
-        //                        addActionListener(e -> removeRow());
-        //                    }
-        //                };
-        //                moveDownBtn = new JButton("Опустить") {
-        //                    {
-        //                        setForeground(Color.BLUE);
-        //                        setFont(Registry.btnsFont2);
-        //                        addActionListener(e -> getSelectedItem().moveSelectedDown());
-        //                    }
-        //                };
-        // TODO: how weak ui
-        //                add(moveUpBtn);
-        //                add(removeBtn);
-        //                add(moveDownBtn);
         JToolBar toolBar = new JToolBar("Можно тягать!") {
             {
-                setOrientation(1);
+                setOrientation(SwingConstants.VERTICAL);
                 setBackground(Color.BLACK);
-                setBorder(new EmptyBorder(0, 0, 0, 0));
-
-//                moveUpBtn = new JButton("Поднять") {
-//                    {
-//                        setBackground(Color.RED);
-//                        setForeground(Color.BLUE);
-//                        setFont(Registry.btnsFont2);
-//                        addActionListener(e -> getSelectedItem().moveSelectedUp());
-//                    }
-//                };
+                setBorder(null);
 
                 JButton addShareBtn = new JButton("➕") {
                     {
+                        setFocusPainted(false);
                         setToolTipText("Добавить строку/акцию");
                         setForeground(Color.GREEN.darker());
-                        setFont(Constant.btnsFont1);
+                        setFont(Constant.fontSidePanel);
                         addActionListener(e -> {
                             String tickerInput = JOptionPane.showInputDialog(TablePane.this, "Тикер:", "Ввод тикера:", JOptionPane.INFORMATION_MESSAGE);
                             if (tickerInput != null && tickerInput.length() > 0) {
-                                for (Component row : getRows()) {
-                                    if (((ShareTableRow) row).getResultDto().getTicker().equalsIgnoreCase(tickerInput)) {
-                                        new FOptionPane("Отказ:", "Такое уже есть.", null, null);
+                                for (ShareTableRow row : getRows()) {
+                                    if (row.getResultDto().getTicker().equalsIgnoreCase(tickerInput)) {
+                                        new FOptionPane().buildFOptionPane("Отказ:", "Такое уже есть.");
                                         return;
                                     }
                                 }
 
                                 try {
-                                    Future<ResultShareDTO> fut = netProc.checkTicket(tickerInput, false).exceptionally(throwable -> null);
+                                    Future<ShareCollectedDTO> fut = netProcessor.checkTicket(tickerInput, false).exceptionally(throwable -> null);
                                     log.info("Scanning " + tickerInput + "...");
                                     while (!fut.isDone()) {
                                         Thread.yield();
@@ -97,7 +85,7 @@ public class TablePane extends JPanel {
                                     if (fut.get() != null) {
                                         addShare(fut.get());
                                     } else {
-                                        new FOptionPane("Провал!", "Не было найдено никакой информации.");
+                                        new FOptionPane().buildFOptionPane("Провал!", "Не было найдено никакой информации.");
                                     }
                                 } catch (ExecutionException | InterruptedException ex) {
                                     log.error("Exception here: {}", ex.getMessage());
@@ -109,60 +97,21 @@ public class TablePane extends JPanel {
                     }
                 };
 
-//                removeShareBtn = new JButton("- трек") {
-//                    {
-//                        setForeground(Color.RED);
-//                        setFont(Registry.btnsFont2);
-//                        addActionListener(e -> removeRow());
-//                    }
-//                };
-
-//                moveDownBtn = new JButton("Опустить") {
-//                    {
-//                        setForeground(Color.BLUE);
-//                        setFont(Registry.btnsFont2);
-//                        addActionListener(e -> getSelectedItem().moveSelectedDown());
-//                    }
-//                };
-
-                JButton searchBtn = new JButton("\uD83D\uDD0E") {
+                JButton downloadBtn = new JButton("\uD83C\uDF0F") {
                     {
-                        setForeground(Color.BLUE);
-                        setFont(Constant.btnsFont1);
-                        addActionListener(e -> showSearchDialog());
-                    }
-                };
-
-                JButton saveBtn = new JButton("\uD83D\uDCBE") {
-                    {
-                        setToolTipText("Сохранить таблицу на диск");
-                        setFont(Constant.btnsFont1);
-                        addActionListener(e -> {
-                            try {
-                                NetProcessor.saveTable();
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                            new FOptionPane("Сохранено!", "Список сохранен.");
-                        });
-                    }
-                };
-
-                JButton downloadBtn = new JButton("⮟") {
-                    {
-                        setToolTipText("Загрузить данные из сети");
-                        setForeground(Color.BLUE);
-                        setFont(Constant.btnsFont1);
+                        setFocusPainted(false);
+                        setToolTipText("Перепарсить данные из сети");
+                        setForeground(Color.CYAN);
+                        setFont(Constant.fontSidePanel);
                         addActionListener(e -> {
                             ExecutorService es = Executors.newWorkStealingPool();
                             long was = System.currentTimeMillis();
 
-                            for (Component row : getRows()) {
-                                ShareTableRow nextRow = ((ShareTableRow) row);
+                            for (ShareTableRow nextRow : getRows()) {
                                 log.info("TablePane: calculating " + nextRow.getResultDto().getTicker());
                                 CompletableFuture.supplyAsync(() -> {
                                     try {
-                                        ResultShareDTO data = netProc.checkTicket(nextRow.getResultDto().getTicker(), false)
+                                        ShareCollectedDTO data = netProcessor.checkTicket(nextRow.getResultDto().getTicker(), false)
                                                 .handle((r, ex) -> {
                                                     if (r != null) {
                                                         return r;
@@ -198,7 +147,7 @@ public class TablePane extends JPanel {
                                         TimeUnit.MILLISECONDS.toSeconds(pass) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
                                 ));
                                 try {
-                                    netProc.reload();
+                                    netProcessor.reload();
                                 } catch (IOException ex) {
                                     ex.printStackTrace();
                                 }
@@ -207,25 +156,111 @@ public class TablePane extends JPanel {
                     }
                 };
 
-                JButton updAllBtn = new JButton("\uD83D\uDD04") {
+                JButton saveBtn = new JButton("⦽") {
                     {
-                        setToolTipText("Перерисовать стиль таблицы");
+                        setFocusPainted(false);
                         setForeground(Color.ORANGE);
-                        setFont(Constant.btnsFont1);
+                        setToolTipText("Сохранить таблицу в БД");
+                        setFont(Constant.fontSidePanel);
+                        addActionListener(e -> {
+                            try {
+                                netProcessor.saveTable();
+                                new FOptionPane().buildFOptionPane("Сохранено!", "Список сохранен.");
+                            } catch (Exception ex) {
+                                log.error("Ошибка сохранения: {}", ex.getMessage());
+                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка сохранения: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                            }
+                        });
+                    }
+                };
+
+                JButton loadBtn = new JButton("⧬") {
+                    {
+                        setFocusPainted(false);
+                        setForeground(Color.BLUE);
+                        setToolTipText("Загрузить таблицу из БД");
+                        setFont(Constant.fontSidePanel);
+                        addActionListener(e -> {
+                            try {
+                                netProcessor.loadTable(TablePane.this);
+                                new FOptionPane().buildFOptionPane("Готово!", "Список загружен из базы данных");
+                            } catch (Exception ex) {
+                                log.error("Ошибка загрузки данных: {}", ex.getMessage());
+                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка загрузки данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                            }
+                        });
+                    }
+                };
+
+                JButton searchBtn = new JButton("\uD83D\uDD0E") {
+                    {
+                        setFocusPainted(false);
+                        setToolTipText("Поиск по тексту");
+                        setForeground(Color.WHITE);
+                        setFont(Constant.fontSidePanel);
+                        addActionListener(e -> showSearchDialog());
+                    }
+                };
+
+                JButton exportBtn = new JButton("\uD83D\uDCE4") {
+                    {
+                        setFocusPainted(false);
+                        setToolTipText("Экспорт данных в локальную папку");
+                        setForeground(Color.ORANGE);
+                        setFont(Constant.fontSidePanel);
+                        addActionListener(e -> {
+                            try {
+                                netProcessor.exportTable();
+                                //netProcessor.exportBrokers(); todo
+                                new FOptionPane().buildFOptionPane("Готово!", "Список выгружен на диск");
+                            } catch (Exception ex) {
+                                log.error("Ошибка записи данных: {}", ex.getMessage());
+                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка записи данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                            }
+                        });
+                    }
+                };
+
+                JButton importBtn = new JButton("\uD83D\uDCE5") {
+                    {
+                        setFocusPainted(false);
+                        setToolTipText("Импорт данных из локальной папки");
+                        setForeground(Color.BLUE);
+                        setFont(Constant.fontSidePanel);
+                        addActionListener(e -> {
+                            try {
+                                netProcessor.importTable(TablePane.this);
+                                new FOptionPane().buildFOptionPane("Готово!", "Список загружен из локальной директории");
+                            } catch (Exception ex) {
+                                log.error("Ошибка загрузки данных: {}", ex.getMessage());
+                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка загрузки данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                            }
+                        });
+                    }
+                };
+
+                JButton repaintTable = new JButton("\uD83D\uDD04") {
+                    {
+                        setFocusPainted(false);
+                        setToolTipText("Перерисовать стиль таблицы");
+                        setForeground(Color.WHITE);
+                        setFont(Constant.fontSidePanel);
                         addActionListener(e -> reloadTableStyle());
                     }
                 };
 
-//                add(moveUpBtn);
                 add(addShareBtn);
                 add(downloadBtn);
-                add(updAllBtn);
-                add(new JSeparator(1));
+                add(new JSeparator(SwingConstants.HORIZONTAL));
                 add(saveBtn);
-                add(new JSeparator(1));
+                add(loadBtn);
+                add(new JSeparator(SwingConstants.HORIZONTAL));
                 add(searchBtn);
-//                add(removeBtn);
-//                add(moveDownBtn);
+                add(new JSeparator(SwingConstants.HORIZONTAL));
+                add(exportBtn);
+                add(importBtn);
+                add(new JSeparator(SwingConstants.HORIZONTAL));
+                add(repaintTable);
             }
         };
 
@@ -235,28 +270,28 @@ public class TablePane extends JPanel {
                     {
                         setOpaque(false);
 
-                        add(new TextTableRow("<html>Индекс</html>"
+                        add(new TextTableRow(netProcessor, "<html>Индекс</html>"
                         ) {{
                             setBorder(new EmptyBorder(0, 0, 0, 0));
                         }}, BorderLayout.WEST);
 
-                        add(new TextTableRow("<html>Сектор</html>", "<html>Эмитент</html>",
+                        add(new TextTableRow(netProcessor, "<html>Сектор</html>", "<html>Эмитент</html>",
                                 "<html>Тикер</html>", "<html>Цена</html>", "<html>Тип цены</html>", "<html>Лот</html>",
                                 "<html>Рублей за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
                                 "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>", "<html>Стоимость</html>",
                                 "<html>Прибыль/год</html>", "<html>Комментарий</html>"
                         ) {{
-                            setBorder(new EmptyBorder(0, 0, 0, 16));
+                            setBorder(new EmptyBorder(0, 0, 0, 12));
                         }}, BorderLayout.CENTER);
 
-                        add(new TextTableRow("<html>P/E</html>"
+                        add(new TextTableRow(netProcessor, "<html>P/E</html>"
                         ) {{
-                            setBorder(new EmptyBorder(0, 0, 0, 36));
+                            setBorder(new EmptyBorder(0, 0, 0, 30));
                         }}, BorderLayout.EAST);
                     }
                 };
 
-                contentTablePane = new JPanel(new GridLayout(230, 1, 0, 1)) {
+                contentTablePane = new JPanel(new GridLayout(198, 1, 0, 1)) {
                     {
                         setBackground(Color.DARK_GRAY.darker());
                     }
@@ -287,7 +322,7 @@ public class TablePane extends JPanel {
                     sCount = new JLabel() {{
                         setForeground(Color.GRAY);
                         setHorizontalAlignment(0);
-                        setFont(Constant.btnsFont6);
+                        setFont(Constant.fontTableSum);
                     }};
                     add(sCount, BorderLayout.CENTER);
                 }}); // 12
@@ -310,7 +345,7 @@ public class TablePane extends JPanel {
                     shBye = new JLabel() {{
                         setForeground(Color.ORANGE);
                         setHorizontalAlignment(0);
-                        setFont(Constant.btnsFont6);
+                        setFont(Constant.fontTableSum);
                     }};
                     add(shBye, BorderLayout.CENTER);
                 }});
@@ -321,7 +356,7 @@ public class TablePane extends JPanel {
                     lMoney = new JLabel() {{
                         setForeground(Color.RED);
                         setHorizontalAlignment(0);
-                        setFont(Constant.btnsFont6);
+                        setFont(Constant.fontTableSum);
                     }};
                     add(lMoney, BorderLayout.CENTER);
                 }}); // 12
@@ -333,7 +368,7 @@ public class TablePane extends JPanel {
                     gMoney = new JLabel() {{
                         setForeground(Color.GREEN);
                         setHorizontalAlignment(0);
-                        setFont(Constant.btnsFont6);
+                        setFont(Constant.fontTableSum);
                     }};
                     add(gMoney, BorderLayout.CENTER);
                 }}); // 13
@@ -347,26 +382,19 @@ public class TablePane extends JPanel {
         add(resultPane, BorderLayout.SOUTH);
     }
 
-    public static void clearRows() {
-        for (Component component : contentTablePane.getComponents()) {
-            if (component instanceof ShareTableRow) {
-                contentTablePane.remove(component);
-            }
-        }
-    }
-
     private void reloadTableStyle() {
         Arrays.stream(contentTablePane.getComponents()).filter(ShareTableRow.class::isInstance).forEach(c -> ((ShareTableRow) c).validateRowStyle());
     }
 
-    public void addShares(List<ResultShareDTO> loading) {
-        for (ResultShareDTO resultShareDTO : loading) {
-            addShare(resultShareDTO);
+    public void addShares(List<ShareCollectedDTO> loading) {
+        contentTablePane.removeAll();
+        for (ShareCollectedDTO shareCollectedDTO : loading) {
+            addShare(shareCollectedDTO);
         }
     }
 
-    public void addShare(ResultShareDTO dto) {
-        contentTablePane.add(new ShareTableRow(dto));
+    public void addShare(ShareCollectedDTO dto) {
+        contentTablePane.add(new ShareTableRow(investFrame, dto));
         updateResults();
     }
 
@@ -390,23 +418,24 @@ public class TablePane extends JPanel {
 
     private Double calcGetMoney() {
         double result = 0;
-        for (Component row : getRows()) {
-            double sharePay = ((ShareTableRow) row).getResultDto().getCost() / 100D * ((ShareTableRow) row).getResultDto().getDividend();
-            result += sharePay * ((ShareTableRow) row).getResultDto().getCount() / 0.87D; // -13%
+        for (ShareTableRow row : getRows()) {
+            double sharePay = row.getResultDto().getCost() / 100D * row.getResultDto().getDividend();
+            result += sharePay * row.getResultDto().getCount() / 0.87D; // -13%
         }
         return result;
     }
 
     private Double calcLostMoney() {
         double result = 0;
-        for (Component row : getRows()) {
-            result += ((ShareTableRow) row).getResultDto().getCost() * ((ShareTableRow) row).getResultDto().getCount();
+        for (ShareTableRow row : getRows()) {
+            result += row.getResultDto().getCost() * row.getResultDto().getCount();
         }
         return result;
     }
 
-    public List<Component> getRows() {
-        return Arrays.stream(contentTablePane.getComponents()).filter(ShareTableRow.class::isInstance).toList();
+    public List<ShareTableRow> getRows() {
+        Stream<Component> rowStream = Arrays.stream(contentTablePane.getComponents()).filter(ShareTableRow.class::isInstance);
+        return rowStream.map(el -> (ShareTableRow) el).toList();
     }
 
     public void showSearchDialog() {
@@ -417,10 +446,10 @@ public class TablePane extends JPanel {
         if (searchResult == null || searchResult.isEmpty()) {
             return;
         }
-        for (Component shareTableRow : getRows()) {
-            for (Component rowComp : ((JPanel) shareTableRow).getComponents()) {
-                if (rowComp instanceof JPanel) {
-                    for (Component comp : ((JPanel) rowComp).getComponents()) {
+        for (ShareTableRow row : getRows()) {
+            for (Component rowComp : row.getComponents()) {
+                if (rowComp instanceof JPanel pane) {
+                    for (Component comp : pane.getComponents()) {
                         searchInto(comp, searchResult, searchResultList);
                     }
                     continue;
@@ -428,13 +457,13 @@ public class TablePane extends JPanel {
                 searchInto(rowComp, searchResult, searchResultList);
             }
         }
-        if (searchResultList.size() > 0) {
+        if (!searchResultList.isEmpty()) {
             showNextSearched();
         }
     }
 
     void showNextSearched() {
-        if (searchResultList.size() == 0) {
+        if (searchResultList.isEmpty()) {
             return;
         }
 
@@ -455,19 +484,19 @@ public class TablePane extends JPanel {
         if (comp.getName().contains(searchResult)) {
             resultList.add(comp);
         }
-        if (comp instanceof JTextArea) {
-            if (((JTextArea) comp).getText() != null && ((JTextArea) comp).getText().contains(searchResult)) {
-                resultList.add(comp);
+        if (comp instanceof JTextArea area) {
+            if (area.getText() != null && area.getText().contains(searchResult)) {
+                resultList.add(area);
             }
         }
-        if (comp instanceof JTextField) {
-            if (((JTextField) comp).getText() != null && ((JTextField) comp).getText().contains(searchResult)) {
-                resultList.add(comp);
+        if (comp instanceof JTextField area) {
+            if (area.getText() != null && area.getText().contains(searchResult)) {
+                resultList.add(area);
             }
         }
-        if (comp instanceof JLabel) {
-            if (((JLabel) comp).getText() != null && ((JLabel) comp).getText().contains(searchResult)) {
-                resultList.add(comp);
+        if (comp instanceof JLabel label) {
+            if (label.getText() != null && label.getText().contains(searchResult)) {
+                resultList.add(label);
             }
         }
     }
