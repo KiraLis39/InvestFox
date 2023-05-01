@@ -1,0 +1,23 @@
+# This configuration is intended for development purpose, it's **your** responsibility to harden it for production
+version: '3.8'
+
+networks:
+  invest-network:
+    driver: bridge
+
+services:
+  investfox-postgres:
+    image: postgres:15.2
+    container_name: investfox
+    restart: on-failure
+    volumes:
+      - ./db/data/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=invest
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5432:5432"
+    networks:
+      - invest-network

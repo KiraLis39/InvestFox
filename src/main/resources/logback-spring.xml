@@ -2,23 +2,26 @@
 <!DOCTYPE configuration>
 
 <configuration scan="true" scanPeriod="30 seconds" debug="false">
-    <contextName>InvestmentFoxLogbackSystem</contextName>
+    <contextName>InvestFoxLogbackSystem</contextName>
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
     <springProperty scope="context" name="APP_VERSION" source="spring.application.version"/>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
     <property name="log.path" value="log"/>
-    <property name="log.maxHistory" value="31"/>
-    <property name="log.maxFileSize" value="3MB"/>
-    <property name="log.totalSizeCap" value="10GB"/>
+    <property name="log.maxHistory" value="3"/>
+    <property name="log.maxFileSize" value="1MB"/>
+    <property name="log.totalSizeCap" value="1GB"/>
     <property name="log.colorPattern"
-              value="%magenta(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %boldCyan([App: ${APP_NAME}, v.${APP_VERSION}]) %yellow(%thread) %green(%logger{64}) %msg%n"/>
+              value="%magenta(%d{yyyy-MM-dd HH:mm:ss}) %boldCyan([App: ${APP_NAME}, v.${APP_VERSION}]) %highlight(%-5level) %yellow(%thread) %green(%logger{96}) %msg%n"/>
 
     <!-- APPENDERS -->
-    <appender name="FILE" class="ch.qos.logback.ru.investment.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.ru.investment.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/trace.%d{yyyy-MM-dd}.log</fileNamePattern>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/trace.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>${log.maxHistory}</maxHistory>
+            <maxFileSize>${log.maxFileSize}</maxFileSize>
+            <totalSizeCap>${log.totalSizeCap}</totalSizeCap>
         </rollingPolicy>
         <append>true</append>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
@@ -29,13 +32,13 @@
     </appender>
 
     <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <queueSize>256</queueSize>
-        <maxFlushTime>30000</maxFlushTime>
+        <queueSize>128</queueSize>
+        <maxFlushTime>10000</maxFlushTime>
         <appender-ref ref="FILE"/>
     </appender>
 
-    <appender name="ERRORS" class="ch.qos.logback.ru.investment.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.ru.investment.core.rolling.SizeAndTimeBasedRollingPolicy">
+    <appender name="ERRORS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>${log.maxHistory}</maxHistory>
             <maxFileSize>${log.maxFileSize}</maxFileSize>
@@ -50,55 +53,30 @@
         </filter>
     </appender>
 
-    <appender name="STDOUT" class="ch.qos.logback.ru.investment.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>utf-8</charset>
             <pattern>${log.colorPattern}</pattern>
         </encoder>
     </appender>
 
-    <!-- OFF -->
-    <logger name="org.apache.catalina.startup.DigesterFactory" level="OFF"/>
-    <logger name="org.hibernate.ejb.HibernatePersistence" level="OFF"/>
-
-    <!-- ERROR -->
-    <logger name="springfox.documentation.schema.property" level="ERROR"/>
-    <logger name="io.undertow.websockets.jsr" level="ERROR"/>
-
-    <!-- WARN -->
-    <logger name="javax.activation" level="WARN"/>
-    <logger name="javax.mail" level="WARN"/>
-    <logger name="javax.management.remote" level="WARN"/>
-    <logger name="javax.xml.bind" level="WARN"/>
-    <logger name="ch.qos.logback" level="WARN"/>
-    <logger name="com.sun" level="WARN"/>
-    <logger name="com.zaxxer" level="WARN"/>
-    <logger name="org.ehcache" level="WARN"/>
-    <logger name="org.apache" level="WARN"/>
-    <logger name="org.hibernate.validator" level="WARN"/>
-    <logger name="org.hibernate" level="WARN"/>
-    <logger name="org.springframework" level="WARN"/>
-    <logger name="org.springframework.web" level="WARN"/>
-    <logger name="org.springframework.cache" level="WARN"/>
-    <logger name="org.xnio" level="WARN"/>
-    <logger name="sun.rmi" level="WARN"/>
+    <!--    Аппендер для вывода логов в Кибану (в Кубере): -->
+    <!--    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+    <!--        <param name="Encoding" value="UTF-8"/>-->
+    <!--        <remoteHost>${LOGSTASH_URL}</remoteHost>-->
+    <!--        <port>${LOGSTASH_PORT}</port>-->
+    <!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+    <!--            <customFields>{"logger_name":"LpApiCabinetLogbackSystem", "app_name":"lp-api-cabinet", "app_port":"8080"}</customFields>-->
+    <!--        </encoder>-->
+    <!--    </appender>-->
 
     <!-- INFO -->
     <logger name="sun.rmi.transport" level="INFO"/>
     <logger name="org.postgresql" level="INFO"/>
-    <logger name="springfox" level="INFO"/>
-    <logger name="org.elasticsearch" level="INFO"/>
-    <logger name="liquibase" level="INFO"/>
-    <logger name="LiquibaseSchemaResolver" level="INFO"/>
-    <logger name="io.swagger.v3" level="INFO"/>
-    <logger name="org.apache.kafka" level="INFO"/>
     <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="INFO"/>
 
-    <!-- DEBUG -->
-    <logger name="org.springframework.security" level="DEBUG"/>
-
     <!-- HOOKS -->
-    <shutdownHook class="ch.qos.logback.ru.investment.core.hook.DelayingShutdownHook"/>
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
@@ -108,6 +86,7 @@
         <appender-ref ref="STDOUT" level="DEBUG"/>
         <appender-ref ref="ASYNC" level="INFO"/>
         <appender-ref ref="ERRORS" level="ERROR"/>
+<!--      <appender-ref ref="logstash" level="TRACE"/>-->
     </root>
 
 </configuration>

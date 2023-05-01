@@ -1,6 +1,43 @@
 logging:
   level:
-    root: INFO
+    root: DEBUG
+
+    sun.rmi: INFO
+    sun.awt: INFO
+    sun.net.www.protocol.http: INFO
+    com.zaxxer.hikari: INFO
+    com.zaxxer.hikari.HikariDataSource: WARN
+    com.codeborne.selenide.impl.CiReportUrl: INFO
+    javax.swing: INFO
+    javax.management.remote.rmi: INFO
+    java.awt.mixing: INFO
+    java.awt.focus.DefaultKeyboardFocusManager: INFO
+    jdk.event.security: INFO
+    org.hibernate: WARN
+    org.hibernate.Version: INFO
+    org.hibernate.annotations.common.Version: WARN
+    org.jboss.logging: INFO
+    org.apache.tomcat: INFO
+    org.apache.catalina: WARN
+    org.apache.catalina.core.StandardEngine: INFO
+    org.springframework.ui: INFO
+    org.springframework.jmx: INFO
+    org.springframework.orm: INFO
+    org.springframework.orm.jpa: WARN
+    org.springframework.boot: INFO
+    org.springframework.context: INFO
+    org.springframework.core.env: INFO
+    org.springframework.scheduling: INFO
+    org.springframework.web.servlet: INFO
+    org.springframework.aop.framework.CglibAopProxy: INFO
+    org.springframework.beans.factory: INFO
+    org.springframework.beans.CachedIntrospectionResults: INFO
+    org.springframework.data.repository.core: INFO
+    org.springframework.data.repository.config: WARN
+    org.springframework.data.jpa.repository.query: INFO
+    org.springframework.data.jpa.repository.config: INFO
+    org.springframework.validation.beanvalidation: INFO
+    org.springframework.statemachine.support.LifecycleObjectSupport: INFO
 
 server:
   port: 8080
@@ -8,6 +45,9 @@ server:
     whitelabel:
       # false - для отображения фактического ответа сервера, вместо белой страницы с описанием:
       enabled: false
+  compression:
+    enabled: true
+  shutdown: graceful
 
 spring:
   application:
@@ -15,14 +55,50 @@ spring:
     version: 0.0.1
 
   main:
+    banner-mode: console
+
     allow-circular-references: false
     lazy-initialization: false
     allow-bean-definition-overriding: false
-#  datasource:
-#    url: jdbc:postgresql://${DB_SERVER:localhost:5432}/${POSTGRES_DB:test_db}
-#    username: ${POSTGRES_USER:postgres}
-#    password: ${POSTGRES_PASSWORD:postgres}
+
+  output:
+    ansi:
+      enabled: always
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:invest}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:admin}
+    hikari:
+      poolName: Hikari
+      # Set auto-commit true when creating schema in empty DB.
+      # Then set to true and restart the application (it cannot login if it is true)
+      auto-commit: false
+
+  jpa:
+    show-sql: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+        globally_quoted_identifiers: true
 
 app:
   sites:
-    count: 8
+    count: 6
+
+  selenide:
+    test_timeout: 4_000
+    page_load_timeout: 30_000
+    polling_interval: 200
+#    remote_read_timeout: 30_000
+#    remote_connect_timeout: 30_000
+
+    max_error_count: 100
+    each_state_sleep: 3_000
+    tab_click_sleep: 2_500
+    purchases_shift_sleep: 1_000
+    technical_work_sleep: 360_000
+    max_depth_sleep: 360_000

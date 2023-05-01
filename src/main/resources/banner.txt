@@ -1,0 +1,10 @@
+
+  ${AnsiColor.BRIGHT_GREEN}██════██╗ ████████╗ ███████╗    ████╗   ${AnsiColor.BLUE}██╗       ████████╗ ████████╗ ${AnsiColor.YELLOW}██████╗ ██████╗
+  ${AnsiColor.BRIGHT_GREEN}██  ██  ║ ╚══██╔══╝ ██╔═══██╗ ██║   ██╗ ${AnsiColor.BLUE}██║       ╚══██╔══╝ ██╔═════╝ ${AnsiColor.YELLOW}╚═══██║ ██╔═██║
+  ${AnsiColor.BRIGHT_GREEN}████    ║    ██║    ███████╔╝ ████████║ ${AnsiColor.BLUE}██║          ██║    ████████╗ ${AnsiColor.YELLOW}  ████║ ██████║
+  ${AnsiColor.BRIGHT_GREEN}██  ██  ║    ██║    ██╔══██║  ██║   ██║ ${AnsiColor.BLUE}██║   ██╗    ██║    ╚═════██║ ${AnsiColor.YELLOW}  ╚═██║ ╚═══██║
+  ${AnsiColor.BRIGHT_GREEN}██    ██║ ████████╗ ██║  ╚██╗ ██║   ██║ ${AnsiColor.BLUE}████████║ ████████╗ ████████║ ${AnsiColor.YELLOW}██████║ ██████║
+  ${AnsiColor.BRIGHT_GREEN}╚═══════╝ ╚═══════╝ ╚═╝   ╚═╝ ╚═╝   ╚═╝ ${AnsiColor.BLUE}╚═══════╝ ╚═══════╝ ╚═══════╝ ${AnsiColor.YELLOW}╚═════╝ ╚═════╝
+
+${AnsiColor.BLUE}:: KiraLis39 🤓  :: Running Spring Boot ${spring-boot.version} ::
+:: https://vk.com/neverendingsky ::${AnsiColor.WHITE}
