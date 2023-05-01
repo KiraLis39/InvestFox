@@ -18,12 +18,13 @@ bin/
 !**/src/test/**/bin/
 
 ### Folders ###
-*.ru.investment.dto
+*.ru.investment.entity.dto
 * log.html
+db/
 log/
 lib/
 shares/
-brokers/
+/brokers/
 
 ### IntelliJ IDEA ###
 .idea
