@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.BrokerDataList;
 import ru.investment.entity.dto.BrokerDTO;
-import ru.investment.gui.BrokersPane;
 import ru.investment.gui.abstracts.AbstractBroker;
+import ru.investment.gui.components.DohodPercentPane;
 import ru.investment.gui.components.MyFields;
 import ru.investment.service.BrokerService;
 import ru.investment.utils.UniversalNumberParser;
@@ -20,7 +20,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static ru.investment.gui.components.MyFields.textLabel;
@@ -32,9 +34,9 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
     private static @ToString.Exclude JTextField tf01, tf11;
     private final transient @ToString.Exclude KeyListener keyList;
     private transient @ToString.Exclude BrokerService brokerService;
-    private transient @ToString.Exclude BrokersPane brokersPane;
-    private @ToString.Exclude JLabel itog01, itog02;
-    private transient BrokerDTO dto;
+    private @ToString.Exclude JLabel inputtedSumLabel, todaySumLabel, itogSumLabel;
+    private @ToString.Exclude MyFields.SumPanel itogRowPanel;
+    private DohodPercentPane dohodPercentPane;
 
     public VtbPanel() {
         setName("vtb");
@@ -52,21 +54,23 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
     @PostConstruct
     public void postInit() {
         Optional<BrokerDTO> found = brokerService.findBrokerByName(getName());
-        found.ifPresent(brokerDTO -> dto = brokerDTO);
-        if (dto == null) {
-            dto = BrokerDTO.builder()
+        found.ifPresent(brokerDTO -> setDto(brokerDTO));
+        if (getDto() == null) {
+            setDto(BrokerDTO.builder()
                     .name(getName())
-                    .build();
+                    .build());
         }
 
-        JPanel centerPane = new JPanel(new GridLayout(1, 5, 0, 0)) {
+        JPanel centerPane = new JPanel() {
             {
                 setBackground(Color.DARK_GRAY.darker());
+                setLayout(new GridLayout(1, 5, 0, 0));
                 setBorder(new EmptyBorder(0, -1, 0, 0));
 
-                JPanel orangeCenterPane1 = new JPanel(new GridLayout(3, 1, 0, 0)) {
+                JPanel branchPanel = new JPanel() {
                     {
                         setOpaque(false);
+                        setLayout(new GridLayout(3, 1, 0, 0));
 
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
@@ -82,9 +86,10 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                         });
                     }
                 };
-                JPanel orangeCenterPane2 = new JPanel(new GridLayout(3, 1, 0, 0)) {
+                JPanel inputPanel = new JPanel() {
                     {
                         setOpaque(false);
+                        setLayout(new GridLayout(3, 1, 0, 0));
 
                         tf01 = MyFields.getFTF(String.format("%.0f р.", getDtoInputListValue(0)), Color.RED, keyList);
 
@@ -99,18 +104,19 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(Color.BLUE.darker().darker());
                                 Float sum = 0f;
-                                for (Float aFloat : dto.getData().inputs) {
+                                for (Float aFloat : getDto().getData().inputs) {
                                     sum += aFloat;
                                 }
-                                itog01 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.fontTableSumRow);
-                                add(itog01);
+                                inputtedSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.fontTableSumRow);
+                                add(inputtedSumLabel);
                             }
                         });
                     }
                 };
-                JPanel orangeCenterPane3 = new JPanel(new GridLayout(3, 1, 0, 0)) {
+                JPanel todayPanel = new JPanel() {
                     {
                         setOpaque(false);
+                        setLayout(new GridLayout(3, 1, 0, 0));
 
                         tf11 = MyFields.getFTF(String.format("%.0f р.", getDtoOutputListValue(0)), keyList);
 
@@ -125,18 +131,21 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(Color.BLUE.darker().darker());
                                 Float sum = 0f;
-                                for (Float aFloat : dto.getData().outputs) {
+                                for (Float aFloat : getDto().getData().outputs) {
                                     sum += aFloat;
                                 }
-                                itog02 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.white, Constant.fontTableSumRow);
-                                add(itog02);
+                                todaySumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.white, Constant.fontTableSumRow);
+                                add(todaySumLabel);
                             }
                         });
                     }
                 };
-                JPanel orangeCenterPane4 = new JPanel(new GridLayout(3, 1, 0, 0)) {
+                JPanel dohodPane = new JPanel() {
                     {
                         setOpaque(false);
+                        setLayout(new GridLayout(3, 1, 0, 0));
+
+                        itogRowPanel = MyFields.getJPWT(String.format("%.0f р.", getDtoOutputListValue(0) - getDtoInputListValue(0)));
 
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
@@ -144,64 +153,49 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                                 add(textLabel("Прибыль:", SwingConstants.CENTER, Color.YELLOW));
                             }
                         });
-                        add(textLabel("-", SwingConstants.CENTER, Color.white));
+                        add(itogRowPanel);
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
                                 setBackground(Color.BLUE.darker().darker());
-                                add(textLabel("-", SwingConstants.CENTER, Color.white));
+                                float itog1 = 0f;
+                                itog1 += UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText());
+
+                                float itog2 = 0f;
+                                itog2 += UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText());
+
+                                float sum = itog2 - itog1;
+                                itogSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSumRow);
+                                add(itogSumLabel);
                             }
                         });
                     }
                 };
-                JPanel orangeCenterPane5 = new JPanel(new GridLayout(3, 1, 0, 0)) {
-                    {
-                        setOpaque(false);
+                dohodPercentPane = new DohodPercentPane(3,
+                        new LinkedHashMap<>() {
+                            {
+                                put(0, Map.of(itogSumLabel.getText(), String.valueOf(getDtoInputListValue(0))));
+                            }
+                        }, Color.BLUE.darker());
 
-                        add(new JPanel(new BorderLayout(0, 0)) {
-                            {
-                                setBackground(Color.BLACK);
-                                add(textLabel("Прибыль %:", SwingConstants.CENTER, Color.YELLOW));
-                            }
-                        });
-                        add(new JPanel(new BorderLayout(0, 0)) {
-                            {
-                                setBackground(Color.BLACK);
-                                add(textLabel("-", SwingConstants.CENTER, Color.white));
-                            }
-                        });
-                        add(new JPanel(new BorderLayout(0, 0)) {
-                            {
-                                setBackground(Color.BLUE.darker().darker());
-                                setBorder(new EmptyBorder(1, 1, 1, 0));
-                                add(new JPanel(new BorderLayout(0, 0)) {
-                                    {
-                                        setBackground(Color.BLACK);
-                                        add(textLabel("-", SwingConstants.CENTER, Color.white));
-                                    }
-                                });
-                            }
-                        });
-                    }
-                };
-
-                add(orangeCenterPane1);
-                add(orangeCenterPane2);
-                add(orangeCenterPane3);
-                add(orangeCenterPane4);
-                add(orangeCenterPane5);
+                add(branchPanel);
+                add(inputPanel);
+                add(todayPanel);
+                add(dohodPane);
+                add(dohodPercentPane);
             }
 
             private float getDtoInputListValue(int index) {
-                return dto.getData().inputs.isEmpty() ? 0 : dto.getData().inputs.get(index);
+                return getDto().getData().inputs.isEmpty() ? 0 : getDto().getData().inputs.get(index);
             }
 
             private float getDtoOutputListValue(int index) {
-                return dto.getData().outputs.isEmpty() ? 0 : dto.getData().outputs.get(index);
+                return getDto().getData().outputs.isEmpty() ? 0 : getDto().getData().outputs.get(index);
             }
         };
 
-        JPanel titlePane = new JPanel(new BorderLayout(0, 0)) {
+        JPanel titlePane = new JPanel() {
             {
+                setLayout(new BorderLayout(0, 0));
                 setBackground(Color.BLUE.darker().darker());
                 setPreferredSize(new Dimension(Constant.TITLE_WIDTH, 0));
                 add(textLabel("ВТБ", SwingConstants.CENTER, new Color(0.8f, 0.8f, 1.0f), Constant.fontEmitentLabel), BorderLayout.CENTER);
@@ -221,12 +215,24 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        try {
-            float sum = UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText());
-            itog01.setText(String.format("%,.0f р.", sum));
+        updateBrokerValues();
+    }
 
-            sum = UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText());
-            itog02.setText(String.format("%,.0f р.", sum));
+    private void updateBrokerValues() {
+        try {
+            float sum1 = UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText());
+            inputtedSumLabel.setText(String.format("%,.0f р.", sum1));
+
+            float sum2 = UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText());
+            todaySumLabel.setText(String.format("%,.0f р.", sum2));
+
+            itogRowPanel.setSum(UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText()) -
+                    UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText()));
+
+            itogSumLabel.setText(String.format("%,.0f р.", (sum2 - sum1)));
+
+            dohodPercentPane.getItogPersentRowLabel(0).setSum(UniversalNumberParser.parseFloat(itogSumLabel.getText()) / sum1 * 100);
+            dohodPercentPane.getItogPercentLabel().setText(String.format("%s %%", Math.round(UniversalNumberParser.parseFloat(itogSumLabel.getText()) / sum1 * 100)));
         } catch (Exception ew) {
             log.error("Caution: {}", ew.getMessage());
         }
@@ -245,12 +251,8 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                 .build();
     }
 
-    @Override
-    public String toString() {
-        return "VtbPanel{" +
-                "dto=" + dto +
-                ", itog01=" + itog01 +
-                ", itog02=" + itog02 +
-                '}';
+    public void reload() {
+        tf01.setText(String.valueOf(getDto().getData().inputs.get(0)));
+        tf11.setText(String.valueOf(getDto().getData().outputs.get(0)));
     }
 }

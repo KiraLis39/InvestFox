@@ -9,6 +9,7 @@ import ru.investment.config.constants.Constant;
 import ru.investment.entity.BrokerDataList;
 import ru.investment.entity.dto.BrokerDTO;
 import ru.investment.gui.abstracts.AbstractBroker;
+import ru.investment.gui.components.DohodPercentPane;
 import ru.investment.gui.components.MyFields;
 import ru.investment.service.BrokerService;
 import ru.investment.utils.UniversalNumberParser;
@@ -36,14 +37,16 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
     private transient @ToString.Exclude BrokerService brokerService;
     private @ToString.Exclude JLabel itog01, itog02, itog3;
     private @ToString.Exclude MyFields.SumPanel p01, p02, p03, p04;
-    private transient BrokerDTO dto;
+    private DohodPercentPane dohodPercentPane;
+
+    private Color mtsColor = new Color(87, 15, 10);
 
     public MtsPanel() {
         setName("mts");
         setLayout(new BorderLayout(0, 0));
         keyList = this;
 
-        setBackground(Color.RED.darker().darker());
+        setBackground(mtsColor);
     }
 
     @Autowired
@@ -54,11 +57,11 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
     @PostConstruct
     public void postInit() {
         Optional<BrokerDTO> found = brokerService.findBrokerByName(getName());
-        found.ifPresent(brokerDTO -> dto = brokerDTO);
-        if (dto == null) {
-            dto = BrokerDTO.builder()
+        found.ifPresent(brokerDTO -> setDto(brokerDTO));
+        if (getDto() == null) {
+            setDto(BrokerDTO.builder()
                     .name(getName())
-                    .build();
+                    .build());
         }
 
         JPanel centerPane = new JPanel(new GridLayout(1, 5, 0, 0)) {
@@ -82,7 +85,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                         add(textLabel(" Биотехнологии", SwingConstants.LEFT, Color.white));
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
-                                setBackground(Color.RED.darker().darker());
+                                setBackground(mtsColor);
                             }
                         });
                     }
@@ -108,9 +111,9 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                         add(tf04);
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
-                                setBackground(Color.RED.darker().darker());
+                                setBackground(mtsColor);
                                 Float sum = 0f;
-                                for (Float aFloat : dto.getData().inputs) {
+                                for (Float aFloat : getDto().getData().inputs) {
                                     sum += aFloat;
                                 }
                                 itog01 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.fontTableSumRow);
@@ -140,9 +143,9 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                         add(tf14);
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
-                                setBackground(Color.RED.darker().darker());
+                                setBackground(mtsColor);
                                 float sum = 0f;
-                                for (Float aFloat : dto.getData().outputs) {
+                                for (Float aFloat : getDto().getData().outputs) {
                                     sum += aFloat;
                                 }
                                 itog02 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.white, Constant.fontTableSumRow);
@@ -171,7 +174,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                         add(p04);
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
-                                setBackground(Color.RED.darker().darker());
+                                setBackground(mtsColor);
                                 float itog1 = 0f;
                                 itog1 += UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText());
                                 itog1 += UniversalNumberParser.parseFloat(tf02.getText().isBlank() ? "0" : tf02.getText());
@@ -184,7 +187,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                                 itog2 += UniversalNumberParser.parseFloat(tf13.getText().isBlank() ? "0" : tf13.getText());
                                 itog2 += UniversalNumberParser.parseFloat(tf14.getText().isBlank() ? "0" : tf14.getText());
 
-                                Float sum = itog2 - itog1;
+                                float sum = itog2 - itog1;
                                 itog3 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSumRow);
                                 add(itog3);
                             }
@@ -227,7 +230,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                         });
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
-                                setBackground(Color.RED.darker().darker());
+                                setBackground(mtsColor);
                                 setBorder(new EmptyBorder(1, 1, 2, 0));
                                 add(new JPanel(new BorderLayout(0, 0)) {
                                     {
@@ -248,17 +251,17 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
             }
 
             private float getDtoInputListValue(int index) {
-                return !dto.getData().inputs.isEmpty() ? dto.getData().inputs.get(index) : 0;
+                return !getDto().getData().inputs.isEmpty() ? getDto().getData().inputs.get(index) : 0;
             }
 
             private float getDtoOutputListValue(int index) {
-                return !dto.getData().outputs.isEmpty() ? dto.getData().outputs.get(index) : 0;
+                return !getDto().getData().outputs.isEmpty() ? getDto().getData().outputs.get(index) : 0;
             }
         };
 
         JPanel titlePane = new JPanel(new BorderLayout(0, 0)) {
             {
-                setBackground(Color.RED.darker().darker());
+                setBackground(mtsColor);
                 setPreferredSize(new Dimension(Constant.TITLE_WIDTH, 0));
                 add(textLabel("МТС", null, SwingConstants.CENTER, Color.RED, Constant.fontEmitentLabel), BorderLayout.CENTER);
                 add(textLabel("ВСЕГО:", null, SwingConstants.CENTER, Color.RED, Constant.fontFinalSum), BorderLayout.SOUTH);
@@ -269,14 +272,12 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
         add(centerPane, BorderLayout.CENTER);
     }
 
-    public void keyTyped(KeyEvent e) {
-    }
-
-    public void keyPressed(KeyEvent e) {
-    }
-
     @Override
     public void keyReleased(KeyEvent e) {
+        updateBrokerValues();
+    }
+
+    private void updateBrokerValues() {
         try {
             float sum1 = 0f, sum2 = 0f;
 
@@ -284,13 +285,13 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
             sum1 += UniversalNumberParser.parseFloat(tf02.getText().isBlank() ? "0" : tf02.getText());
             sum1 += UniversalNumberParser.parseFloat(tf03.getText().isBlank() ? "0" : tf03.getText());
             sum1 += UniversalNumberParser.parseFloat(tf04.getText().isBlank() ? "0" : tf04.getText());
+            itog01.setText(String.format("%,.0f р.", sum1));
 
             sum2 += UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText());
             sum2 += UniversalNumberParser.parseFloat(tf12.getText().isBlank() ? "0" : tf12.getText());
             sum2 += UniversalNumberParser.parseFloat(tf13.getText().isBlank() ? "0" : tf13.getText());
             sum2 += UniversalNumberParser.parseFloat(tf14.getText().isBlank() ? "0" : tf14.getText());
 
-            itog01.setText(String.format("%,.0f р.", sum1));
             itog02.setText(String.format("%,.0f р.", sum2));
 
             p01.setSum(UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText()) -
@@ -334,14 +335,23 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                 .build();
     }
 
-    @Override
-    public String toString() {
-        return "MtsPanel{" +
-                "uuid=" + uuid +
-                "dto=" + dto +
-                ", itog01=" + itog01 +
-                ", itog02=" + itog02 +
-                ", itog3=" + itog3 +
-                '}';
+    public void reload() {
+        tf01.setText(String.valueOf(getDto().getData().inputs.get(0)));
+        tf02.setText(String.valueOf(getDto().getData().inputs.get(1)));
+        tf03.setText(String.valueOf(getDto().getData().inputs.get(2)));
+        tf04.setText(String.valueOf(getDto().getData().inputs.get(3)));
+
+        tf11.setText(String.valueOf(getDto().getData().outputs.get(0)));
+        tf12.setText(String.valueOf(getDto().getData().outputs.get(1)));
+        tf13.setText(String.valueOf(getDto().getData().outputs.get(2)));
+        tf14.setText(String.valueOf(getDto().getData().outputs.get(3)));
+    }
+
+
+    // other:
+    public void keyTyped(KeyEvent e) {
+    }
+
+    public void keyPressed(KeyEvent e) {
     }
 }

@@ -211,7 +211,7 @@ public class TablePane extends JPanel {
                         addActionListener(e -> {
                             try {
                                 netProcessor.exportTable();
-                                //netProcessor.exportBrokers(); todo
+                                netProcessor.exportBrokers();
                                 new FOptionPane().buildFOptionPane("Готово!", "Список выгружен на диск");
                             } catch (Exception ex) {
                                 log.error("Ошибка записи данных: {}", ex.getMessage());
@@ -230,6 +230,7 @@ public class TablePane extends JPanel {
                         addActionListener(e -> {
                             try {
                                 netProcessor.importTable(TablePane.this);
+                                netProcessor.importBrokers();
                                 new FOptionPane().buildFOptionPane("Готово!", "Список загружен из локальной директории");
                             } catch (Exception ex) {
                                 log.error("Ошибка загрузки данных: {}", ex.getMessage());

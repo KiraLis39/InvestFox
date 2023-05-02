@@ -9,7 +9,6 @@ import ru.investment.config.constants.Constant;
 import ru.investment.entity.dto.BrokerDTO;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,39 +18,40 @@ import java.nio.file.Paths;
 @Slf4j
 @EqualsAndHashCode(callSuper = false)
 public abstract class AbstractBroker extends JPanel {
+    private BrokerDTO dto;
 
-    public void exportData(BrokerDTO dto) {
+    public void exportData() {
         try {
-            dirsExistCheck();
-            String savePath = Constant.BROKERS_DIR + dto.getName() + Constant.BROKER_SAVE_POSTFIX;
-            ObjectMapperConfig.getMapper().writeValue(new File(savePath), dto);
+            Path savePath = Paths.get(Constant.BROKERS_DIR + dto.getName() + Constant.BROKER_SAVE_POSTFIX);
+            dirsExistCheck(savePath, dto.getName());
+            ObjectMapperConfig.getMapper().writeValue(savePath.toFile(), dto);
         } catch (Exception e) {
             log.error("Broker data export is failed: {}", e.getMessage());
         }
     }
 
-    public BrokerDTO importData(Path toDtoPath, String name) {
+    public void importData(String name) {
         try {
-            dirsExistCheck();
-            if (Files.notExists(Paths.get(Constant.BROKERS_DIR + name + Constant.BROKER_SAVE_POSTFIX))) {
-                ObjectMapperConfig.getMapper().writeValue(
-                        new File(Constant.BROKERS_DIR + name + Constant.BROKER_SAVE_POSTFIX),
-                        BrokerDTO.builder().name(name).build());
-            }
-            return ObjectMapperConfig.getMapper().readValue(toDtoPath.toFile(), BrokerDTO.class);
+            Path brokerPath = Paths.get(Constant.BROKERS_DIR + name + Constant.BROKER_SAVE_POSTFIX);
+            dirsExistCheck(brokerPath, name);
+            setDto(ObjectMapperConfig.getMapper().readValue(brokerPath.toFile(), BrokerDTO.class));
+            return;
         } catch (MismatchedInputException npe) {
             log.error("Load failed: {}", npe.getMessage());
         } catch (Exception e) {
             log.error("Exception here: {}", e.getMessage());
         }
-        return new BrokerDTO(); // return clazz.getDeclaredConstructor().newInstance()
+        setDto(BrokerDTO.builder().name(getName()).build()); // return clazz.getDeclaredConstructor().newInstance()
     }
 
-    public void dirsExistCheck() {
+    public void dirsExistCheck(Path brokerPath, String name) {
         // deprecated: теперь всё сохраняется с БД, но может понадобиться для импорта\экспорта
         try {
-            if (!new File(Constant.BROKERS_DIR).exists()) {
-                Files.createDirectory(Paths.get(Constant.BROKERS_DIR));
+            if (Files.notExists(brokerPath.getParent())) {
+                Files.createDirectory(brokerPath.getParent());
+            }
+            if (Files.notExists(brokerPath)) {
+                ObjectMapperConfig.getMapper().writeValue(brokerPath.toFile(), BrokerDTO.builder().name(name).build());
             }
         } catch (IOException e) {
             log.error("Ошибка при проверке существования директории сохранения брокеров: {}", e.getMessage());

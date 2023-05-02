@@ -182,10 +182,19 @@ public class BrokersPane extends JPanel {
         brokerService.save(tinkPane.getSavingData());
     }
 
-    @Override
-    public String toString() {
-        return "PortfelPane{" +
-                "id=" + id +
-                '}';
+    public void exportBrokers() {
+        mtsPane.exportData();
+        vtbPane.exportData();
+        tinkPane.exportData();
+    }
+
+    public void importBrokers() {
+        mtsPane.importData(mtsPane.getName());
+        vtbPane.importData(vtbPane.getName());
+        tinkPane.importData(tinkPane.getName());
+
+        mtsPane.reload();
+        vtbPane.reload();
+        tinkPane.reload();
     }
 }

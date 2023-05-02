@@ -12,6 +12,7 @@ import ru.investment.config.constants.Constant;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.old.sites.*;
 import ru.investment.entity.old.sites.impl.AbstractSite;
+import ru.investment.gui.BrokersPane;
 import ru.investment.gui.InvestFrame;
 import ru.investment.gui.TablePane;
 import ru.investment.gui.components.ShareTableRow;
@@ -35,6 +36,7 @@ import java.util.concurrent.Executors;
 public class NetProcessor {
     private static ExecutorService exec;
     private final ShareService shareService;
+    private final BrokersPane brokersPane;
     private final ShareMapper shareMapper;
     private InvestFrame investFrame;
     @Value("${app.sites.count}")
@@ -184,6 +186,10 @@ public class NetProcessor {
         return fails;
     }
 
+    public void exportBrokers() {
+        brokersPane.exportBrokers();
+    }
+
     public void importTable(TablePane tablePane) throws IOException {
         if (!new File(Constant.SHARES_DIR).exists()) {
             throw new NotFoundException("Требуемая директория не найдена");
@@ -197,6 +203,10 @@ public class NetProcessor {
         }
         Collections.sort(loading);
         tablePane.addShares(loading);
+    }
+
+    public void importBrokers() {
+        brokersPane.importBrokers();
     }
 
     public void loadTable(TablePane tablePane) throws IOException {

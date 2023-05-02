@@ -85,6 +85,7 @@ public class MyFields implements Serializable {
 
     public static class SumPanel extends JPanel {
         float was = 0, sum;
+        String text;
         JLabel label;
 
         public SumPanel(String value, Color foreground) {
@@ -94,9 +95,17 @@ public class MyFields implements Serializable {
             setBorder(BorderFactory.createLoweredSoftBevelBorder());
 
             setOpaque(false);
-            sum = UniversalNumberParser.parseFloat(value);
-            label = textLabel(String.format("%,.0f р.", sum),
-                    SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSum);
+            if (!value.endsWith("%")) {
+                sum = UniversalNumberParser.parseFloat(value);
+                text = String.format("%,.0f р.", sum);
+                label = textLabel(text,
+                        SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSum);
+            } else {
+                sum = Math.round(UniversalNumberParser.parseFloat(value));
+                text = String.format("%s %%", Math.round(sum));
+                label = textLabel(text,
+                        SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSum);
+            }
             add(label);
         }
 
@@ -105,13 +114,19 @@ public class MyFields implements Serializable {
             super.paintComponent(g);
             if (was != sum) {
                 was = sum;
-                label.setText(String.format("%,.0f р.", sum));
+                label.setForeground(sum >= 0 ? Color.GREEN : Color.RED);
+                label.setText(text);
             }
         }
 
         public void setSum(float sum) {
             this.sum = sum;
+            text = text.endsWith("%") ? String.format("%s %%", Math.round(sum)) : String.format("%,.0f р.", sum);
             repaint();
+        }
+
+        public String getText() {
+            return text;
         }
     }
 }

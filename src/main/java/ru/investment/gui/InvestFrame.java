@@ -393,7 +393,6 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
     public void componentHidden(ComponentEvent e) {
     }
 
-
     private static class DataPanel extends JPanel {
         public DataPanel(ShareDTO dto) {
 

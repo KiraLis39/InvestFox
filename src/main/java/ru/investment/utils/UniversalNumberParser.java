@@ -49,6 +49,7 @@ public class UniversalNumberParser {
                 .replace("руб.", "")
                 .replace(",", ".")
                 .replace("р.", ".")
+                .replace("%", "")
                 .trim();
     }
 
