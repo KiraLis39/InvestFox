@@ -38,9 +38,10 @@ logging:
     org.springframework.data.jpa.repository.config: INFO
     org.springframework.validation.beanvalidation: INFO
     org.springframework.statemachine.support.LifecycleObjectSupport: INFO
+    org.asynchttpclient.netty.channel.DefaultChannelPool: INFO
 
 server:
-  port: 8080
+  port: 8082
   error:
     whitelabel:
       # false - для отображения фактического ответа сервера, вместо белой страницы с описанием:
@@ -66,7 +67,7 @@ spring:
       enabled: always
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:invest}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${POSTGRES_DB:invest}
     username: ${POSTGRES_USER:admin}
     password: ${POSTGRES_PASSWORD:admin}
     hikari:
@@ -84,6 +85,7 @@ spring:
       hibernate:
         auto_quote_keyword: true
         globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 app:
   sites:

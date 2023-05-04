@@ -37,10 +37,6 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
     private ImageIcon ico01, ico02, ico03, ico04;
     private transient Thread valuteThread;
 
-    public void clearPanel() {
-        baseMidPane.removeAll();
-    }
-
     public void addPanel(ShareDTO dto) {
         baseMidPane.add(new DataPanel(dto));
         baseMidPane.revalidate();
@@ -324,28 +320,11 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
     // при нажатии на кнопку поиска:
     private void runScan() throws ExecutionException, InterruptedException {
-        clearPanel();
-        log.info("Scanning " + ticketField.getText().toUpperCase().trim() + "...");
-
-        CompletableFuture<ShareCollectedDTO> fut = netProc.checkTicket(ticketField.getText().toUpperCase().trim(), true)
-//                .exceptionally(throwable -> null)
-                .handle((r, ex) -> {
-                    if (r != null) {
-                        return r;
-                    } else {
-                        log.warn("A problem here: {}", ex.getMessage());
-                        return null;
-                    }
-                });
-        while (!fut.isDone()) {
-            Thread.yield();
-        }
-        if (fut.get() != null) {
-            updateDownPanel(fut.get());
-        }
+        baseMidPane.removeAll();
+        netProc.runScan(ticketField.getText());
     }
 
-    private synchronized void updateDownPanel(ShareCollectedDTO result) {
+    public synchronized void updateDownPanel(ShareCollectedDTO result) {
         titleLabel.setText(String.format("<html>Обобщение по тикету: <font color=\"#FFF\"><b>'%s'", result.getTicker()));
         sectorLabel.setText(String.format("<html>Сектор: <font color=\"#FFF\"><b>%s", result.getSector()));
         lotLabel.setText(String.format("<html>Лот: <font color=\"#FFF\"><b>%s", result.getLotSize() + " шт."));

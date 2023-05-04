@@ -1,9 +1,9 @@
-package ru.investment.entity.old.sites;
+package ru.investment.entity.sites;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.entity.old.sites.impl.AbstractSite;
+import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.exceptions.root.ParsingException;
 
 import java.time.LocalDateTime;
@@ -51,7 +51,7 @@ public class DohodRu extends AbstractSite {
 
         String nextDivPercent = null, payDate = null;
         String divData = doc.select("#leftside-col > p:nth-child(3) > strong").text();
-        if (divData != null && !divData.isEmpty()) {
+        if (!divData.isEmpty()) {
             try {
                 String[] data = doc.select("#leftside-col > p:nth-child(3) > strong")
                         .text().replaceAll(" руб.", "").split(" ");

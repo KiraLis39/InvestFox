@@ -1,4 +1,4 @@
-package ru.investment.entity.old.sites.impl;
+package ru.investment.entity.sites.impl;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

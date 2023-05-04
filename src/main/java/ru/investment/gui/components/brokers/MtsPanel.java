@@ -44,6 +44,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
     public MtsPanel() {
         setName("mts");
         setLayout(new BorderLayout(0, 0));
+        setEnabled(false);
         keyList = this;
 
         setBackground(mtsColor);
@@ -57,7 +58,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
     @PostConstruct
     public void postInit() {
         Optional<BrokerDTO> found = brokerService.findBrokerByName(getName());
-        found.ifPresent(brokerDTO -> setDto(brokerDTO));
+        found.ifPresent(this::setDto);
         if (getDto() == null) {
             setDto(BrokerDTO.builder()
                     .name(getName())
@@ -94,10 +95,10 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                     {
                         setOpaque(false);
 
-                        tf01 = MyFields.getFTF(String.format("%.0f р.", getDtoInputListValue(0)), Color.RED, keyList);
-                        tf02 = MyFields.getFTF(String.format("%.0f р.", getDtoInputListValue(1)), Color.RED, keyList);
-                        tf03 = MyFields.getFTF(String.format("%.0f р.", getDtoInputListValue(2)), Color.RED, keyList);
-                        tf04 = MyFields.getFTF(String.format("%.0f р.", getDtoInputListValue(3)), Color.RED, keyList);
+                        tf01 = MyFields.getFTF(String.format("%,.0f р.", getDtoInputListValue(0)), Color.RED, keyList);
+                        tf02 = MyFields.getFTF(String.format("%,.0f р.", getDtoInputListValue(1)), Color.RED, keyList);
+                        tf03 = MyFields.getFTF(String.format("%,.0f р.", getDtoInputListValue(2)), Color.RED, keyList);
+                        tf04 = MyFields.getFTF(String.format("%,.0f р.", getDtoInputListValue(3)), Color.RED, keyList);
 
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
@@ -126,10 +127,10 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                     {
                         setOpaque(false);
 
-                        tf11 = MyFields.getFTF(String.format("%.0f р.", getDtoOutputListValue(0)), keyList);
-                        tf12 = MyFields.getFTF(String.format("%.0f р.", getDtoOutputListValue(1)), keyList);
-                        tf13 = MyFields.getFTF(String.format("%.0f р.", getDtoOutputListValue(2)), keyList);
-                        tf14 = MyFields.getFTF(String.format("%.0f р.", getDtoOutputListValue(3)), keyList);
+                        tf11 = MyFields.getFTF(String.format("%,.0f р.", getDtoOutputListValue(0)), keyList);
+                        tf12 = MyFields.getFTF(String.format("%,.0f р.", getDtoOutputListValue(1)), keyList);
+                        tf13 = MyFields.getFTF(String.format("%,.0f р.", getDtoOutputListValue(2)), keyList);
+                        tf14 = MyFields.getFTF(String.format("%,.0f р.", getDtoOutputListValue(3)), keyList);
 
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
@@ -158,10 +159,10 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                     {
                         setOpaque(false);
 
-                        p01 = MyFields.getJPWT(String.format("%.0f р.", getDtoOutputListValue(0) - getDtoInputListValue(0)));
-                        p02 = MyFields.getJPWT(String.format("%.0f р.", getDtoOutputListValue(1) - getDtoInputListValue(1)));
-                        p03 = MyFields.getJPWT(String.format("%.0f р.", getDtoOutputListValue(2) - getDtoInputListValue(2)));
-                        p04 = MyFields.getJPWT(String.format("%.0f р.", getDtoOutputListValue(3) - getDtoInputListValue(3)));
+                        p01 = MyFields.getJPWT(String.format("%,.0f р.", getDtoOutputListValue(0) - getDtoInputListValue(0)));
+                        p02 = MyFields.getJPWT(String.format("%,.0f р.", getDtoOutputListValue(1) - getDtoInputListValue(1)));
+                        p03 = MyFields.getJPWT(String.format("%,.0f р.", getDtoOutputListValue(2) - getDtoInputListValue(2)));
+                        p04 = MyFields.getJPWT(String.format("%,.0f р.", getDtoOutputListValue(3) - getDtoInputListValue(3)));
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
                                 setBackground(Color.BLACK);

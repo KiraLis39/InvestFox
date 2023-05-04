@@ -1,10 +1,10 @@
-package ru.investment.entity.old.sites;
+package ru.investment.entity.sites;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.entity.old.sites.impl.AbstractSite;
+import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 
 import java.time.LocalDateTime;
@@ -51,7 +51,10 @@ public class InvestFutureRu extends AbstractSite {
                 .trim();
 
         List<String> data = Arrays.asList(temp.split(";"));
-        getDto().setName(data.get(1).replaceAll("href=securitiesid\\S{1,4} ", "").replaceAll("'", "").replaceAll("\"", ""));
+        getDto().setName(data.get(1)
+                .replace("href=securitiesid\\S{1,4} ", "")
+                .replace("'", "")
+                .replace("\"", ""));
         if (data.size() > 4) {
             getDto().addCoast(data.get(5));
         }

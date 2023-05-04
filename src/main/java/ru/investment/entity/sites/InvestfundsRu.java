@@ -1,4 +1,4 @@
-package ru.investment.entity.old.sites;
+package ru.investment.entity.sites;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,7 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.entity.old.sites.impl.AbstractSite;
+import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 
 import java.time.LocalDateTime;
@@ -55,7 +55,7 @@ public class InvestfundsRu extends AbstractSite {
                         .anyMatch(s -> s.textValue().equalsIgnoreCase(getDto().getTicker()));
             }
             if (tickerExists) {
-                int count = 0, index = 0;
+                int count = 0, index;
                 for (String ticker : tree.findValuesAsText("ticker")) {
                     if (ticker.equalsIgnoreCase(getDto().getTicker())) {
                         count++;

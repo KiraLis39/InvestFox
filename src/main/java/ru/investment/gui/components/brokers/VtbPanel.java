@@ -91,7 +91,7 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                         setOpaque(false);
                         setLayout(new GridLayout(3, 1, 0, 0));
 
-                        tf01 = MyFields.getFTF(String.format("%.0f р.", getDtoInputListValue(0)), Color.RED, keyList);
+                        tf01 = MyFields.getFTF(String.format("%,.0f р.", getDtoInputListValue(0)), Color.RED, keyList);
 
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
@@ -118,7 +118,7 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                         setOpaque(false);
                         setLayout(new GridLayout(3, 1, 0, 0));
 
-                        tf11 = MyFields.getFTF(String.format("%.0f р.", getDtoOutputListValue(0)), keyList);
+                        tf11 = MyFields.getFTF(String.format("%,.0f р.", getDtoOutputListValue(0)), keyList);
 
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {
@@ -145,7 +145,7 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                         setOpaque(false);
                         setLayout(new GridLayout(3, 1, 0, 0));
 
-                        itogRowPanel = MyFields.getJPWT(String.format("%.0f р.", getDtoOutputListValue(0) - getDtoInputListValue(0)));
+                        itogRowPanel = MyFields.getJPWT(String.format("%,.0f р.", getDtoOutputListValue(0) - getDtoInputListValue(0)));
 
                         add(new JPanel(new BorderLayout(0, 0)) {
                             {

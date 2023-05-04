@@ -12,8 +12,8 @@
 
     <properties>
         <java.version>17</java.version>
-        <selenium.version>4.9.0</selenium.version>
-        <selenide.version>6.13.1</selenide.version>
+        <selenide.version>6.11.0</selenide.version>
+        <selenium.version>4.7.1</selenium.version>
         <jackson.version>2.14.2</jackson.version>
         <spring.version>2.7.10</spring.version>
 
@@ -64,38 +64,6 @@
             <version>1.15.4</version>
         </dependency>
 
-        <!-- Selenide & Selenium: -->
-        <dependency>
-            <groupId>com.codeborne</groupId>
-            <artifactId>selenide</artifactId>
-            <version>${selenide.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>${selenium.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-api</artifactId>
-            <version>${selenium.version}</version>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.seleniumhq.selenium</groupId>-->
-<!--            <artifactId>selenium-remote-driver</artifactId>-->
-<!--            <version>${selenium.version}</version>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
-            <version>${selenium.version}</version>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.seleniumhq.selenium</groupId>-->
-<!--            <artifactId>selenium-firefox-driver</artifactId>-->
-<!--            <version>${selenium.version}</version>-->
-<!--        </dependency>-->
-
         <!-- StateMachine: -->
         <dependency>
             <groupId>org.springframework.statemachine</groupId>
@@ -136,22 +104,6 @@
             <version>42.6.0</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate</groupId>-->
-<!--            <artifactId>hibernate-ru.investment.core</artifactId>-->
-<!--            <version>5.6.15.Final</version>-->
-<!--            <type>pom</type>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate</groupId>-->
-<!--            <artifactId>hibernate-entitymanager</artifactId>-->
-<!--            <version>5.6.15.Final</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate.common</groupId>-->
-<!--            <artifactId>hibernate-commons-annotations</artifactId>-->
-<!--            <version>6.0.6.Final</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -193,13 +145,66 @@
             <artifactId>validation-api</artifactId>
         </dependency>
 
+        <!-- Selenide & Selenium: -->
         <dependency>
-            <groupId>javazoom</groupId>
-            <artifactId>jlayer</artifactId>
-            <version>1.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/JLayer1.0.1.39.jar</systemPath>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.16</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.codeborne</groupId>
+            <artifactId>selenide</artifactId>
+            <version>${selenide.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-api</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-remote-driver</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+
+        <!-- Audio: -->
+<!--        <dependency>-->
+<!--            <groupId>javazoom</groupId>-->
+<!--            <artifactId>jlayer</artifactId>-->
+<!--            <version>1.0.1</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/lib/JLayer1.0.1.39.jar</systemPath>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>TinySound</groupId>-->
+<!--            <artifactId>jlayer</artifactId>-->
+<!--            <version>1.0.1</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/lib/TinySound.jar</systemPath>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.googlecode.soundlibs</groupId>-->
+<!--            <artifactId>jorbis</artifactId>-->
+<!--            <version>0.0.17.4</version>-->
+<!--        </dependency>-->
+
+        <!--  Utils: -->
         <dependency>
             <groupId>FoxLib39</groupId>
             <artifactId>FoxGUI</artifactId>

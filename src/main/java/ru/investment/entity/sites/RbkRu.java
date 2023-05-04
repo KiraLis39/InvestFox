@@ -1,4 +1,4 @@
-package ru.investment.entity.old.sites;
+package ru.investment.entity.sites;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.entity.old.sites.impl.AbstractSite;
+import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.root.ParsingException;
 

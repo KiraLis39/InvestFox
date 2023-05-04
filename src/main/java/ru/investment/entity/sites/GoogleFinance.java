@@ -1,11 +1,11 @@
-package ru.investment.entity.old.sites;
+package ru.investment.entity.sites;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.entity.old.sites.impl.AbstractSite;
+import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 
 import java.time.LocalDateTime;

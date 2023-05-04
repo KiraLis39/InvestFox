@@ -232,6 +232,7 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
     private void updateBrokerValues() {
         try {
 
+            // вложено:
             float sum001 = UniversalNumberParser.parseFloat(inputRowField01.getText().isBlank() ? "0" : inputRowField01.getText());
             float sum011 = UniversalNumberParser.parseFloat(inputRowField02.getText().isBlank() ? "0" : inputRowField02.getText());
             float sum111 = UniversalNumberParser.parseFloat(inputRowField03.getText().isBlank() ? "0" : inputRowField03.getText());
@@ -255,8 +256,9 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
             dohodPercentPane.getItogPersentRowLabel(2).setSum(sum / sum111 * 100);
 
             sumLabel03.setText(String.format("%,.0f р.", ((sum002 + sum022 + sum222) - (sum001 + sum011 + sum111))));
-//            dohodPercentPane.getItogPercentLabel().setText(String.format("%s %%",
-//                    Math.round(UniversalNumberParser.parseFloat(sumLabel03.getText()) / sum1 * 100)));
+
+            dohodPercentPane.getItogPersentRowLabel(0).setSum(UniversalNumberParser.parseFloat(sumLabel03.getText()) / (sum001 + sum011 + sum111) * 100);
+            dohodPercentPane.getItogPercentLabel().setText(String.format("%s %%", Math.round(UniversalNumberParser.parseFloat(sumLabel03.getText()) / (sum001 + sum011 + sum111) * 100)));
         } catch (Exception ew) {
             log.error("Caution: {}", ew.getMessage());
         }

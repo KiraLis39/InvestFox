@@ -21,10 +21,9 @@ import java.util.UUID;
 @Data
 @Slf4j
 @Builder
-@Component
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShareCollectedDTO implements Serializable, Comparable<ShareCollectedDTO> {
+public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     private UUID id; // id from DataBase
 
     private LocalDateTime updatedDate = LocalDateTime.now(); // Обновлено

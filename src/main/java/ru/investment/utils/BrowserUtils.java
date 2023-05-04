@@ -7,8 +7,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import ru.investment.config.constants.ParserMessages;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.*;
 
 @Slf4j
 @UtilityClass
@@ -27,15 +26,15 @@ public class BrowserUtils {
     }
 
     public static void closeWindow() {
-        Selenide.closeWindow();
+        closeWindow();
     }
 
     public static void closeAndClearAll() {
         log.info("\n* Выполняется чистка проекта... *");
         try {
-            if (Selenide.webdriver().driver().hasWebDriverStarted()) {
+            if (webdriver().driver().hasWebDriverStarted()) {
                 log.debug("Clear browser cookies...");
-                Selenide.webdriver().driver().clearCookies();
+                webdriver().driver().clearCookies();
             }
         } catch (Throwable t) {
             log.warn("Не удалось очистить куки браузера: " + t.getMessage());
@@ -46,9 +45,9 @@ public class BrowserUtils {
 
     private static void closeDriver() {
         try {
-            if (Selenide.webdriver().driver().hasWebDriverStarted()) {
+            if (webdriver().driver().hasWebDriverStarted()) {
                 log.debug("Closing browser driver...");
-                Selenide.closeWebDriver();
+                closeWebDriver();
             }
         } catch (Throwable t) {
             log.warn("Не удалось закрыть веб-драйвер: " + t.getMessage());
@@ -70,14 +69,17 @@ public class BrowserUtils {
     }
 
     public static boolean isTechnicalWorks() {
-        return $(".alert-text__item").exists() && $(".alert-text__item").text().contains(ParserMessages.TECHNICAL_WORKS);
+        return $(".alert-text__item").exists() && $(".alert-text__item")
+                .text().contains(ParserMessages.TECHNICAL_WORKS);
     }
 
     public static boolean isPageNotExists() {
-        return $x("/html/body").text().contains(ParserMessages.PAGE_NOT_EXISTS);
+        return $x("/html/body")
+                .text().contains(ParserMessages.PAGE_NOT_EXISTS);
     }
 
     public static boolean isPageNotFound() {
-        return $x("/html/body").text().contains("404 Not Found");
+        return $x("/html/body")
+                .text().contains(ParserMessages.PAGE_NOT_FOUND);
     }
 }
