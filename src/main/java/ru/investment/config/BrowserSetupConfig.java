@@ -35,19 +35,16 @@ public class BrowserSetupConfig {
 
         Configuration.browser = Browsers.FIREFOX; // default "chrome"
         Configuration.headless = true; // default "false"
-        //Configuration.driverManagerEnabled = true; // default "true"
-        //Configuration.pageLoadStrategy = "eager"; // default "normal"
+        Configuration.driverManagerEnabled = true; // default "true"
+        Configuration.pageLoadStrategy = "eager"; // default "normal"
         //Configuration.baseUrl = "http://localhost:" + serverPort; // default "http://localhost:8080"
-        //Configuration.holdBrowserOpen = false; // default "false"
+        Configuration.holdBrowserOpen = false; // default "false"
         Configuration.downloadsFolder = "downloads";
         Configuration.screenshots = true; // default "true"
-        //Configuration.remote = null; // default null
 
         Configuration.timeout = timeout; // default "4000"
         Configuration.pageLoadTimeout = pageLoadTimeout; // default "30000"
         Configuration.pollingInterval = pollingInterval; // default "200"
-        Configuration.remoteReadTimeout = 30_000; // default NA
-        Configuration.remoteConnectionTimeout = 30_000; // default NA
 
         log.info("Selenide сконфигурирован");
     }

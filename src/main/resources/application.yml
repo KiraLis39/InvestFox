@@ -1,6 +1,7 @@
 logging:
   level:
     root: DEBUG
+    fox.FoxFontBuilder: INFO
 
     sun.rmi: INFO
     sun.awt: INFO
@@ -25,6 +26,8 @@ logging:
     org.springframework.orm: INFO
     org.springframework.orm.jpa: WARN
     org.springframework.boot: INFO
+    org.springframework.boot.devtools.autoconfigure: WARN
+    org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor: WARN
     org.springframework.context: INFO
     org.springframework.core.env: INFO
     org.springframework.scheduling: INFO
@@ -39,6 +42,22 @@ logging:
     org.springframework.validation.beanvalidation: INFO
     org.springframework.statemachine.support.LifecycleObjectSupport: INFO
     org.asynchttpclient.netty.channel.DefaultChannelPool: INFO
+
+    org.openqa.selenium.remote.RemoteWebDriver: INFO
+    org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec: INFO
+    org.openqa.selenium.devtools.CdpVersionFinder: INFO
+    org.asynchttpclient.netty.request.NettyRequestSender: INFO
+    org.asynchttpclient.netty.channel.ChannelManager: INFO
+    org.asynchttpclient.netty.handler: INFO
+    com.codeborne.selenide.drivercommands.CloseDriverCommand: INFO
+    com.codeborne.selenide.impl.Plugins: INFO
+    com.codeborne.selenide.webdriver.WebDriverFactory: INFO
+
+    io.netty.handler.codec.compression: INFO
+    io.netty.channel.DefaultChannelId: INFO
+    io.netty.channel.nio: INFO
+    io.netty.buffer: INFO
+    io.netty.util: INFO
 
 server:
   port: 8082
@@ -68,9 +87,6 @@ spring:
     password: ${POSTGRES_PASSWORD:admin}
     hikari:
       poolName: Hikari
-      # Set auto-commit true when creating schema in empty DB.
-      # Then set to true and restart the application (it cannot login if it is true)
-      auto-commit: false
 
   jpa:
     show-sql: false
