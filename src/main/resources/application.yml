@@ -62,10 +62,6 @@ spring:
     lazy-initialization: false
     allow-bean-definition-overriding: false
 
-  output:
-    ansi:
-      enabled: always
-
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${POSTGRES_DB:invest}
     username: ${POSTGRES_USER:admin}
