@@ -1,6 +1,7 @@
 package ru.investment.entity.sites;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import ru.investment.exceptions.NoElementAvailableException;
 import ru.investment.utils.BrowserUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -76,13 +79,6 @@ public class TradingRu extends AbstractSite {
             // System.out.println("Test: " + content.$x("./div/div").text());
 
             try {
-                SelenideElement tabsPane = $("#js-category-content > div.tv-category-symbol-header > div.tv-category-symbol-header__tabs > div > div.tv-tabs__scroll-wrap > div");
-                if (!tabsPane.exists()) {
-                    throw new NoElementAvailableException("Not found tabs head 'tabsPane' on this page");
-                }
-
-                // Разбор табов: 'Теханализ' | 'Новости' | 'Обзор':
-                // techanalys osc data: $$x(//*[@id="js-category-content"]/div[2]/div/div/div[4]/div[2]/div[2]/div)
                 getDto().setName($x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/h1").text());
                 SelenideElement sectorBlock = $x("//*[@id='js-category-content']/div[2]/div/section/div[3]/div[2]/div/div[2]");
                 if (sectorBlock.exists()) {
@@ -97,16 +93,59 @@ public class TradingRu extends AbstractSite {
                 getDto().addCoast($x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[1]/span[1]").text());
                 String cType = $x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[1]/span[2]/span[1]").text();
                 getDto().setCostType(CostType.valueOf(cType));
-                //getDto().addDividend("0");
-                //getDto().setLotSize(1);
-                //getDto().addRecommendation("");
 
-                //getDto().addPartOfProfit("");
-                //getDto().addStableGrow("");
-                //getDto().addStablePay("");
-                //getDto().addPaySum("0");
-                //getDto().setPayDate(LocalDateTime.now()); // //*[@id="js-category-content"]/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[3]/span/span
-                //getDto().addPaySumOnShare("0");
+                //getDto().setLotSize(1);
+
+                // Разбор табов: 'Теханализ' | 'Новости':
+                SelenideElement tabsPane = $("#js-category-content > div.tv-category-symbol-header > div.tv-category-symbol-header__tabs > div > div.tv-tabs__scroll-wrap > div");
+                if (!tabsPane.exists()) {
+                    throw new NoElementAvailableException("Not found tabs head 'tabsPane' on this page");
+                }
+
+                ElementsCollection techAnal = tabsPane.$$("a").filter(Condition.text("Теханализ"));
+                if (techAnal.size() == 1) {
+                    techAnal.get(0).click();
+                    sleep(2500);
+                    List<Integer> sellNeutralBye = new ArrayList<>(3);
+                    ElementsCollection pazes = $$x("//*[@id='js-category-content']/div[2]/div/div/div[4]/div[2]/div[2]/div");
+                    for (SelenideElement paze : pazes) {
+                        sellNeutralBye.add(Integer.parseInt(paze.$$("span").get(1).text()));
+                    }
+
+                    if (sellNeutralBye.get(0) > sellNeutralBye.get(1) && sellNeutralBye.get(0) > sellNeutralBye.get(2)) {
+                        getDto().addRecommendation("Продавать");
+                    } else if (sellNeutralBye.get(2) > sellNeutralBye.get(0) && sellNeutralBye.get(2) > sellNeutralBye.get(1)) {
+                        getDto().addRecommendation("Покупать");
+                    } else {
+                        getDto().addRecommendation("Держать");
+                    }
+                }
+
+                ElementsCollection otchetnost = tabsPane.$$("a").filter(Condition.text("Отчётность"));
+                if (otchetnost.size() == 1) {
+                    otchetnost.get(0).click();
+                    sleep(2500);
+                    ElementsCollection divBtn = $$x("//*[@id='id_financials-tabs_tablist']//a").filter(Condition.text("Дивиденды"));
+                    if (divBtn.size() == 1) {
+                        divBtn.get(0).click();
+                        sleep(2500);
+
+                        ElementsCollection dataBlock = $x("//*[@id='js-category-content']/div[2]/div/div/div[5]/div[2]/div/div[1]").$$("div");
+                        ElementsCollection years = dataBlock.get(0).$$("div").filter(Condition.not(Condition.empty)).get(1).$$("div");
+                        for (SelenideElement div : years) {
+                            //...
+                        }
+
+                        //getDto().addPaySumOnShare("0");
+                        //getDto().addDividend("0");
+                        //getDto().addPaySum("0");
+
+                        //getDto().addPartOfProfit("");
+                        //getDto().addStableGrow("");
+                        //getDto().addStablePay("");
+                        //getDto().setPayDate(LocalDateTime.now()); //*[@id="js-category-content"]/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[3]/span/span
+                    }
+                }
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
             } finally {
