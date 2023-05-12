@@ -15,11 +15,13 @@ import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.NoElementAvailableException;
 import ru.investment.utils.BrowserUtils;
+import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.DoubleStream;
 
 import static com.codeborne.selenide.Selenide.*;
 
@@ -105,7 +107,7 @@ public class TradingRu extends AbstractSite {
                 ElementsCollection techAnal = tabsPane.$$("a").filter(Condition.text("Теханализ"));
                 if (techAnal.size() == 1) {
                     techAnal.get(0).click();
-                    sleep(2500);
+                    sleep(2000);
                     List<Integer> sellNeutralBye = new ArrayList<>(3);
                     ElementsCollection pazes = $$x("//*[@id='js-category-content']/div[2]/div/div/div[4]/div[2]/div[2]/div");
                     for (SelenideElement paze : pazes) {
@@ -128,16 +130,32 @@ public class TradingRu extends AbstractSite {
                     ElementsCollection divBtn = $$x("//*[@id='id_financials-tabs_tablist']//a").filter(Condition.text("Дивиденды"));
                     if (divBtn.size() == 1) {
                         divBtn.get(0).click();
-                        sleep(2500);
+                        sleep(2000);
 
-                        ElementsCollection dataBlock = $x("//*[@id='js-category-content']/div[2]/div/div/div[5]/div[2]/div/div[1]").$$x("/div");
-                        // ElementsCollection yearsParent = dataBlock.get(0).$$("div").filter(Condition.not(Condition.empty)).get(1).$$("div");
-                        ElementsCollection years = dataBlock.get(0).$$x("./div").get(3).$$x("./div");
-                        for (SelenideElement div : years) {
-                            getDto().addPaySumOnShare("0");
-                            getDto().addPaySum("0");
-                            getDto().addDividend("0");
+                        ElementsCollection dataBlock = $x("//*[@id='js-category-content']/div[2]/div/div/div[5]/div[2]/div/div[1]").$$x("./div");
+
+                        List<Double> tmpArr = new ArrayList<>();
+                        List<String> paySumsOnShare = dataBlock.get(1).$$x("./div").filter(Condition.not(Condition.empty)).get(1).$$x("./div").filter(Condition.not(Condition.empty)).texts();
+                        for (String s : paySumsOnShare) {
+                            double next = UniversalNumberParser.parseFloat(s);
+                            if (next != 0) {
+                                tmpArr.add(next);
+                            }
                         }
+                        float psos = (float) tmpArr.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
+                        getDto().addPaySumOnShare(psos);
+                        // getDto().addPaySum(psos);
+
+                        tmpArr.clear();
+                        List<String> divSums = dataBlock.get(2).$$x("./div").filter(Condition.not(Condition.empty)).get(1).$$x("./div").filter(Condition.not(Condition.empty)).texts();
+                        for (String s : divSums) {
+                            double next = UniversalNumberParser.parseFloat(s);
+                            if (next != 0) {
+                                tmpArr.add(next);
+                            }
+                        }
+                        float dss = (float) tmpArr.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
+                        getDto().addDividend(dss);
 
                         //getDto().addPartOfProfit("");
                         //getDto().addStableGrow("");

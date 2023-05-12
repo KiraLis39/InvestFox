@@ -409,7 +409,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                         add(new JLabel(dto.getTicker()));
                         add(new JLabel(dto.getCoasts() + (dto.getCostType() == null ? "" : " " + dto.getCostType())));
                         add(new JLabel(dto.getLotSize() > -1 ? dto.getLotSize() + " шт." : "NA"));
-                        add(new JLabel(dto.getDividends() + (dto.getDividends().isEmpty() ? "" : "%")));
+                        add(new JLabel(dto.getDividendsStringized()));
                         add(new JLabel(dto.getPayDate() != null ? dto.getPayDate().toString() : "NA"));
                         add(new JLabel(dto.getRecomendations() != null ? Arrays.toString(dto.getRecomendations().toArray()) : "NA"));
                     }

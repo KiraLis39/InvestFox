@@ -20,7 +20,7 @@ public class ShareDTO {
     @Builder.Default
     private final ArrayList<Float> coasts = new ArrayList<>(); // Стоимость
     @Builder.Default
-    private final ArrayList<Float> dividends = new ArrayList<>(); // Дивиденты
+    private final ArrayList<Double> dividends = new ArrayList<>(); // Дивиденты
     @Builder.Default
     private final ArrayList<Float> paySums = new ArrayList<>(); // Выплата
     @Builder.Default
@@ -68,7 +68,7 @@ public class ShareDTO {
         }
 
         String[] data = dividend.split(" ");
-        float div = 0;
+        double div = 0;
         if (data.length > 0) {
             for (String datum : data) {
                 try {
@@ -81,12 +81,24 @@ public class ShareDTO {
         this.dividends.add(div);
     }
 
+    public void addDividend(double dividend) {
+        this.dividends.add(dividend);
+    }
+
     public void addPaySum(String paySum) {
         this.paySums.add(UniversalNumberParser.parseFloat(paySum));
     }
 
+    public void addPaySum(float paySum) {
+        this.paySums.add(paySum);
+    }
+
     public void addPaySumOnShare(String paySumOnShare) {
         this.paySumsOnShare.add(UniversalNumberParser.parseFloat(paySumOnShare));
+    }
+
+    public void addPaySumOnShare(float paySumOnShare) {
+        this.paySumsOnShare.add(paySumOnShare);
     }
 
     public void addPartOfProfit(String partOfProfit) {
@@ -107,5 +119,9 @@ public class ShareDTO {
 
     public void addRecommendation(String recommendation) {
         this.recomendations.add(recommendation);
+    }
+
+    public String getDividendsStringized() {
+        return String.format("%,.2f", dividends.stream().toArray()) + (dividends.isEmpty() ? "" : "%");
     }
 }

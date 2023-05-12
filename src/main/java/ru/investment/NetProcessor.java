@@ -210,16 +210,16 @@ public class NetProcessor {
             {
                 // selenide:
                 add(new TradingRu(ticket));
+                add(new RuInvestingCom(ticket));
 
                 // jquery:
-//                add(new DohodRu(ticket));
-//                add(new GoogleFinance(ticket));
-//                add(new InvestfundsRu(ticket));
-//                add(new InvestFutureRu(ticket));
-//                add(new InvestmintRu(ticket));
-//                add(new RbkRu(ticket));
-//                add(new RuInvestingCom(ticket));
-//                add(new TinkoffRu(ticket));
+                add(new DohodRu(ticket));
+                add(new GoogleFinance(ticket));
+                add(new InvestfundsRu(ticket));
+                add(new InvestFutureRu(ticket));
+                add(new InvestmintRu(ticket));
+                add(new RbkRu(ticket));
+                add(new TinkoffRu(ticket));
             }
         };
 

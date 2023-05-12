@@ -116,10 +116,8 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
         lotCost = cost * lot;
     }
 
-    private void calcResultDiv(List<Float> newDivDataList) {
-        for (Float div : newDivDataList) {
-            dividend = (dividend + div) / 2f;
-        }
+    private void calcResultDiv(List<Double> newDivDataList) {
+        dividend = (dividend + newDivDataList.stream().mapToDouble(Double::doubleValue).average().getAsDouble()) / 2D;
     }
 
     private void calcResultCostType(CostType type) throws BadDataException {
