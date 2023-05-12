@@ -131,14 +131,13 @@ public class TradingRu extends AbstractSite {
                         sleep(2500);
 
                         ElementsCollection dataBlock = $x("//*[@id='js-category-content']/div[2]/div/div/div[5]/div[2]/div/div[1]").$$("div");
-                        ElementsCollection years = dataBlock.get(0).$$("div").filter(Condition.not(Condition.empty)).get(1).$$("div");
+                        // ElementsCollection yearsParent = dataBlock.get(0).$$("div").filter(Condition.not(Condition.empty)).get(1).$$("div");
+                        ElementsCollection years = dataBlock.get(0).$$x("./div").get(3).$$x("./div");
                         for (SelenideElement div : years) {
-                            //...
+                            getDto().addPaySumOnShare("0");
+                            getDto().addPaySum("0");
+                            getDto().addDividend("0");
                         }
-
-                        //getDto().addPaySumOnShare("0");
-                        //getDto().addDividend("0");
-                        //getDto().addPaySum("0");
 
                         //getDto().addPartOfProfit("");
                         //getDto().addStableGrow("");
