@@ -9,6 +9,7 @@ import org.jsoup.helper.HttpConnection;
 import org.jsoup.nodes.Document;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.exceptions.root.ParsingException;
+import ru.investment.utils.BrowserUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -65,4 +66,24 @@ public abstract class AbstractSite {
     }
 
     public abstract ShareDTO task() throws ParsingException;
+
+    protected boolean checkPageAvailable() {
+        if (BrowserUtils.isPageNotFound()) {
+            log.error("isPageNotFound");
+            return false;
+        }
+        if (BrowserUtils.isPageNotExists()) {
+            log.error("isPageNotExists");
+            return false;
+        }
+        if (BrowserUtils.isPageNotAvailable()) {
+            log.error("isPageNotAvailable");
+            return false;
+        }
+        if (BrowserUtils.isTechnicalWorks()) {
+            log.error("isTechnicalWorks");
+            return false;
+        }
+        return true;
+    }
 }

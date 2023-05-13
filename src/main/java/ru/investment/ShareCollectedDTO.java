@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.BadDataException;
 import ru.investment.exceptions.VariableLotException;
 
 import javax.validation.constraints.Max;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;

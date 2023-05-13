@@ -39,7 +39,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
     private @ToString.Exclude MyFields.SumPanel p01, p02, p03, p04;
     private DohodPercentPane dohodPercentPane;
 
-    private Color mtsColor = new Color(87, 15, 10);
+    private final Color mtsColor = new Color(87, 15, 10);
 
     public MtsPanel() {
         setName("mts");

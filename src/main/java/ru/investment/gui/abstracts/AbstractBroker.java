@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 @Slf4j
 @EqualsAndHashCode(callSuper = false)
 public abstract class AbstractBroker extends JPanel {
-    private BrokerDTO dto;
+    private transient BrokerDTO dto;
 
     public void exportData() {
         try {

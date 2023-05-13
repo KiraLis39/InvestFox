@@ -31,7 +31,7 @@ import static ru.investment.enums.CostType.*;
 public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     private final InvestFrame investFrame;
     private transient NetProcessor netProc;
-    private ShareCollectedDTO resultDto;
+    private transient ShareCollectedDTO resultDto;
     private JPanel midPane, leftPane, rightPane;
 
     @Autowired

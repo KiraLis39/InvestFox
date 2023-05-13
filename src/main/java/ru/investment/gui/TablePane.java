@@ -312,7 +312,6 @@ public class TablePane extends JPanel {
 
         JPanel resultPane = new JPanel(new GridLayout(1, 15, 0, 0)) {
             {
-//                setOpaque(false);
                 setBackground(Color.DARK_GRAY.darker());
                 setPreferredSize(new Dimension(0, 26));
                 setBorder(new EmptyBorder(0, 0, 0, 0));

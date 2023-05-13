@@ -7,11 +7,11 @@ import org.openqa.selenium.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import ru.investment.config.BrowserSetupConfig;
 import ru.investment.config.ObjectMapperConfig;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.entity.sites.*;
+import ru.investment.entity.sites.RuInvestingCom;
+import ru.investment.entity.sites.TradingRu;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.gui.BrokersPane;
 import ru.investment.gui.InvestFrame;
@@ -36,10 +36,10 @@ import java.util.concurrent.Executors;
 @RequiredArgsConstructor
 @org.springframework.stereotype.Component
 public class NetProcessor {
+    private static ExecutorService exec;
     private final ShareService shareService;
     private final BrokersPane brokersPane;
     private final ShareMapper shareMapper;
-    private static ExecutorService exec;
     private InvestFrame investFrame;
     private double usdValue, eurValue;
     @Value("${app.sites.count}")
@@ -213,13 +213,13 @@ public class NetProcessor {
                 add(new RuInvestingCom(ticket));
 
                 // jquery:
-                add(new DohodRu(ticket));
-                add(new GoogleFinance(ticket));
-                add(new InvestfundsRu(ticket));
-                add(new InvestFutureRu(ticket));
-                add(new InvestmintRu(ticket));
-                add(new RbkRu(ticket));
-                add(new TinkoffRu(ticket));
+//                add(new DohodRu(ticket));
+//                add(new GoogleFinance(ticket));
+//                add(new InvestfundsRu(ticket));
+//                add(new InvestFutureRu(ticket));
+//                add(new InvestmintRu(ticket));
+//                add(new RbkRu(ticket));
+//                add(new TinkoffRu(ticket));
             }
         };
 

@@ -4,30 +4,24 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import ru.investment.config.BrowserSetupConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.NoElementAvailableException;
-import ru.investment.utils.BrowserUtils;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.DoubleStream;
+import java.util.Objects;
+import java.util.UUID;
 
 import static com.codeborne.selenide.Selenide.*;
 
 @Slf4j
 public class TradingRu extends AbstractSite {
-
+    private final UUID uuid = UUID.randomUUID();
     private static final String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
 
     public TradingRu(String ticker) {
@@ -57,28 +51,13 @@ public class TradingRu extends AbstractSite {
         try {
             // open the web page into opened browser:
             open(SOURCE + getDto().getTicker());
-
-            if (BrowserUtils.isPageNotFound()) {
-                log.error("isPageNotFound");
-                return null;
-            }
-            if (BrowserUtils.isPageNotExists()) {
-                log.error("isPageNotExists");
-                return null;
-            }
-            if (BrowserUtils.isPageNotAvailable()) {
-                log.error("isPageNotAvailable");
-                return null;
-            }
-            if (BrowserUtils.isTechnicalWorks()) {
-                log.error("isTechnicalWorks");
+            if (!checkPageAvailable()) {
+                log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
             }
 
             SelenideElement content = $x(".//*[@id='tv-content']");
             content.shouldBe(Condition.visible);
-
-            // System.out.println("Test: " + content.$x("./div/div").text());
 
             try {
                 getDto().setName($x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/h1").text());
@@ -176,5 +155,19 @@ public class TradingRu extends AbstractSite {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        TradingRu tradingRu = (TradingRu) o;
+        return uuid.equals(tradingRu.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), uuid);
     }
 }

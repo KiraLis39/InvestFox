@@ -2,7 +2,6 @@ package ru.investment.config;
 
 import com.codeborne.selenide.Browsers;
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.FileDownloadMode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

@@ -65,11 +65,11 @@
         </dependency>
 
         <!-- StateMachine: -->
-        <dependency>
-            <groupId>org.springframework.statemachine</groupId>
-            <artifactId>spring-statemachine-boot</artifactId>
-            <version>1.2.14.RELEASE</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.statemachine</groupId>-->
+<!--            <artifactId>spring-statemachine-boot</artifactId>-->
+<!--            <version>1.2.14.RELEASE</version>-->
+<!--        </dependency>-->
 
         <!-- JSON: -->
         <dependency>

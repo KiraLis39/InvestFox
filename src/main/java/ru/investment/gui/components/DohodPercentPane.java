@@ -63,7 +63,7 @@ public class DohodPercentPane extends JPanel {
     }
 
     public MyFields.SumPanel getItogPersentRowLabel(int index) {
-        List<MyFields.SumPanel> sPanes = Arrays.stream(getComponents()).filter(c -> c instanceof MyFields.SumPanel).map(c -> ((MyFields.SumPanel)c)).toList();
+        List<MyFields.SumPanel> sPanes = Arrays.stream(getComponents()).filter(c -> c instanceof MyFields.SumPanel).map(c -> ((MyFields.SumPanel) c)).toList();
         return sPanes.get(index);
     }
 

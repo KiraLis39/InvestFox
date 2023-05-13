@@ -86,7 +86,7 @@
         <appender-ref ref="STDOUT" level="DEBUG"/>
         <appender-ref ref="ASYNC" level="INFO"/>
         <appender-ref ref="ERRORS" level="ERROR"/>
-<!--      <appender-ref ref="logstash" level="TRACE"/>-->
+        <!--      <appender-ref ref="logstash" level="TRACE"/>-->
     </root>
 
 </configuration>

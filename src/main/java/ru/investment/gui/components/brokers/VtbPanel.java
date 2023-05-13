@@ -54,7 +54,7 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
     @PostConstruct
     public void postInit() {
         Optional<BrokerDTO> found = brokerService.findBrokerByName(getName());
-        found.ifPresent(brokerDTO -> setDto(brokerDTO));
+        found.ifPresent(this::setDto);
         if (getDto() == null) {
             setDto(BrokerDTO.builder()
                     .name(getName())

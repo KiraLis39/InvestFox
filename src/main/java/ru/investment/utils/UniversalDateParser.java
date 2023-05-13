@@ -58,7 +58,7 @@ public class UniversalDateParser {
                 formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", new Locale("ru", "RU"));
             } else if (rawDateStr.split(":").length == 2) {
                 // Создаем парсер для формата строковых дат вида "17:10":
-                return null; // TODO: время без даты как парсить в инстант - не ясно пока. Оно применимо к любому дню.
+                return null; // время без даты как парсить в инстант - не ясно пока. Оно применимо к любому дню.
             }
         } else if (rawDateStr.contains("/")) {
             // Создаем парсер для формата строковых дат вида "20/06/2003":
