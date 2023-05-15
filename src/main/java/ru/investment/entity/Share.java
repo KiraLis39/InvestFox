@@ -32,13 +32,13 @@ public class Share {
     private short index; // Индекс в таблице
 
     @Max(value = 8, message = "Тикет не может быть длиннее восьми букв")
-    @Column(name = "ticker")
+    @Column(name = "ticker", nullable = false, unique = true)
     private String ticker; // Тикет
 
     @Column(name = "source")
     private String source; // Источник
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name; // Наименования
 
     @Column(name = "showed_name")

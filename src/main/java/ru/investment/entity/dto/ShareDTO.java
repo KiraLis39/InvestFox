@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.investment.enums.CostType;
+import ru.investment.exceptions.BadDataException;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDate;
@@ -58,12 +59,15 @@ public class ShareDTO {
         return this.payDate != null ? this.payDate.toLocalDate() : null;
     }
 
-    public void addCoast(String... coast) {
+    public void addCoast(String... coast) throws BadDataException {
+        if (coast.length == 0 || coast[0].isBlank()) {
+            throw new BadDataException("Array 'coast' is empty?");
+        }
         this.coasts.addAll(Arrays.stream(coast).map(UniversalNumberParser::parseFloat).toList());
     }
 
     public void addDividend(String dividend) {
-        if (dividend == null) {
+        if (dividend == null || dividend.equalsIgnoreCase("N/A")) {
             return;
         }
 
@@ -72,7 +76,11 @@ public class ShareDTO {
         if (data.length > 0) {
             for (String datum : data) {
                 try {
-                    div = UniversalNumberParser.parseFloat(datum.replace(",", ".").replace("%", "").trim());
+                    String dat = datum.replace(",", ".").replace("%", "").trim();
+                    if (dat.contains("(")) {
+                        dat = datum.split("\\(")[1].replace(")", "");
+                    }
+                    div = UniversalNumberParser.parseFloat(dat);
                 } catch (Exception e) {
                     log.warn("Ошибка в цикле парсинга: {}", e.getMessage());
                 }
@@ -122,6 +130,11 @@ public class ShareDTO {
     }
 
     public String getDividendsStringized() {
-        return String.format("%,.2f", dividends.stream().toArray()) + (dividends.isEmpty() ? "" : "%");
+        try {
+            return String.format("%,.2f", dividends.toArray()) + (dividends.isEmpty() ? "" : "%");
+        } catch (Exception e) {
+            log.error("Exception by string format: {}", e.getMessage());
+            return null;
+        }
     }
 }

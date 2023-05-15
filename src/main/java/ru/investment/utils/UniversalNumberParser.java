@@ -38,7 +38,8 @@ public class UniversalNumberParser {
     }
 
     public static String normalizeNumberString(String toNormalize) {
-        return toNormalize
+        String normalized;
+        normalized = toNormalize
                 .replaceAll("[№₽¥$€৳]", "")
                 .replaceAll("\\s", "")
                 .replace(" ", "")
@@ -49,11 +50,27 @@ public class UniversalNumberParser {
                 .replace("Ft", "")
                 .replace("сом", "")
                 .replace("руб.", "")
-                .replace(",", ".")
-                .replace(".00", ".0")
-                .replace("р.", ".")
+                .replace("р.", "")
                 .replace("%", "")
                 .trim();
+
+        if (normalized.contains(".") && normalized.contains(",")) {
+            normalized = normalized
+                    .replace(".", "")
+                    .replace(",", ".");
+        } else {
+            normalized = normalized
+                    .replace(",", ".")
+                    .replace(".00", ".0");
+        }
+
+        if (normalized.endsWith("K")) {
+            normalized = normalized
+                    .replace("K","")
+                    .replace(".","000.");
+        }
+
+        return normalized;
     }
 
     public static BigDecimal parseBigDecimal(String td) {

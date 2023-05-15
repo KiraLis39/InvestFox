@@ -6,6 +6,7 @@ import org.jsoup.select.Elements;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
+import ru.investment.exceptions.BadDataException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ public class InvestFutureRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() {
+    public ShareDTO task() throws BadDataException {
         Elements docElems;
         String temp;
         buildUrl(SOURCE_ONE_SUB + getDto().getTicker());

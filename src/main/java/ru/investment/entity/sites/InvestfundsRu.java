@@ -11,6 +11,7 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
+import ru.investment.exceptions.BadDataException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class InvestfundsRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() {
+    public ShareDTO task() throws BadDataException {
         buildUrl(SOURCE_PRE + getDto().getTicker().toUpperCase() + SOURCE_POST);
         Document doc;
 

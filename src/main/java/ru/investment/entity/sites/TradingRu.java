@@ -4,7 +4,11 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
@@ -22,7 +26,9 @@ import static com.codeborne.selenide.Selenide.*;
 @Slf4j
 public class TradingRu extends AbstractSite {
     private final UUID uuid = UUID.randomUUID();
-    private static final String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
+    private final RestTemplate restTemplate = new RestTemplate();
+    private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl=1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
+    private static String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
 
     public TradingRu(String ticker) {
         super.setName(ticker);
@@ -49,8 +55,24 @@ public class TradingRu extends AbstractSite {
         } while (isFailed && openTries > 0);
 
         try {
+            boolean isFound = false;
+            ResponseEntity<String> result = restTemplate.getForEntity(SEARCH.replace("TICKER", getDto().getTicker()), String.class);
+            JsonNode tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
+            JsonNode symbols = tree.get("symbols");
+            for (JsonNode symbol : symbols) {
+                if (symbol.get("currency_code").asText().equalsIgnoreCase("RUB")) {
+                    isFound = true;
+                    SOURCE = SOURCE.concat(symbol.get("provider_id").asText()).concat("-").concat(getDto().getTicker());
+                    break;
+                }
+            }
+
             // open the web page into opened browser:
-            open(SOURCE + getDto().getTicker());
+            if (isFound) {
+                open(SOURCE);
+            } else {
+                open(SOURCE + getDto().getTicker());
+            }
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
@@ -111,10 +133,14 @@ public class TradingRu extends AbstractSite {
                         divBtn.get(0).click();
                         sleep(2000);
 
-                        ElementsCollection dataBlock = $x("//*[@id='js-category-content']/div[2]/div/div/div[5]/div[2]/div/div[1]").$$x("./div");
+                        ElementsCollection dataBlock = $x("//*[@id='js-category-content']/div[2]/div/div/div[5]/div[2]/div/div[1]")
+                                .$$x("./div");
 
                         List<Double> tmpArr = new ArrayList<>();
-                        List<String> paySumsOnShare = dataBlock.get(1).$$x("./div").filter(Condition.not(Condition.empty)).get(1).$$x("./div").filter(Condition.not(Condition.empty)).texts();
+                        List<String> paySumsOnShare = dataBlock.get(1).$$x("./div")
+                                .filter(Condition.not(Condition.empty)).get(1).$$x("./div")
+                                .filter(Condition.not(Condition.empty)).texts()
+                                .stream().filter(s -> !s.equals("—")).toList();
                         for (String s : paySumsOnShare) {
                             double next = UniversalNumberParser.parseFloat(s);
                             if (next != 0) {
@@ -126,7 +152,10 @@ public class TradingRu extends AbstractSite {
                         // getDto().addPaySum(psos);
 
                         tmpArr.clear();
-                        List<String> divSums = dataBlock.get(2).$$x("./div").filter(Condition.not(Condition.empty)).get(1).$$x("./div").filter(Condition.not(Condition.empty)).texts();
+                        List<String> divSums = dataBlock.get(2).$$x("./div")
+                                .filter(Condition.not(Condition.empty)).get(1).$$x("./div")
+                                .filter(Condition.not(Condition.empty)).texts()
+                                .stream().filter(s -> !s.equals("—")).toList();
                         for (String s : divSums) {
                             double next = UniversalNumberParser.parseFloat(s);
                             if (next != 0) {

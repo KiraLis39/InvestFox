@@ -7,6 +7,7 @@ public enum CostType {
     GBP("£"),
     CHF("₣"),
     JPY("¥"),
+    INR("₹"),
     UNKNOWN("?");
 
     final String value;

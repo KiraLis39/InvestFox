@@ -83,7 +83,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                                                     try {
                                                         runScan();
                                                     } catch (ExecutionException | InterruptedException ex) {
-                                                        log.warn("Exception here: {}", ex.getMessage());
+                                                        log.warn("Exception here 001: {}", ex.getMessage());
                                                     }
                                                 }
                                             }

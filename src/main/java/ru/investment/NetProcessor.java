@@ -27,10 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -93,6 +90,10 @@ public class NetProcessor {
     public void exit() {
         int err = 0;
         try {
+            exec.shutdown();
+            if (!exec.awaitTermination(10, TimeUnit.SECONDS)) {
+                exec.shutdownNow();
+            }
             saveTable();
             investFrame.getPortfel().saveBrokers();
         } catch (Exception e) {
@@ -157,11 +158,12 @@ public class NetProcessor {
         tablePane.addShares(loading);
     }
 
-    public void saveTable() throws IOException {
+    public void saveTable() {
         log.info("Saving shares..");
         List<ShareCollectedDTO> shares = investFrame.getTableRows().stream().map(ShareTableRow::getResultDto).toList();
-        shareService.saveAll(shareMapper.toEntity(shares));
+        shareService.updateOrSave(shares);
     }
+
 
     public void runScan(String tiker) throws ExecutionException, InterruptedException {
         log.info("Scanning " + tiker.toUpperCase().trim() + "...");
@@ -179,19 +181,26 @@ public class NetProcessor {
         while (!fut.isDone()) {
             Thread.yield();
         }
+
+        log.info("Scanning " + tiker.toUpperCase().trim() + " is done!");
         if (fut.get() != null) {
             investFrame.updateDownPanel(fut.get());
         }
     }
 
-    public CompletableFuture<ShareCollectedDTO> checkTicket(String ticket, boolean isFirstTabShowed) {
+    public CompletableFuture<ShareCollectedDTO> checkTicket(String ticker, boolean isFirstTabShowed) throws InterruptedException {
         if (exec == null) {
-            exec = Executors.newFixedThreadPool(countOfSites + 2);
+            exec = Executors.newFixedThreadPool(countOfSites);
         }
 
-        return CompletableFuture.supplyAsync(() -> {
-                    log.info(String.format("Check the ticket '%s'...", ticket));
-                    return proceed(ticket, isFirstTabShowed);
+        CompletableFuture<ShareCollectedDTO> cfAs = CompletableFuture.supplyAsync(() -> {
+                    log.info(String.format("Check the ticket '%s'...", ticker));
+                    try {
+                        return proceed(ticker, isFirstTabShowed);
+                    } catch (InterruptedException e) {
+                        log.warn("CompletableFuture was interrupted");
+                        return null;
+                    }
                 }, exec)
 //                .exceptionally(throwable -> null)
                 .handle((r, ex) -> {
@@ -202,9 +211,15 @@ public class NetProcessor {
                         return null;
                     }
                 });
+
+        while (cfAs.isDone()) {
+            log.debug("Awaits for CompletableFuture accomplished the ticker '{}'...", ticker);
+            TimeUnit.MILLISECONDS.sleep(1000);
+        }
+        return cfAs;
     }
 
-    private ShareCollectedDTO proceed(String ticket, boolean isFirstTabShowed) {
+    private ShareCollectedDTO proceed(String ticket, boolean isFirstTabShowed) throws InterruptedException {
         ShareCollectedDTO resultDTO = new ShareCollectedDTO();
         ArrayList<AbstractSite> sites = new ArrayList<>(countOfSites) {
             {
@@ -233,7 +248,7 @@ public class NetProcessor {
                         ) {
                             log.info("Cost type is multiply: {} or {} (wrong company '{}'?..)",
                                     resultDTO.getCostType(), data.getCostType(), data.getName());
-                            continue;
+//                                    continue;
                         }
                         if (isFirstTabShowed) {
                             investFrame.addPanel(data);
@@ -246,7 +261,6 @@ public class NetProcessor {
                 }
             }
         }
-
         return (resultDTO.getName() == null && resultDTO.getCost() == 0) ? null : resultDTO;
     }
 }

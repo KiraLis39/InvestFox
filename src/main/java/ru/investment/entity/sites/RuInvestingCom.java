@@ -1,6 +1,7 @@
 package ru.investment.entity.sites;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +14,9 @@ import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.root.ParsingException;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -51,38 +54,118 @@ public class RuInvestingCom extends AbstractSite {
         } while (isFailed && openTries > 0);
 
         try {
-            ResponseEntity<String> result = restTemplate.getForEntity(
-                    SEARCH + getDto().getTicker(),
-                    String.class);
+            ResponseEntity<String> result = restTemplate.getForEntity(SEARCH + getDto().getTicker(), String.class);
             JsonNode tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
             String realUrl = tree.get("quotes").get(0).get("url").asText();
 
             // open the web page into opened browser:
             open(SOURCE + realUrl);
+            sleep(3000);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
             }
 
-            SelenideElement content = $x(".//*[@id='__next']");
-            content.shouldBe(Condition.visible);
+            SelenideElement xPathRoot = $x("//main/div");
+            try {
+                xPathRoot.shouldBe(Condition.exist, Duration.of(3500, ChronoUnit.MILLIS));
+            } catch (Throwable e) {
+                xPathRoot = $x("//*[@id='__next']/div[2]/div[2]/div/div/div");
+                try {
+                    xPathRoot.shouldBe(Condition.exist, Duration.of(3500, ChronoUnit.MILLIS));
+                } catch (Throwable e2) {
+                    log.error("Страница {} так и не была отображена? {}", SOURCE + realUrl, e2.getMessage());
+                    return null;
+                }
+            }
 
             try {
+                getDto().setName(xPathRoot.$x("./div[1]/div[1]//h1").text());
 
-                getDto().setName("");
-                getDto().setSector("");
-                getDto().addInfo("");
-                getDto().addCoast("");
-                getDto().setCostType(CostType.UNKNOWN);
-                getDto().setLotSize(1);
-                getDto().addRecommendation("");
-                getDto().addPaySumOnShare(1f);
+                SelenideElement costBlock = xPathRoot.$x("./div[1]/div[2]/div[1]/span");
+                if (costBlock.exists()) {
+                    getDto().addCoast(costBlock.text());
+                } else {
+                    getDto().addCoast($("div.text-5xl.font-bold.leading-9").text());
+                }
+
+                SelenideElement costTypeBlock = xPathRoot.$x("./div[1]/div[2]/div[2]/div[3]/span[2]");
+                try {
+                    if (costTypeBlock.exists()) {
+                        getDto().setCostType(CostType.valueOf(costTypeBlock.text()));
+                    } else {
+                        getDto().setCostType(CostType.valueOf(xPathRoot.$x(".//div/div/div/div[2]").$("span").text()));
+                    }
+                } catch (Exception e) {
+                    log.warn("Тип валюты не определён: '{}'", costTypeBlock.exists() ? costTypeBlock.text() : xPathRoot.$x(".//div/div/div/div[2]").$("span").text());
+                    getDto().setCostType(CostType.UNKNOWN);
+                }
+
+                ElementsCollection divData = $$x("//dl/div").filter(Condition.text("Дивиденды"));
+                if (divData.size() == 1) {
+                    SelenideElement divBlock = divData.get(0).$x("./dd/div/div/span[2]/span");
+                    if (divBlock.exists()) {
+                        getDto().addDividend(divBlock.text());
+                    } else {
+                        divData = $$x("//dl//div").filter(Condition.text("Дивиденды"));
+                        if (divData.size() == 1) {
+                            getDto().addDividend(divData.get(0).text());
+                        } else {
+                            getDto().addDividend($$x("//dt/..")
+                                    .filter(Condition.text("Дивиденды")).get(0).text()
+                                    .split("\\(")[1].replace(")", ""));
+                        }
+                    }
+                } else {
+                    log.error("Not found the div table");
+                }
+
+                // getDto().setLotSize(1);
+                // getDto().addPaySumOnShare(1f);
                 // getDto().addPaySum();
-                getDto().addDividend(1D);
-                //getDto().addPartOfProfit("");
-                //getDto().addStableGrow("");
-                //getDto().addStablePay("");
-                //getDto().setPayDate(LocalDateTime.now());
+                // getDto().addPartOfProfit("");
+                // getDto().addStableGrow("");
+                // getDto().addStablePay("");
+                // getDto().setPayDate(LocalDateTime.now());
+
+                // other tab click:
+                ElementsCollection profileTab = xPathRoot.$$x("./div[6]/nav/ul//li").filter(Condition.text("Профиль"));
+                if (profileTab.size() != 1) {
+                    profileTab = $$x("//div//a").filter(Condition.text("Профиль"));
+                }
+                profileTab.get(0).click();
+                sleep(2000);
+                ElementsCollection sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
+                if (!sectorBlock.isEmpty()) {
+                    getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
+                } else {
+                    log.error("Fix it");
+                }
+
+                SelenideElement infoBlock = $x("//*[@id='leftColumn']/div[9]/p");
+                if (infoBlock.exists()) {
+                    getDto().addInfo(infoBlock.text());
+                } else {
+                    log.error("Fix it");
+                }
+
+                back();
+                sleep(2000);
+
+                // other tab click:
+                ElementsCollection techAnalyseTab = xPathRoot.$$x("./div[6]/nav/div/ul//li").filter(Condition.text("Теханализ"));
+                if (techAnalyseTab.size() == 1) {
+                    techAnalyseTab.get(0).click();
+                    sleep(2000);
+                    SelenideElement recomBlock = $x("//*[@id='techStudiesInnerWrap']/div[1]/span");
+                    if (recomBlock.exists()) {
+                        getDto().addRecommendation(recomBlock.text());
+                    } else {
+                        log.error("Fix it");
+                    }
+                } else {
+                    log.error("Fix it");
+                }
 
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());

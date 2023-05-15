@@ -135,7 +135,7 @@ public class TablePane extends JPanel {
                             try {
                                 es.shutdown();
                                 while (!es.awaitTermination(1, TimeUnit.SECONDS)) {
-                                    // TODO: how weak ui
+                                    log.info("Await into termination...");
                                 }
                             } catch (Exception e1) {
                                 log.error("Exception here: {}", e1.getMessage());
@@ -149,7 +149,7 @@ public class TablePane extends JPanel {
                                 try {
                                     netProcessor.reload();
                                 } catch (IOException ex) {
-                                    ex.printStackTrace();
+                                    log.error("Exception here: {}", ex.getMessage());
                                 }
                             }
                         });

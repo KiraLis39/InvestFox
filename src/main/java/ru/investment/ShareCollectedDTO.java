@@ -138,18 +138,16 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     }
 
     private void calcResultRecommendation(List<String> newRecList) {
-        if (newRecList.toString().equals("[]")) {
+        if (newRecList.isEmpty()) {
             return;
         }
 
         if (recommendation == null) {
-            if (!newRecList.isEmpty()) {
-                recommendation = newRecList.toString().replace("[", "").replace("]", "").trim();
-            }
+            recommendation = newRecList.toString().replace("[", "").replace("]", "").trim();
         } else {
             for (String rec : newRecList) {
                 if (rec != null && !rec.equals("null")) {
-                    recommendation = recommendation.concat(", " + rec);
+                    recommendation = recommendation.concat(", " + rec.toLowerCase());
                 }
             }
         }
