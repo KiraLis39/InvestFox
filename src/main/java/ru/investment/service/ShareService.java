@@ -42,7 +42,7 @@ public class ShareService {
         }
     }
 
-    private Optional<Share> findShareByTicker(String ticker) {
+    public Optional<Share> findShareByTicker(String ticker) {
         return sharesRepository.findByTicker(ticker);
     }
 
