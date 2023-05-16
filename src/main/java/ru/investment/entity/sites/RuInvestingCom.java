@@ -6,6 +6,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import ru.investment.config.ObjectMapperConfig;
@@ -24,10 +25,13 @@ import static com.codeborne.selenide.Selenide.*;
 
 @Slf4j
 public class RuInvestingCom extends AbstractSite {
-    private final UUID uuid = UUID.randomUUID();
-    private static final String SOURCE = "https://ru.investing.com";
-    private static final String SEARCH = "https://api.investing.com/api/search/v2/search?t=Equities&q="; // LNZL | MAGN
+    @Value("${app.selenide.tab_click_sleep}")
+    private short tabClickSleep;
+
     private final RestTemplate restTemplate = new RestTemplate();
+    private final UUID uuid = UUID.randomUUID();
+    private static final String SEARCH = "https://api.investing.com/api/search/v2/search?t=Equities&q="; // LNZL | MAGN
+    private String SOURCE = "https://ru.investing.com";
 
     public RuInvestingCom(String ticket) {
         super.setName(ticket);
@@ -49,18 +53,23 @@ public class RuInvestingCom extends AbstractSite {
             } catch (Exception e) {
                 log.warn("Selenide jpen exception: {}", e.getMessage());
                 isFailed = true;
-                Selenide.sleep(500);
+                Selenide.sleep(1000);
             }
         } while (isFailed && openTries > 0);
 
         try {
             ResponseEntity<String> result = restTemplate.getForEntity(SEARCH + getDto().getTicker(), String.class);
             JsonNode tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
+            if (tree.get("quotes").isEmpty() && getDto().getTicker().endsWith("P")) {
+                result = restTemplate.getForEntity(SEARCH + getDto().getTicker().replace("P", "_p"), String.class);
+                tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
+            }
             String realUrl = tree.get("quotes").get(0).get("url").asText();
 
             // open the web page into opened browser:
-            open(SOURCE + realUrl);
-            sleep(3000);
+            SOURCE += realUrl;
+            open(SOURCE);
+            sleep(3500);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
@@ -134,7 +143,7 @@ public class RuInvestingCom extends AbstractSite {
                     profileTab = $$x("//div//a").filter(Condition.text("Профиль"));
                 }
                 profileTab.get(0).click();
-                sleep(2000);
+                sleep(tabClickSleep);
                 ElementsCollection sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
                 if (!sectorBlock.isEmpty()) {
                     getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
@@ -146,17 +155,17 @@ public class RuInvestingCom extends AbstractSite {
                 if (infoBlock.exists()) {
                     getDto().addInfo(infoBlock.text());
                 } else {
-                    log.error("Fix it");
+                    log.warn("Инфо по тикеру '{}' не обнаружена на странице профиля акции", getDto().getTicker());
                 }
 
                 back();
-                sleep(2000);
+                sleep(tabClickSleep);
 
                 // other tab click:
                 ElementsCollection techAnalyseTab = xPathRoot.$$x("./div[6]/nav/div/ul//li").filter(Condition.text("Теханализ"));
                 if (techAnalyseTab.size() == 1) {
                     techAnalyseTab.get(0).click();
-                    sleep(2000);
+                    sleep(tabClickSleep);
                     SelenideElement recomBlock = $x("//*[@id='techStudiesInnerWrap']/div[1]/span");
                     if (recomBlock.exists()) {
                         getDto().addRecommendation(recomBlock.text());

@@ -96,16 +96,18 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
         }
     }
 
-    private void calcResultLot(int newLotData) throws VariableLotException {
+    private void calcResultLot(int newLotData) {
         if (newLotData == -1) {
             return;
         }
         if (newLotData > 0) {
             if (lotSize == 1) {
+                // если было дефолтное, но неверное значение:
                 lotSize = (short) newLotData;
             } else if (lotSize != newLotData) {
+                // если значение уже было установлено выше, но пришло опять другое:
                 lotSize = (short) Math.min(lotSize, newLotData);
-                log.warn("Множественный результат. Лот: {} или {}", newLotData, lotSize);
+                log.warn("Множественный результат. Размер лота акции '{}': {} или {}", ticker, newLotData, lotSize);
             }
         }
     }

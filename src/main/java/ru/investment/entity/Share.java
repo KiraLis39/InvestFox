@@ -10,6 +10,7 @@ import ru.investment.enums.CostType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ public class Share {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Builder.Default
     @Column(name = "updated_date")
     private LocalDateTime updatedDate = LocalDateTime.now(); // Обновлено
 
@@ -47,9 +49,12 @@ public class Share {
     @Column(name = "sector")
     private String sector; // Сектор
 
+    @Builder.Default
     @Column(name = "cost_type")
-    private CostType costType; // Валюта
+    private CostType costType = CostType.UNKNOWN; // Валюта
 
+    @Min(1)
+    @Builder.Default
     @Column(name = "lot_size")
     private short lotSize = 1; // Размер лота
 

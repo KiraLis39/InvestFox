@@ -36,7 +36,6 @@ public class BrowserSetupConfig {
         Configuration.headless = true; // default "false"
         Configuration.driverManagerEnabled = true; // default "true"
         Configuration.pageLoadStrategy = "eager"; // default "normal"
-        //Configuration.baseUrl = "http://localhost:" + serverPort; // default "http://localhost:8080"
         Configuration.holdBrowserOpen = false; // default "false"
         Configuration.downloadsFolder = "downloads";
         Configuration.screenshots = true; // default "true"

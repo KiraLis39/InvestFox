@@ -95,7 +95,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         addTextColumn("SECTOR", resultDto.getSector() == null ? null : resultDto.getSector().replace(";", " "), resultDto.getSector() == null ? null : "<html>".concat(resultDto.getSector().replace(";", "<br>")));
         addEditableColumn("NAME", resultDto.getShowedName(), "<html>" + resultDto.getName().replace(";", "<br>"));
         addEditableColumn("TICKER", resultDto.getTicker(), null, Color.WHITE, false);
-        addTextColumn("COST", String.format("%,.2f", resultDto.getCost()));
+        addTextColumn("COST", String.format("%,.2f", resultDto.getCost()), String.format("%,.5f", resultDto.getCost()));
         addTextColumn("COST_TYPE", resultDto.getCostType() == null ? "?" : resultDto.getCostType().value());
         addTextColumn("LOT_SIZE", resultDto.getLotSize() + "");
 

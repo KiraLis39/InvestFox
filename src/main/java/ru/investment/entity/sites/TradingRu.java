@@ -28,7 +28,7 @@ public class TradingRu extends AbstractSite {
     private final UUID uuid = UUID.randomUUID();
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl=1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
-    private static String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
+    private String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
 
     public TradingRu(String ticker) {
         super.setName(ticker);
@@ -68,11 +68,10 @@ public class TradingRu extends AbstractSite {
             }
 
             // open the web page into opened browser:
-            if (isFound) {
-                open(SOURCE);
-            } else {
-                open(SOURCE + getDto().getTicker());
+            if (!isFound) {
+                SOURCE += getDto().getTicker();
             }
+            open(SOURCE);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import ru.investment.config.ObjectMapperConfig;
 import ru.investment.config.constants.Constant;
+import ru.investment.entity.Share;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.RuInvestingCom;
 import ru.investment.entity.sites.TradingRu;
@@ -27,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 @Slf4j
@@ -90,9 +92,11 @@ public class NetProcessor {
     public void exit() {
         int err = 0;
         try {
-            exec.shutdown();
-            if (!exec.awaitTermination(10, TimeUnit.SECONDS)) {
-                exec.shutdownNow();
+            if (exec != null) {
+                exec.shutdown();
+                if (!exec.awaitTermination(10, TimeUnit.SECONDS)) {
+                    exec.shutdownNow();
+                }
             }
             saveTable();
             investFrame.getPortfel().saveBrokers();
@@ -212,29 +216,31 @@ public class NetProcessor {
                     }
                 });
 
-        while (cfAs.isDone()) {
+        while (!cfAs.isDone() && !cfAs.isCancelled()) {
             log.debug("Awaits for CompletableFuture accomplished the ticker '{}'...", ticker);
-            TimeUnit.MILLISECONDS.sleep(1000);
+            TimeUnit.MILLISECONDS.sleep(1500);
+            Thread.yield();
         }
         return cfAs;
     }
 
-    private ShareCollectedDTO proceed(String ticket, boolean isFirstTabShowed) throws InterruptedException {
-        ShareCollectedDTO resultDTO = new ShareCollectedDTO();
+    private ShareCollectedDTO proceed(String ticker, boolean isFirstTabShowed) throws InterruptedException {
+        Optional<Share> exists = shareService.findShareByTicker(ticker);
+        ShareCollectedDTO resultDTO = exists.isPresent() ? shareMapper.toDto(exists.get()) : new ShareCollectedDTO();
         ArrayList<AbstractSite> sites = new ArrayList<>(countOfSites) {
             {
                 // selenide:
-                add(new TradingRu(ticket));
-                add(new RuInvestingCom(ticket));
+                add(new TradingRu(ticker));
+                add(new RuInvestingCom(ticker));
 
                 // jquery:
-//                add(new DohodRu(ticket));
-//                add(new GoogleFinance(ticket));
-//                add(new InvestfundsRu(ticket));
-//                add(new InvestFutureRu(ticket));
-//                add(new InvestmintRu(ticket));
-//                add(new RbkRu(ticket));
-//                add(new TinkoffRu(ticket));
+//                add(new DohodRu(ticker));
+//                add(new GoogleFinance(ticker));
+//                add(new InvestfundsRu(ticker));
+//                add(new InvestFutureRu(ticker));
+//                add(new InvestmintRu(ticker));
+//                add(new RbkRu(ticker));
+//                add(new TinkoffRu(ticker));
             }
         };
 
@@ -248,12 +254,12 @@ public class NetProcessor {
                         ) {
                             log.info("Cost type is multiply: {} or {} (wrong company '{}'?..)",
                                     resultDTO.getCostType(), data.getCostType(), data.getName());
-//                                    continue;
+                            continue;
                         }
                         if (isFirstTabShowed) {
                             investFrame.addPanel(data);
                         }
-                        resultDTO.update(ticket, data);
+                        resultDTO.update(ticker, data);
                     }
                 } catch (Exception sbe) {
                     log.error("Exception here: {}", sbe.getMessage());

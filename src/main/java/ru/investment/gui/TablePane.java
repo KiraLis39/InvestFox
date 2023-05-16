@@ -134,15 +134,16 @@ public class TablePane extends JPanel {
 
                             try {
                                 es.shutdown();
-                                while (!es.awaitTermination(1, TimeUnit.SECONDS)) {
+                                while (!es.awaitTermination(1_500, TimeUnit.MILLISECONDS)) {
                                     log.info("Await into termination...");
+                                    Thread.yield();
                                 }
                             } catch (Exception e1) {
                                 log.error("Exception here: {}", e1.getMessage());
                             } finally {
                                 Long pass = System.currentTimeMillis() - was;
-                                log.error(String.format(
-                                        "%n=== UPDATE TIME PAST: %d min, %d sec ===%n",
+                                log.warn(String.format(
+                                        "%n=== UPDATE TIME PAST: %d min, %d sec ===%n%n%n",
                                         TimeUnit.MILLISECONDS.toMinutes(pass),
                                         TimeUnit.MILLISECONDS.toSeconds(pass) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
                                 ));
