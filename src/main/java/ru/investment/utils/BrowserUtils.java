@@ -30,10 +30,16 @@ public class BrowserUtils {
     }
 
     public static void closeWindow() {
-        closeWindow();
+        Selenide.closeWindow();
     }
 
     public static void closeAndClearAll() {
+        try {
+            closeWindow();
+        } catch (Exception e) {
+            log.warn("Can`t close the browser window.");
+        }
+
         log.info("\n* Выполняется чистка проекта... *");
         try {
             if (webdriver().driver().hasWebDriverStarted()) {
@@ -41,7 +47,7 @@ public class BrowserUtils {
                 webdriver().driver().clearCookies();
             }
         } catch (Throwable t) {
-            log.warn("Не удалось очистить куки браузера: " + t.getMessage());
+            log.debug("Не удалось очистить куки браузера: " + t.getMessage());
         }
         closeDriver();
         log.info("* Чистка проекта завершена *\n");

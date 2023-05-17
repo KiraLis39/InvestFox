@@ -131,6 +131,9 @@ public class ShareDTO {
 
     public String getDividendsStringized() {
         try {
+            if (dividends.size() == 0) {
+                return null;
+            }
             return String.format("%,.2f", dividends.toArray()) + (dividends.isEmpty() ? "" : "%");
         } catch (Exception e) {
             log.error("Exception by string format: {}", e.getMessage());

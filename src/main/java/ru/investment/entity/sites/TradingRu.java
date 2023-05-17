@@ -25,8 +25,6 @@ import java.util.UUID;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
-import static com.codeborne.selenide.Selenide.closeWebDriver;
-import static com.codeborne.selenide.Selenide.closeWindow;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.sleep;
 
@@ -169,8 +167,7 @@ public class TradingRu extends AbstractSite {
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
             } finally {
-                closeWindow();
-                closeWebDriver();
+                BrowserUtils.closeAndClearAll();
             }
 
             getDto().setLastRefreshDate(LocalDateTime.now());

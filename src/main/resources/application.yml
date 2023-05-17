@@ -33,6 +33,7 @@ logging:
     org.springframework.core.env: INFO
     org.springframework.scheduling: INFO
     org.springframework.web.servlet: INFO
+    org.springframework.web.client.RestTemplate: INFO
     org.springframework.aop.framework.CglibAopProxy: INFO
     org.springframework.beans.factory: INFO
     org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor: WARN
@@ -44,7 +45,6 @@ logging:
     org.springframework.validation.beanvalidation: INFO
     org.springframework.statemachine.support.LifecycleObjectSupport: INFO
     org.springframework.jdbc.datasource.DataSourceUtils: INFO
-
     org.asynchttpclient.netty.channel.DefaultChannelPool: INFO
     org.openqa.selenium.remote.RemoteWebDriver: INFO
     org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec: INFO
@@ -110,7 +110,7 @@ app:
 
   selenide:
     test_timeout: 30_000
-    page_load_timeout: 10_000
+    page_load_timeout: 12_000
     polling_interval: 250
     # remote_read_timeout: 30_000
     # remote_connect_timeout: 30_000

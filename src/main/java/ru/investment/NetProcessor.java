@@ -220,11 +220,12 @@ public class NetProcessor {
                     }
                 });
 
+        log.debug("Awaits for CompletableFuture accomplished the ticker '{}'...", ticker);
         while (!cfAs.isDone() && !cfAs.isCancelled()) {
-            log.debug("Awaits for CompletableFuture accomplished the ticker '{}'...", ticker);
-            TimeUnit.MILLISECONDS.sleep(1500);
+            TimeUnit.MILLISECONDS.sleep(1000);
             Thread.yield();
         }
+        log.debug("The CompletableFuture accomplished the ticker '{}'!", ticker);
         return cfAs;
     }
 

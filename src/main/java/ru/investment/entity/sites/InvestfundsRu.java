@@ -1,6 +1,7 @@
 package ru.investment.entity.sites;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -9,16 +10,17 @@ import org.springframework.web.client.RestTemplate;
 import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
+import ru.investment.enums.CostType;
 import ru.investment.exceptions.BadDataException;
 import ru.investment.exceptions.BrowserException;
 import ru.investment.utils.BrowserUtils;
+import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.closeWebDriver;
-import static com.codeborne.selenide.Selenide.closeWindow;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
 import static com.codeborne.selenide.Selenide.open;
 
 @Slf4j
@@ -43,42 +45,63 @@ public class InvestfundsRu extends AbstractSite {
         }
 
         try {
-            boolean isFound = false;
-            ResponseEntity<String> result = restTemplate.getForEntity(SEARCH.replace("TICKER", getDto().getTicker()), String.class);
+            ResponseEntity<String> result = restTemplate
+                    .getForEntity(SEARCH + getDto().getTicker(), String.class);
             JsonNode tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
-            JsonNode symbols = tree.get("symbols");
-//            for (JsonNode symbol : symbols) {
-//                if (symbol.get("currency_code").asText().equalsIgnoreCase("RUB")) {
-//                    isFound = true;
-//                    SOURCE = SOURCE.concat(symbol.get("provider_id").asText()).concat("-").concat(getDto().getTicker());
-//                    break;
-//                }
-//            }
+            JsonNode results = tree.get("currentResults");
+            if (!results.isEmpty()) {
+                SOURCE += results.get(0).get("url").asText();
+            }
 
             // open the web page into opened browser:
-            if (!isFound) {
-                SOURCE += getDto().getTicker().toUpperCase() + VERIFY_HASH; // https://investfunds.ru/stocks/Aqua/
-            }
             open(SOURCE);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
             }
 
-            SelenideElement content = $("html body");
+            SelenideElement content = $x("/html/body/div[2]");
             content.shouldBe(Condition.visible);
 
             try {
-                getDto().setName("");
-                getDto().setSector("");
-                getDto().addInfo("");
-                getDto().addCoast("");
-                getDto().setCostType(null);
-                getDto().setLotSize(1);
-                getDto().addRecommendation("");
-                getDto().addPaySumOnShare(0);
-                getDto().addDividend(0);
+                getDto().setName($x("//*[@class='widget_info_ttl']").text().replace("Акции ", ""));
 
+                ElementsCollection infoLine = $$x("//*[@class='mainParam']//li")
+                        .filter(Condition.have(Condition.text("ОТРАСЛЬ")));
+                if (!infoLine.isEmpty() && infoLine.get(0).$x(".//*[@class='value']").exists()) {
+                    getDto().setSector(infoLine.get(0).$x(".//*[@class='value']").text());
+                } else {
+                    log.error("Fix it!");
+                }
+
+                ElementsCollection infoBlock = $$x(".//div/p").filter(Condition.not(Condition.hidden));
+                if (infoBlock.size() == 1) {
+                    getDto().addInfo(infoBlock.get(0).text());
+                } else {
+                    log.error("Fix it!");
+                }
+
+                ElementsCollection costBlock = $$x("//*[@class='lftPnl']//div")
+                        .filter(Condition.cssClass("mainPrice"));
+                if (!costBlock.isEmpty()) {
+                    String cost = costBlock.get(0).getOwnText().split("\\(")[0].trim();
+                    getDto().addCoast(cost.substring(0, cost.length() - 4)); // vault is always 3 symbols + space.
+                    getDto().setCostType(CostType.valueOf(cost.substring(cost.length() - 3)));
+                } else {
+                    log.error("Fix it!");
+                }
+
+                ElementsCollection lotBlock = $$x("//div[@data-modul='options']//div/ul/li//span")
+                        .filter(Condition.text("Торговый лот"));
+                if (!lotBlock.isEmpty()) {
+                    getDto().setLotSize(UniversalNumberParser.parseInt(lotBlock.get(0).$x("../div").text()));
+                } else {
+                    log.error("Fix it!");
+                }
+
+                // getDto().addDividend(0);
+                // getDto().addRecommendation("");
+                // getDto().addPaySumOnShare(0);
                 // getDto().addPaySum();
                 // getDto().addPartOfProfit("");
                 // getDto().addStableGrow("");
@@ -87,8 +110,7 @@ public class InvestfundsRu extends AbstractSite {
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
             } finally {
-                closeWindow();
-                closeWebDriver();
+                BrowserUtils.closeAndClearAll();
             }
 
             getDto().setLastRefreshDate(LocalDateTime.now());

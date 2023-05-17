@@ -116,7 +116,11 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     }
 
     private void calcResultDiv(List<Double> newDivDataList) {
-        dividend = (dividend + newDivDataList.stream().mapToDouble(Double::doubleValue).average().getAsDouble()) / 2D;
+        double listAverage = newDivDataList.stream().mapToDouble(Double::doubleValue).average().orElse(0D);
+        if (listAverage == 0D) {
+            return;
+        }
+        dividend = dividend == 0D ? listAverage : (dividend + listAverage) / 2D;
     }
 
     private void calcResultCostType(CostType type) throws BadDataException {

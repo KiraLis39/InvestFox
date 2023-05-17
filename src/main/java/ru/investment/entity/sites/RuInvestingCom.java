@@ -26,8 +26,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
 import static com.codeborne.selenide.Selenide.back;
-import static com.codeborne.selenide.Selenide.closeWebDriver;
-import static com.codeborne.selenide.Selenide.closeWindow;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.sleep;
 
@@ -141,10 +139,17 @@ public class RuInvestingCom extends AbstractSite {
                 profileTab.get(0).click();
                 sleep(tabClickSleep);
                 ElementsCollection sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
-                if (!sectorBlock.isEmpty()) {
-                    getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
+                sleep(750);
+                boolean isEmpty = sectorBlock.isEmpty();
+                if (isEmpty) {
+                    sleep(1000);
+                    sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
+                    isEmpty = sectorBlock.isEmpty();
+                }
+                if (isEmpty) {
+                    log.error("\nFix it");
                 } else {
-                    log.error("Fix it");
+                    getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
                 }
 
                 SelenideElement infoBlock = $x("//*[@id='leftColumn']/div[9]/p");
@@ -158,24 +163,11 @@ public class RuInvestingCom extends AbstractSite {
                 sleep(tabClickSleep);
 
                 // other tab click:
-                ElementsCollection techAnalyseTab = xPathRoot.$$x("./div[6]/nav/div/ul//li").filter(Condition.text("Теханализ"));
-                if (techAnalyseTab.size() == 1) {
-                    techAnalyseTab.get(0).click();
-                    sleep(tabClickSleep);
-                    SelenideElement recomBlock = $x("//*[@id='techStudiesInnerWrap']/div[1]/span");
-                    if (recomBlock.exists()) {
-                        getDto().addRecommendation(recomBlock.text());
-                    } else {
-                        log.error("Fix it");
-                    }
-                } else {
-                    log.error("Fix it");
-                }
+                parseTechAnalyzeTab(xPathRoot);
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
             } finally {
-                closeWindow();
-                closeWebDriver();
+                BrowserUtils.closeAndClearAll();
             }
 
             getDto().setLastRefreshDate(LocalDateTime.now());
@@ -183,6 +175,24 @@ public class RuInvestingCom extends AbstractSite {
         } catch (Exception e) {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
             return null;
+        }
+    }
+
+    private void parseTechAnalyzeTab(SelenideElement xPathRoot) {
+        ElementsCollection techAnalyseTab = xPathRoot.$$x(".//nav/div/ul//li/a").filter(Condition.text("Теханализ"));
+        sleep(500);
+        int tabSize = techAnalyseTab.size();
+        if (tabSize == 1) {
+            techAnalyseTab.get(0).click();
+            sleep(tabClickSleep);
+            SelenideElement recomBlock = $x("//*[@id='techStudiesInnerWrap']/div[1]/span");
+            if (recomBlock.exists()) {
+                getDto().addRecommendation(recomBlock.text());
+            } else {
+                log.error("\nFix it");
+            }
+        } else {
+            log.error("\nFix it");
         }
     }
 
