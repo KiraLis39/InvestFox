@@ -92,7 +92,9 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         int PE = (int) Math.round(resultDto.getCost() / sharePay);
 
         addSpinnerColumn("INDEX", resultDto.getIndex());
-        addTextColumn("SECTOR", resultDto.getSector() == null ? null : resultDto.getSector().replace(";", " "), resultDto.getSector() == null ? null : "<html>".concat(resultDto.getSector().replace(";", "<br>")));
+        addTextColumn("SECTOR",
+                resultDto.getSectors().isEmpty() ? "=NA=" : resultDto.getSectors().toString(),
+                resultDto.getSectors().isEmpty() ? "(not assigned)" : "<html>".concat(resultDto.getSectors().stream().toList().toString().replace(",", "<br>")));
         addEditableColumn("NAME", resultDto.getShowedName(), "<html>" + resultDto.getName().replace(";", "<br>"));
         addEditableColumn("TICKER", resultDto.getTicker(), null, Color.WHITE, false);
         addTextColumn("COST", String.format("%,.2f", resultDto.getCost()), String.format("%,.5f", resultDto.getCost()));
@@ -367,7 +369,6 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         } else {
             peLabel.setForeground(new Color(1.0f, 0.0f, 0.5f));
         }
-
 
         //
         Component name = getColumnNamed("NAME");

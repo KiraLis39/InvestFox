@@ -12,6 +12,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -46,8 +48,9 @@ public class Share {
     @Column(name = "showed_name")
     private String showedName; // Отображаемое имя
 
-    @Column(name = "sector")
-    private String sector; // Сектор
+    @Builder.Default
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> sectors = new HashSet<>(); // Сектор
 
     @Builder.Default
     @Column(name = "cost_type")

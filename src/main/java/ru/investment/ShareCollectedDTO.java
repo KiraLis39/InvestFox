@@ -8,12 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.BadDataException;
-import ru.investment.exceptions.VariableLotException;
 
 import javax.validation.constraints.Max;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     private UUID id; // id from DataBase
 
+    @Builder.Default
     private LocalDateTime updatedDate = LocalDateTime.now(); // Обновлено
     private short index; // Индекс в таблице
     @Max(value = 8, message = "Тикет не может быть длиннее восьми букв")
@@ -31,8 +33,10 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     private String source; // Источник
     private String name; // Наименования
     private String showedName; // Отображаемое имя
-    private String sector; // Сектор
+    @Builder.Default
+    private Set<String> sectors = new HashSet<>(); // Сектор
     private CostType costType; // Валюта
+    @Builder.Default
     private short lotSize = 1; // Размер лота
     private double cost; // Стоимость
     private double lotCost; // Стоимость лота
@@ -117,7 +121,11 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     }
 
     private void calcResultDiv(List<Double> newDivDataList) {
-        dividend = (dividend + newDivDataList.stream().mapToDouble(Double::doubleValue).average().getAsDouble()) / 2D;
+        double listAverage = newDivDataList.stream().mapToDouble(Double::doubleValue).average().orElse(0D);
+        if (listAverage == 0D) {
+            return;
+        }
+        dividend = dividend == 0D ? listAverage : (dividend + listAverage) / 2D;
     }
 
     private void calcResultCostType(CostType type) throws BadDataException {
@@ -132,10 +140,10 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     }
 
     private void calcResultSector(String newData) {
-        if (sector == null) {
-            sector = newData;
-        } else if (newData != null && !newData.equalsIgnoreCase("null")) {
-            sector = sector.concat(";" + newData);
+        if (newData != null && !newData.isEmpty() && !newData.equalsIgnoreCase("null")) {
+            for (String sector : newData.split(";")) {
+                sectors.add(sector.trim());
+            }
         }
     }
 

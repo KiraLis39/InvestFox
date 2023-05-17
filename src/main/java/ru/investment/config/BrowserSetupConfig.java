@@ -33,6 +33,7 @@ public class BrowserSetupConfig {
         log.info("Текущая ОС: " + os);
 
         Configuration.browser = Browsers.FIREFOX; // default "chrome"
+        Configuration.browserSize = "1680x1050";
         Configuration.headless = true; // default "false"
         Configuration.driverManagerEnabled = true; // default "true"
         Configuration.pageLoadStrategy = "eager"; // default "normal"

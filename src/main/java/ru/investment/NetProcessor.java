@@ -11,6 +11,7 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.Share;
 import ru.investment.entity.dto.ShareDTO;
+import ru.investment.entity.sites.InvestfundsRu;
 import ru.investment.entity.sites.RuInvestingCom;
 import ru.investment.entity.sites.TradingRu;
 import ru.investment.entity.sites.impl.AbstractSite;
@@ -168,7 +169,6 @@ public class NetProcessor {
         shareService.updateOrSave(shares);
     }
 
-
     public void runScan(String tiker) throws ExecutionException, InterruptedException {
         log.info("Scanning " + tiker.toUpperCase().trim() + "...");
 
@@ -216,11 +216,12 @@ public class NetProcessor {
                     }
                 });
 
+        log.debug("Awaits for CompletableFuture accomplished the ticker '{}'...", ticker);
         while (!cfAs.isDone() && !cfAs.isCancelled()) {
-            log.debug("Awaits for CompletableFuture accomplished the ticker '{}'...", ticker);
-            TimeUnit.MILLISECONDS.sleep(1500);
+            TimeUnit.MILLISECONDS.sleep(1000);
             Thread.yield();
         }
+        log.debug("The CompletableFuture accomplished the ticker '{}'!", ticker);
         return cfAs;
     }
 
@@ -232,15 +233,13 @@ public class NetProcessor {
                 // selenide:
                 add(new TradingRu(ticker));
                 add(new RuInvestingCom(ticker));
+                add(new InvestfundsRu(ticker)); // есть лот
 
                 // jquery:
-//                add(new DohodRu(ticker));
-//                add(new GoogleFinance(ticker));
-//                add(new InvestfundsRu(ticker));
-//                add(new InvestFutureRu(ticker));
 //                add(new InvestmintRu(ticker));
 //                add(new RbkRu(ticker));
 //                add(new TinkoffRu(ticker));
+//                add(new SimplyWallSt(ticker));
             }
         };
 

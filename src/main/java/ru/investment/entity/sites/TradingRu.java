@@ -2,7 +2,6 @@ package ru.investment.entity.sites;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,9 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
+import ru.investment.exceptions.BrowserException;
 import ru.investment.exceptions.NoElementAvailableException;
+import ru.investment.utils.BrowserUtils;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
@@ -25,9 +26,9 @@ import static com.codeborne.selenide.Selenide.*;
 
 @Slf4j
 public class TradingRu extends AbstractSite {
+    private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl=1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
     private final UUID uuid = UUID.randomUUID();
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl=1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
     private String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
 
     public TradingRu(String ticker) {
@@ -38,21 +39,10 @@ public class TradingRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() {
-        int openTries = 3;
-        boolean isFailed;
-        do {
-            isFailed = false;
-            openTries--;
-            try {
-                // open the browser instant:
-                open();
-            } catch (Exception e) {
-                log.warn("Selenide jpen exception: {}", e.getMessage());
-                isFailed = true;
-                Selenide.sleep(500);
-            }
-        } while (isFailed && openTries > 0);
+    public ShareDTO task() throws BrowserException {
+        if (!BrowserUtils.openNewBrowser()) {
+            throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
+        }
 
         try {
             boolean isFound = false;
@@ -173,8 +163,7 @@ public class TradingRu extends AbstractSite {
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
             } finally {
-                closeWindow();
-                closeWebDriver();
+                BrowserUtils.closeAndClearAll();
             }
 
             getDto().setLastRefreshDate(LocalDateTime.now());

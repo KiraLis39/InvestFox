@@ -26,10 +26,16 @@ public class BrowserUtils {
     }
 
     public static void closeWindow() {
-        closeWindow();
+        Selenide.closeWindow();
     }
 
     public static void closeAndClearAll() {
+        try {
+            closeWindow();
+        } catch (Exception e) {
+            log.warn("Can`t close the browser window.");
+        }
+
         log.info("\n* Выполняется чистка проекта... *");
         try {
             if (webdriver().driver().hasWebDriverStarted()) {
@@ -37,7 +43,7 @@ public class BrowserUtils {
                 webdriver().driver().clearCookies();
             }
         } catch (Throwable t) {
-            log.warn("Не удалось очистить куки браузера: " + t.getMessage());
+            log.debug("Не удалось очистить куки браузера: " + t.getMessage());
         }
         closeDriver();
         log.info("* Чистка проекта завершена *\n");
@@ -81,5 +87,23 @@ public class BrowserUtils {
     public static boolean isPageNotFound() {
         return $x("/html/body")
                 .text().contains(ParserMessages.PAGE_NOT_FOUND);
+    }
+
+    public static synchronized boolean openNewBrowser() {
+        int openTries = 3;
+        boolean isSuccess;
+        do {
+            isSuccess = true;
+            openTries--;
+            try {
+                // open the browser instant:
+                open();
+            } catch (Exception e) {
+                log.warn("Selenide open exception: {}", e.getMessage());
+                isSuccess = false;
+                Selenide.sleep(500);
+            }
+        } while (!isSuccess && openTries > 0);
+        return isSuccess;
     }
 }

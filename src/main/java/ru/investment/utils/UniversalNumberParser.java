@@ -30,7 +30,8 @@ public class UniversalNumberParser {
 
     public static Integer parseInt(String toParse) {
         try {
-            return Integer.parseInt(normalizeNumberString(toParse));
+            return Integer.parseInt(normalizeNumberString(toParse)
+                    .replace(".0", ""));
         } catch (NumberFormatException nfe) {
             log.error(errorMessage, toParse, nfe.getMessage());
             throw nfe;
@@ -66,8 +67,8 @@ public class UniversalNumberParser {
 
         if (normalized.endsWith("K")) {
             normalized = normalized
-                    .replace("K","")
-                    .replace(".","000.");
+                    .replace("K", "")
+                    .replace(".", "000.");
         }
 
         return normalized;

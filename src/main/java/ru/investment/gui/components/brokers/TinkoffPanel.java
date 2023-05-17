@@ -34,12 +34,11 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
     private static @ToString.Exclude KeyListener kList;
     private static @ToString.Exclude JTextField inputRowField01, inputRowField02, inputRowField03;
     private static @ToString.Exclude JTextField todayRowField01, todayRowField02, todayRowField03;
+    private final Color tinkColor = new Color(142, 74, 10);
     private transient @ToString.Exclude BrokerService brokerService;
     private @ToString.Exclude MyFields.SumPanel itogRowPane01, itogRowPane02, itogRowPane03;
     private @ToString.Exclude JLabel sumLabel01, sumLabel02, sumLabel03;
     private DohodPercentPane dohodPercentPane;
-
-    private final Color tinkColor = new Color(142, 74, 10);
 
     public TinkoffPanel() {
         setName("tkf");
@@ -294,7 +293,6 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
         todayRowField02.setText(String.valueOf(getDto().getData().outputs.get(1)));
         todayRowField03.setText(String.valueOf(getDto().getData().outputs.get(2)));
     }
-
 
     // other:
     @Override

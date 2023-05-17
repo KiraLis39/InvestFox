@@ -2,9 +2,9 @@ package ru.investment.entity.sites;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
+import fox.components.FOptionPane;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,9 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
+import ru.investment.exceptions.BrowserException;
 import ru.investment.exceptions.root.ParsingException;
+import ru.investment.utils.BrowserUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -25,12 +27,11 @@ import static com.codeborne.selenide.Selenide.*;
 
 @Slf4j
 public class RuInvestingCom extends AbstractSite {
-    @Value("${app.selenide.tab_click_sleep}")
-    private short tabClickSleep;
-
+    private static final String SEARCH = "https://api.investing.com/api/search/v2/search?t=Equities&q="; // LNZL | MAGN
     private final RestTemplate restTemplate = new RestTemplate();
     private final UUID uuid = UUID.randomUUID();
-    private static final String SEARCH = "https://api.investing.com/api/search/v2/search?t=Equities&q="; // LNZL | MAGN
+    @Value("${app.selenide.tab_click_sleep}")
+    private short tabClickSleep;
     private String SOURCE = "https://ru.investing.com";
 
     public RuInvestingCom(String ticket) {
@@ -42,20 +43,9 @@ public class RuInvestingCom extends AbstractSite {
 
     @Override
     public ShareDTO task() throws ParsingException {
-        int openTries = 3;
-        boolean isFailed;
-        do {
-            isFailed = false;
-            openTries--;
-            try {
-                // open the browser instant:
-                open();
-            } catch (Exception e) {
-                log.warn("Selenide jpen exception: {}", e.getMessage());
-                isFailed = true;
-                Selenide.sleep(1000);
-            }
-        } while (isFailed && openTries > 0);
+        if (!BrowserUtils.openNewBrowser()) {
+            throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
+        }
 
         try {
             ResponseEntity<String> result = restTemplate.getForEntity(SEARCH + getDto().getTicker(), String.class);
@@ -141,15 +131,27 @@ public class RuInvestingCom extends AbstractSite {
                 ElementsCollection profileTab = xPathRoot.$$x("./div[6]/nav/ul//li").filter(Condition.text("Профиль"));
                 if (profileTab.size() != 1) {
                     profileTab = $$x("//div//a").filter(Condition.text("Профиль"));
+                    if (profileTab.size() != 1) {
+                        log.error("\nFix it");
+                    }
                 }
                 profileTab.get(0).click();
                 sleep(tabClickSleep);
+
                 ElementsCollection sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
-                if (!sectorBlock.isEmpty()) {
-                    getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
-                } else {
-                    log.error("Fix it");
+                sleep(750);
+
+                boolean isEmpty = sectorBlock.isEmpty();
+                if (isEmpty) {
+                    sleep(1000);
+                    sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
+                    isEmpty = sectorBlock.isEmpty();
+                    if (isEmpty) {
+                        log.error("\nFix it");
+                    }
                 }
+                getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
+
 
                 SelenideElement infoBlock = $x("//*[@id='leftColumn']/div[9]/p");
                 if (infoBlock.exists()) {
@@ -162,32 +164,38 @@ public class RuInvestingCom extends AbstractSite {
                 sleep(tabClickSleep);
 
                 // other tab click:
-                ElementsCollection techAnalyseTab = xPathRoot.$$x("./div[6]/nav/div/ul//li").filter(Condition.text("Теханализ"));
-                if (techAnalyseTab.size() == 1) {
-                    techAnalyseTab.get(0).click();
-                    sleep(tabClickSleep);
-                    SelenideElement recomBlock = $x("//*[@id='techStudiesInnerWrap']/div[1]/span");
-                    if (recomBlock.exists()) {
-                        getDto().addRecommendation(recomBlock.text());
-                    } else {
-                        log.error("Fix it");
-                    }
-                } else {
-                    log.error("Fix it");
-                }
-
+                parseTechAnalyzeTab(xPathRoot);
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
             } finally {
-                closeWindow();
-                closeWebDriver();
+                BrowserUtils.closeAndClearAll();
             }
 
             getDto().setLastRefreshDate(LocalDateTime.now());
             return getDto();
         } catch (Exception e) {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
+            new FOptionPane().buildFOptionPane("Ошибка!",
+                    "Ошибка: " + (e.getCause() == null ? e.getMessage() : e.getCause()));
             return null;
+        }
+    }
+
+    private void parseTechAnalyzeTab(SelenideElement xPathRoot) {
+        ElementsCollection techAnalyseTab = xPathRoot.$$x(".//nav/div/ul//li/a").filter(Condition.text("Теханализ"));
+        sleep(500);
+        int tabSize = techAnalyseTab.size();
+        if (tabSize == 1) {
+            techAnalyseTab.get(0).click();
+            sleep(tabClickSleep);
+            SelenideElement recomBlock = $x("//*[@id='techStudiesInnerWrap']/div[1]/span");
+            if (recomBlock.exists()) {
+                getDto().addRecommendation(recomBlock.text());
+            } else {
+                log.error("\nFix it");
+            }
+        } else {
+            log.error("\nFix it");
         }
     }
 
