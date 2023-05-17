@@ -21,7 +21,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
 
-import static ru.investment.enums.CostType.*;
+import static ru.investment.enums.CostType.EUR;
+import static ru.investment.enums.CostType.RUB;
+import static ru.investment.enums.CostType.USD;
 
 @Data
 @org.springframework.stereotype.Component
@@ -367,7 +369,6 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         } else {
             peLabel.setForeground(new Color(1.0f, 0.0f, 0.5f));
         }
-
 
         //
         Component name = getColumnNamed("NAME");

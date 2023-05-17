@@ -8,13 +8,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PlayPane extends JPanel {
     private final ArrayList<Path> tracks = new ArrayList<>();
     private final DefaultListModel<ListRow> dlm = new DefaultListModel<>();
     private CustomList<ListRow> playList;
 //    private PlayDataItem owner;
-
 
 //    public PlayPane(PlayDataItem player) {
 //        this.owner = player;

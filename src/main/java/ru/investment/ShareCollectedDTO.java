@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.BadDataException;
-import ru.investment.exceptions.VariableLotException;
 
 import javax.validation.constraints.Max;
 import java.time.LocalDate;

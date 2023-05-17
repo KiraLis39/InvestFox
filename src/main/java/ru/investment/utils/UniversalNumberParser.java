@@ -66,8 +66,8 @@ public class UniversalNumberParser {
 
         if (normalized.endsWith("K")) {
             normalized = normalized
-                    .replace("K","")
-                    .replace(".","000.");
+                    .replace("K", "")
+                    .replace(".", "000.");
         }
 
         return normalized;

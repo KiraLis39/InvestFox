@@ -21,13 +21,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static com.codeborne.selenide.Selenide.closeWindow;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
 @Slf4j
 public class TradingRu extends AbstractSite {
+    private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl=1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
     private final UUID uuid = UUID.randomUUID();
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl=1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
     private String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
 
     public TradingRu(String ticker) {

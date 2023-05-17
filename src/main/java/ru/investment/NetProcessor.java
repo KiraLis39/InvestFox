@@ -29,7 +29,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -168,7 +172,6 @@ public class NetProcessor {
         shareService.updateOrSave(shares);
     }
 
-
     public void runScan(String tiker) throws ExecutionException, InterruptedException {
         log.info("Scanning " + tiker.toUpperCase().trim() + "...");
 
@@ -232,15 +235,13 @@ public class NetProcessor {
                 // selenide:
                 add(new TradingRu(ticker));
                 add(new RuInvestingCom(ticker));
+//                add(new InvestfundsRu(ticker)); // есть лот
 
                 // jquery:
-//                add(new DohodRu(ticker));
-//                add(new GoogleFinance(ticker));
-//                add(new InvestfundsRu(ticker));
-//                add(new InvestFutureRu(ticker));
 //                add(new InvestmintRu(ticker));
 //                add(new RbkRu(ticker));
 //                add(new TinkoffRu(ticker));
+//                add(new SimplyWallSt(ticker));
             }
         };
 

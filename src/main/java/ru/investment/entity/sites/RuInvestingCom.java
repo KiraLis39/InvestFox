@@ -21,16 +21,22 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.back;
+import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static com.codeborne.selenide.Selenide.closeWindow;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
 @Slf4j
 public class RuInvestingCom extends AbstractSite {
-    @Value("${app.selenide.tab_click_sleep}")
-    private short tabClickSleep;
-
+    private static final String SEARCH = "https://api.investing.com/api/search/v2/search?t=Equities&q="; // LNZL | MAGN
     private final RestTemplate restTemplate = new RestTemplate();
     private final UUID uuid = UUID.randomUUID();
-    private static final String SEARCH = "https://api.investing.com/api/search/v2/search?t=Equities&q="; // LNZL | MAGN
+    @Value("${app.selenide.tab_click_sleep}")
+    private short tabClickSleep;
     private String SOURCE = "https://ru.investing.com";
 
     public RuInvestingCom(String ticket) {
@@ -175,7 +181,6 @@ public class RuInvestingCom extends AbstractSite {
                 } else {
                     log.error("Fix it");
                 }
-
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
             } finally {

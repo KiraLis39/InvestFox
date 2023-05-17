@@ -8,12 +8,40 @@ import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
-import ru.investment.parser.action.*;
+import ru.investment.parser.action.PurchaseItem_ErrorAction;
+import ru.investment.parser.action.PurchaseItem_ErrorHandlerAction;
+import ru.investment.parser.action.PurchaseItem_FindPageToParseAction;
+import ru.investment.parser.action.PurchaseItem_ParsePageAction;
+import ru.investment.parser.action.PurchaseItem_SetupAction;
+import ru.investment.parser.action.PurchaseItem_SleepAction;
+import ru.investment.parser.action.PurchaseItem_StopByErrorsAction;
+import ru.investment.parser.action.PurchaseItem_StopByUserAction;
+import ru.investment.parser.action.PurchaseItem_TechnicalWorkSleepAction;
 import ru.investment.parser.enums.ParserEvents;
 import ru.investment.parser.enums.ParserStates;
 
-import static ru.investment.parser.enums.ParserEvents.*;
-import static ru.investment.parser.enums.ParserStates.*;
+import static ru.investment.parser.enums.ParserEvents.ON_ACCOMPLISHED;
+import static ru.investment.parser.enums.ParserEvents.ON_BROKEN_PAGE_FOUND;
+import static ru.investment.parser.enums.ParserEvents.ON_DATA_NOT_FOUND;
+import static ru.investment.parser.enums.ParserEvents.ON_ERROR_COUNT_EXCEEDED;
+import static ru.investment.parser.enums.ParserEvents.ON_ERROR_COUNT_NOT_EXCEEDED;
+import static ru.investment.parser.enums.ParserEvents.ON_ERROR_OCCURRED;
+import static ru.investment.parser.enums.ParserEvents.ON_NEW_DATA_FOUND;
+import static ru.investment.parser.enums.ParserEvents.ON_SETUP_COMPLETED;
+import static ru.investment.parser.enums.ParserEvents.ON_SETUP_STARTED;
+import static ru.investment.parser.enums.ParserEvents.ON_STOP_BY_USER;
+import static ru.investment.parser.enums.ParserEvents.ON_TECHNICAL_WORK;
+import static ru.investment.parser.enums.ParserStates.IN_CUSTOM_END;
+import static ru.investment.parser.enums.ParserStates.IN_ERROR_STATE;
+import static ru.investment.parser.enums.ParserStates.IN_INIT;
+import static ru.investment.parser.enums.ParserStates.IN_LOADING_DATA;
+import static ru.investment.parser.enums.ParserStates.IN_PARSING;
+import static ru.investment.parser.enums.ParserStates.IN_RUNNING;
+import static ru.investment.parser.enums.ParserStates.IN_SETTING_UP;
+import static ru.investment.parser.enums.ParserStates.IN_SLEEPING;
+import static ru.investment.parser.enums.ParserStates.IN_STOPPED_BY_ERRORS;
+import static ru.investment.parser.enums.ParserStates.IN_STOPPED_BY_USER;
+import static ru.investment.parser.enums.ParserStates.IN_TECHNICAL_WORK_SLEEPING;
 
 @Configuration
 @AllArgsConstructor

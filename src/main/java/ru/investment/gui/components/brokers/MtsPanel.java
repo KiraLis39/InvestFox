@@ -34,12 +34,11 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
     private static @ToString.Exclude JTextField tf01, tf02, tf03, tf04;
     private static @ToString.Exclude JTextField tf11, tf12, tf13, tf14;
     private final UUID uuid = UUID.randomUUID();
+    private final Color mtsColor = new Color(87, 15, 10);
     private transient @ToString.Exclude BrokerService brokerService;
     private @ToString.Exclude JLabel itog01, itog02, itog3;
     private @ToString.Exclude MyFields.SumPanel p01, p02, p03, p04;
     private DohodPercentPane dohodPercentPane;
-
-    private final Color mtsColor = new Color(87, 15, 10);
 
     public MtsPanel() {
         setName("mts");
@@ -347,7 +346,6 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
         tf13.setText(String.valueOf(getDto().getData().outputs.get(2)));
         tf14.setText(String.valueOf(getDto().getData().outputs.get(3)));
     }
-
 
     // other:
     public void keyTyped(KeyEvent e) {

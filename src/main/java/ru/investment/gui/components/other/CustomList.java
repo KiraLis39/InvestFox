@@ -2,7 +2,6 @@ package ru.investment.gui.components.other;
 
 import javax.swing.*;
 
-
 public class CustomList<AlarmItem> extends JList<AlarmItem> {
     private final PlayPane owner;
 

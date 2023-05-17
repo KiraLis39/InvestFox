@@ -19,7 +19,6 @@ public class InvestFutureRu extends AbstractSite {
     private static final String SOURCE_TWO = "https://investfuture.ru/dividends/id/";
     private static int code = -1;
 
-
     public InvestFutureRu(String ticket) {
         super.setName(ticket);
         isActive = true;

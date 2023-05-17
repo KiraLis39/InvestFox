@@ -3,7 +3,6 @@ package ru.investment.gui.components.other;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
-
 public class AlarmItemCycle {
     private final String time;
     private final Path track;
