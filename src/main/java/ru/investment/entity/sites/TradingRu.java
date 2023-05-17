@@ -2,7 +2,6 @@ package ru.investment.entity.sites;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,9 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
+import ru.investment.exceptions.BrowserException;
 import ru.investment.exceptions.NoElementAvailableException;
+import ru.investment.utils.BrowserUtils;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
@@ -44,21 +45,10 @@ public class TradingRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() {
-        int openTries = 3;
-        boolean isFailed;
-        do {
-            isFailed = false;
-            openTries--;
-            try {
-                // open the browser instant:
-                open();
-            } catch (Exception e) {
-                log.warn("Selenide jpen exception: {}", e.getMessage());
-                isFailed = true;
-                Selenide.sleep(500);
-            }
-        } while (isFailed && openTries > 0);
+    public ShareDTO task() throws BrowserException {
+        if (!BrowserUtils.openNewBrowser()) {
+            throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
+        }
 
         try {
             boolean isFound = false;

@@ -11,6 +11,7 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.Share;
 import ru.investment.entity.dto.ShareDTO;
+import ru.investment.entity.sites.InvestfundsRu;
 import ru.investment.entity.sites.RuInvestingCom;
 import ru.investment.entity.sites.TradingRu;
 import ru.investment.entity.sites.impl.AbstractSite;
@@ -235,7 +236,7 @@ public class NetProcessor {
                 // selenide:
                 add(new TradingRu(ticker));
                 add(new RuInvestingCom(ticker));
-//                add(new InvestfundsRu(ticker)); // есть лот
+                add(new InvestfundsRu(ticker)); // есть лот
 
                 // jquery:
 //                add(new InvestmintRu(ticker));

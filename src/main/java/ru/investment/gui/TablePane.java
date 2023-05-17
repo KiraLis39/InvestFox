@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @org.springframework.stereotype.Component
 public class TablePane extends JPanel {
+    private static ExecutorService es;
     private static JPanel contentTablePane;
     private static JLabel lMoney, gMoney, sCount, shBye;
     private static JScrollPane scroll;
@@ -109,14 +110,18 @@ public class TablePane extends JPanel {
                         setForeground(Color.CYAN);
                         setFont(Constant.fontSidePanel);
                         addActionListener(e -> {
-                            ExecutorService es = Executors.newWorkStealingPool();
+                            if (es == null) {
+                                es = Executors.newWorkStealingPool();
+                            }
                             long was = System.currentTimeMillis();
 
                             for (ShareTableRow nextRow : getRows()) {
                                 log.info("TablePane: calculating " + nextRow.getResultDto().getTicker());
+
                                 CompletableFuture.supplyAsync(() -> {
                                     try {
-                                        ShareCollectedDTO data = netProcessor.checkTicket(nextRow.getResultDto().getTicker(), false)
+                                        ShareCollectedDTO data = netProcessor
+                                                .checkTicket(nextRow.getResultDto().getTicker(), false)
                                                 .handle((r, ex) -> {
                                                     if (r != null) {
                                                         return r;
@@ -129,7 +134,7 @@ public class TablePane extends JPanel {
                                             nextRow.updateColumns(data);
                                             log.info("TablePane: calculating " + nextRow.getResultDto().getTicker() + " done!");
                                         }
-                                        return data;
+                                        return null;
                                     } catch (InterruptedException | ExecutionException ex) {
                                         log.error("Exception here: {}", ex.getMessage());
                                     }

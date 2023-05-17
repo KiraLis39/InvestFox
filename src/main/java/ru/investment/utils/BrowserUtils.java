@@ -10,6 +10,7 @@ import ru.investment.config.constants.ParserMessages;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.webdriver;
 
 @Slf4j
@@ -84,5 +85,23 @@ public class BrowserUtils {
     public static boolean isPageNotFound() {
         return $x("/html/body")
                 .text().contains(ParserMessages.PAGE_NOT_FOUND);
+    }
+
+    public static synchronized boolean openNewBrowser() {
+        int openTries = 3;
+        boolean isSuccess;
+        do {
+            isSuccess = true;
+            openTries--;
+            try {
+                // open the browser instant:
+                open();
+            } catch (Exception e) {
+                log.warn("Selenide open exception: {}", e.getMessage());
+                isSuccess = false;
+                Selenide.sleep(500);
+            }
+        } while (!isSuccess && openTries > 0);
+        return isSuccess;
     }
 }
