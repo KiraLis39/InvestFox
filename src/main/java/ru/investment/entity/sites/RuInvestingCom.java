@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
+import fox.components.FOptionPane;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -135,22 +136,27 @@ public class RuInvestingCom extends AbstractSite {
                 ElementsCollection profileTab = xPathRoot.$$x("./div[6]/nav/ul//li").filter(Condition.text("Профиль"));
                 if (profileTab.size() != 1) {
                     profileTab = $$x("//div//a").filter(Condition.text("Профиль"));
+                    if (profileTab.size() != 1) {
+                        log.error("\nFix it");
+                    }
                 }
                 profileTab.get(0).click();
                 sleep(tabClickSleep);
+
                 ElementsCollection sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
                 sleep(750);
+
                 boolean isEmpty = sectorBlock.isEmpty();
                 if (isEmpty) {
                     sleep(1000);
                     sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
                     isEmpty = sectorBlock.isEmpty();
+                    if (isEmpty) {
+                        log.error("\nFix it");
+                    }
                 }
-                if (isEmpty) {
-                    log.error("\nFix it");
-                } else {
-                    getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
-                }
+                getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
+
 
                 SelenideElement infoBlock = $x("//*[@id='leftColumn']/div[9]/p");
                 if (infoBlock.exists()) {
@@ -174,6 +180,8 @@ public class RuInvestingCom extends AbstractSite {
             return getDto();
         } catch (Exception e) {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
+            new FOptionPane().buildFOptionPane("Ошибка!",
+                    "Ошибка: " + (e.getCause() == null ? e.getMessage() : e.getCause()));
             return null;
         }
     }

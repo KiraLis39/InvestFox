@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 @Slf4j
 @Data
@@ -131,7 +132,7 @@ public class ShareDTO {
 
     public String getDividendsStringized() {
         try {
-            if (dividends.size() == 0) {
+            if (dividends.isEmpty()) {
                 return null;
             }
             return String.format("%,.2f", dividends.toArray()) + (dividends.isEmpty() ? "" : "%");

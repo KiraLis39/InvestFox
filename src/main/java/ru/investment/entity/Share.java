@@ -9,7 +9,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import ru.investment.enums.CostType;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -51,8 +55,9 @@ public class Share {
     @Column(name = "showed_name")
     private String showedName; // Отображаемое имя
 
-    @Column(name = "sector")
-    private String sector; // Сектор
+    @Builder.Default
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> sectors = new HashSet<>(); // Сектор
 
     @Builder.Default
     @Column(name = "cost_type")

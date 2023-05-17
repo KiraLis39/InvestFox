@@ -110,7 +110,7 @@ app:
 
   selenide:
     test_timeout: 30_000
-    page_load_timeout: 12_000
+    page_load_timeout: 13_900
     polling_interval: 250
     # remote_read_timeout: 30_000
     # remote_connect_timeout: 30_000

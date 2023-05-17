@@ -137,6 +137,8 @@ public class TablePane extends JPanel {
                                         return null;
                                     } catch (InterruptedException | ExecutionException ex) {
                                         log.error("Exception here: {}", ex.getMessage());
+                                        new FOptionPane().buildFOptionPane("Ошибка!",
+                                                "Ошибка: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
                                     }
                                     return null;
                                 }, es);

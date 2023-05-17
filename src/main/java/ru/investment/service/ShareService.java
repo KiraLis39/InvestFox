@@ -62,7 +62,7 @@ public class ShareService {
         share.setPaySum(dto.getPaySum());
         share.setPaySumOnShare(dto.getPaySumOnShare());
         share.setRecommendation(dto.getRecommendation());
-        share.setSector(dto.getSector());
+        share.setSectors(dto.getSectors());
         share.setShowedName(dto.getShowedName());
         share.setSource(dto.getSource());
         share.setStableGrow(dto.getStableGrow());

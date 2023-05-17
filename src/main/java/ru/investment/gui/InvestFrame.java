@@ -334,12 +334,24 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
     public synchronized void updateDownPanel(ShareCollectedDTO result) {
         titleLabel.setText(String.format("<html>Обобщение по тикету: <font color=\"#FFF\"><b>'%s'", result.getTicker()));
-        sectorLabel.setText(String.format("<html>Сектор: <font color=\"#FFF\"><b>%s", result.getSector()));
+
+        sectorLabel.setText(String.format("<html>Сектор: <font color=\"#FFF\"><b>%s",
+                result.getSectors().isEmpty() ? "=NA=" : result.getSectors()));
+
         lotLabel.setText(String.format("<html>Лот: <font color=\"#FFF\"><b>%s", result.getLotSize() + " шт."));
-        costLabel.setText(String.format("<html>Цена: <font color=\"#FFF\"><b>%.2f (%s)", result.getCost(), result.getCostType()).replace("[", "").replace("]", ""));
-        lotCostLabel.setText(String.format("<html>Цена за лот: <font color=\"#FFF\"><b>%.2f (%s)", result.getLotCost(), result.getCostType()));
-        divLabel.setText(String.format("<html>Дивиденды: <font color=\"#FFF\"><b>%.2f ", result.getDividend()).replace("[", "").replace("]", "") + "%");
-        payDateLabel.setText(String.format("<html>Дата выплаты: <font color=\"#FFF\"><b>%s", result.getNextPayDate() == null ? "" : result.getNextPayDate().toLocalDate()));
+
+        costLabel.setText(String.format("<html>Цена: <font color=\"#FFF\"><b>%.2f (%s)",
+                result.getCost(), result.getCostType()).replace("[", "").replace("]", ""));
+
+        lotCostLabel.setText(String.format("<html>Цена за лот: <font color=\"#FFF\"><b>%.2f (%s)",
+                result.getLotCost(), result.getCostType()));
+
+        divLabel.setText(String.format("<html>Дивиденды: <font color=\"#FFF\"><b>%.2f ",
+                result.getDividend()).replace("[", "").replace("]", "") + "%");
+
+        payDateLabel.setText(String.format("<html>Дата выплаты: <font color=\"#FFF\"><b>%s",
+                result.getNextPayDate() == null ? "" : result.getNextPayDate().toLocalDate()));
+
         recomLabel.setText(String.format("<html>Рекомендация: <font color=\"#FFF\"><b>%s", result.getRecommendation()));
     }
 
