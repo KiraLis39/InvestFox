@@ -3,6 +3,7 @@ package ru.investment.entity.sites;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import ru.investment.utils.BrowserUtils;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -37,7 +39,7 @@ public class InvestfundsRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws BadDataException, BrowserException {
+    public ShareDTO task() throws BadDataException, BrowserException, JsonProcessingException {
         if (!BrowserUtils.openNewBrowser()) {
             throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
         }
@@ -107,15 +109,28 @@ public class InvestfundsRu extends AbstractSite {
                 // getDto().setPayDate(LocalDateTime.now());
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
-            } finally {
-                BrowserUtils.closeAndClearAll();
             }
-
-            getDto().setLastRefreshDate(LocalDateTime.now());
-            return getDto();
         } catch (Exception e) {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
-            return null;
+            throw e;
+        } finally {
+            BrowserUtils.closeAndClearAll();
+            getDto().setLastRefreshDate(LocalDateTime.now());
+            return getDto();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        InvestfundsRu that = (InvestfundsRu) o;
+        return uuid.equals(that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), uuid);
     }
 }

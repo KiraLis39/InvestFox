@@ -88,7 +88,7 @@ public class TablePane extends JPanel {
                                     } else {
                                         new FOptionPane().buildFOptionPane("Провал!", "Не было найдено никакой информации.");
                                     }
-                                } catch (ExecutionException | InterruptedException ex) {
+                                } catch (Exception ex) {
                                     log.error("Exception here: {}", ex.getMessage());
                                 } finally {
                                     scroll.revalidate();
@@ -130,7 +130,7 @@ public class TablePane extends JPanel {
                                             log.info("TablePane: calculating " + nextRow.getResultDto().getTicker() + " done!");
                                         }
                                         return null;
-                                    } catch (InterruptedException | ExecutionException ex) {
+                                    } catch (Exception ex) {
                                         log.error("Exception here: {}", ex.getMessage());
                                         new FOptionPane().buildFOptionPane("Ошибка!",
                                                 "Ошибка: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));

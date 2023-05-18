@@ -87,7 +87,7 @@ spring:
     allow-bean-definition-overriding: false
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${POSTGRES_DB:invest}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:invest}
     username: ${POSTGRES_USER:admin}
     password: ${POSTGRES_PASSWORD:admin}
     hikari:

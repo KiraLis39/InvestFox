@@ -30,7 +30,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -169,17 +172,15 @@ public class NetProcessor {
         shareService.updateOrSave(shares);
     }
 
-    public void runScan(String tiker) throws ExecutionException, InterruptedException {
+    public void runScan(String tiker) throws Exception {
         log.info("Scanning " + tiker.toUpperCase().trim() + "...");
 
         CompletableFuture<ShareCollectedDTO> fut = checkTicket(tiker.toUpperCase().trim(), true)
-//                .exceptionally(throwable -> null)
-                .handle((r, ex) -> {
-                    if (r != null) {
-                        return r;
+                .handle((result, ex) -> {
+                    if (result != null) {
+                        return result;
                     } else {
-                        log.warn("A problem here: {}", ex.getMessage());
-                        return null;
+                        throw new RuntimeException(ex);
                     }
                 });
         while (!fut.isDone()) {
@@ -192,27 +193,25 @@ public class NetProcessor {
         }
     }
 
-    public CompletableFuture<ShareCollectedDTO> checkTicket(String ticker, boolean isFirstTabShowed) throws InterruptedException {
+    public CompletableFuture<ShareCollectedDTO> checkTicket(String ticker, boolean isFirstTabShowed) throws Exception {
         if (exec == null) {
-            exec = Executors.newFixedThreadPool(countOfSites);
+            exec = Executors.newWorkStealingPool();
         }
 
         CompletableFuture<ShareCollectedDTO> cfAs = CompletableFuture.supplyAsync(() -> {
                     log.info(String.format("Check the ticket '%s'...", ticker));
                     try {
                         return proceed(ticker, isFirstTabShowed);
-                    } catch (InterruptedException e) {
-                        log.warn("CompletableFuture was interrupted");
-                        return null;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }, exec)
-//                .exceptionally(throwable -> null)
-                .handle((r, ex) -> {
-                    if (r != null) {
-                        return r;
+                .handle((result, ex) -> {
+                    if (result != null) {
+                        return result;
                     } else {
                         log.warn("Problem in the executor service: " + ex);
-                        return null;
+                        throw new RuntimeException(ex);
                     }
                 });
 
@@ -225,7 +224,7 @@ public class NetProcessor {
         return cfAs;
     }
 
-    private ShareCollectedDTO proceed(String ticker, boolean isFirstTabShowed) throws InterruptedException {
+    private ShareCollectedDTO proceed(String ticker, boolean isFirstTabShowed) throws Exception {
         Optional<Share> exists = shareService.findShareByTicker(ticker);
         ShareCollectedDTO resultDTO = exists.isPresent() ? shareMapper.toDto(exists.get()) : new ShareCollectedDTO();
         ArrayList<AbstractSite> sites = new ArrayList<>(countOfSites) {
@@ -261,8 +260,8 @@ public class NetProcessor {
                         resultDTO.update(ticker, data);
                     }
                 } catch (Exception sbe) {
-                    log.error("Exception here: {}", sbe.getMessage());
-                    sbe.printStackTrace();
+                    log.error("Exception in proceed method: {}", sbe.getMessage());
+                    throw sbe;
                 }
             }
         }

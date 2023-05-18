@@ -80,9 +80,13 @@ public class ShareDTO {
                     if (dat.contains("(")) {
                         dat = datum.split("\\(")[1].replace(")", "");
                     }
+                    if (dat.equals("N/A")) {
+                        return;
+                    }
                     div = UniversalNumberParser.parseFloat(dat);
                 } catch (Exception e) {
                     log.warn("Ошибка в цикле парсинга: {}", e.getMessage());
+                    throw e;
                 }
             }
         }
