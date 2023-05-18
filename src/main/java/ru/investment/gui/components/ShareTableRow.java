@@ -3,6 +3,7 @@ package ru.investment.gui.components;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -11,6 +12,7 @@ import ru.investment.ShareCollectedDTO;
 import ru.investment.config.constants.Constant;
 import ru.investment.enums.CostType;
 import ru.investment.gui.InvestFrame;
+import ru.investment.service.VaultService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -20,11 +22,13 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import static ru.investment.enums.CostType.EUR;
 import static ru.investment.enums.CostType.RUB;
 import static ru.investment.enums.CostType.USD;
 
+@Slf4j
 @Data
 @org.springframework.stereotype.Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -33,6 +37,7 @@ import static ru.investment.enums.CostType.USD;
 public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
     private final InvestFrame investFrame;
     private transient NetProcessor netProc;
+    private transient VaultService vaultService;
     private transient ShareCollectedDTO resultDto;
     private JPanel midPane, leftPane, rightPane;
 
@@ -94,9 +99,15 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         int PE = (int) Math.round(resultDto.getCost() / sharePay);
 
         addSpinnerColumn("INDEX", resultDto.getIndex());
+
         addTextColumn("SECTOR",
-                resultDto.getSectors().isEmpty() ? "=NA=" : resultDto.getSectors().toString(),
-                resultDto.getSectors().isEmpty() ? "(not assigned)" : "<html>".concat(resultDto.getSectors().stream().toList().toString().replace(",", "<br>")));
+                resultDto.getSectors().isEmpty() ? "=NA=" : resultDto.getSectors().toString()
+                        .replace("[", "")
+                        .replace("]", ""),
+                resultDto.getSectors().isEmpty() ? "(not assigned)"
+                        : "<html>".concat(resultDto.getSectors().stream().toList().toString()
+                        .replace(",", "<br>")));
+
         addEditableColumn("NAME", resultDto.getShowedName(), "<html>" + resultDto.getName().replace(";", "<br>"));
         addEditableColumn("TICKER", resultDto.getTicker(), null, Color.WHITE, false);
         addTextColumn("COST", String.format("%,.2f", resultDto.getCost()), String.format("%,.5f", resultDto.getCost()));
@@ -110,15 +121,17 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         double allSharePay = sharePay * resultDto.getCount();
         if (uniCost > 0 && !costType.equals(RUB)) {
             if (costType.value().equals(USD.value())) {
-                lotCost = netProc.getUSDValue() * uniCost;
+                lotCost = vaultService.getUSDValue() * uniCost;
 
-                allCost = resultDto.getCost() * netProc.getUSDValue() * resultDto.getCount();
-                allSharePay = sharePay * netProc.getUSDValue() * resultDto.getCount();
+                allCost = resultDto.getCost() * vaultService.getUSDValue() * resultDto.getCount();
+                allSharePay = sharePay * vaultService.getUSDValue() * resultDto.getCount();
             } else if (costType.value().equals(EUR.value())) {
-                lotCost = netProc.getEURValue() * uniCost;
+                lotCost = vaultService.getEURValue() * uniCost;
 
-                allCost = resultDto.getCost() * netProc.getEURValue() * resultDto.getCount();
-                allSharePay = sharePay * netProc.getUSDValue() * resultDto.getCount();
+                allCost = resultDto.getCost() * vaultService.getEURValue() * resultDto.getCount();
+                allSharePay = sharePay * vaultService.getUSDValue() * resultDto.getCount();
+            } else {
+                log.warn("\nFix it!");
             }
         }
         addTextColumn("LOT_COST", String.format("%,.2f", lotCost));

@@ -144,15 +144,18 @@ public class RuInvestingCom extends AbstractSite {
                 sleep(tabClickSleep);
 
                 ElementsCollection sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
-                sleep(750);
-
+                sleep(1000);
                 boolean isEmpty = sectorBlock.isEmpty();
                 if (isEmpty) {
-                    sleep(1000);
                     sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
+                    sleep(1000);
                     isEmpty = sectorBlock.isEmpty();
                     if (isEmpty) {
-                        log.error("\nFix it");
+                        if ($x("//title").innerText().equals("Application error: a client-side exception has occurred")) {
+                            throw new ParsingException("client-side exception");
+                        } else {
+                            log.error("\nFix it");
+                        }
                     }
                 }
                 getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
@@ -162,7 +165,12 @@ public class RuInvestingCom extends AbstractSite {
                 if (infoBlock.exists()) {
                     getDto().addInfo(infoBlock.text());
                 } else {
-                    log.warn("Инфо по тикеру '{}' не обнаружена на странице профиля акции", getDto().getTicker());
+                    infoBlock = $x("//*[@id='profile-fullStory-showhide']");
+                    if (infoBlock.exists()) {
+                        getDto().addInfo(infoBlock.text());
+                    } else {
+                        log.warn("Инфо по тикеру '{}' не обнаружена на странице профиля акции", getDto().getTicker());
+                    }
                 }
 
                 back();
