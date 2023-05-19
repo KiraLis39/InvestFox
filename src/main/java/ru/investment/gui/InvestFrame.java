@@ -10,12 +10,23 @@ import ru.investment.config.ApplicationProperties;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.gui.components.ShareTableRow;
+import ru.investment.service.ShareService;
+import ru.investment.service.VaultService;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -27,6 +38,8 @@ import java.util.List;
 public class InvestFrame extends JFrame implements WindowListener, ComponentListener {
     private final transient ApplicationProperties props; // @Bean
     private final transient NetProcessor netProc; // @Bean
+    private final transient VaultService vaultService; // @Bean
+    private final transient ShareService shareService; // @Bean
     private final BrokersPane brokersPane; // @Bean
     private final TablePane tablePane; // @Bean
     private JPanel baseMidPane;
@@ -243,17 +256,13 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
         return brokersPane;
     }
 
-    public List<ShareTableRow> getTableRows() {
-        return tablePane.getRows();
-    }
-
     public TablePane getTablePane() {
         return tablePane;
     }
 
     private void preInit() {
         try {
-            valuteThread = new Thread(netProc::loadVaults);
+            valuteThread = new Thread(vaultService::loadVaults);
             valuteThread.start(); // получаем курс валют
 
             loadIcons(); // подгружаем иконки приложения
@@ -265,9 +274,9 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
     private void postInit() {
         try {
             valuteThread.join(); // ждем конца сбора данных валют и отображаем ниже:
-            usdValueLabel.setText("<html><p style=\"color:#8F8\"><b>USD: </b></p>" + netProc.getUSDValue());
-            eurValueLabel.setText("<html><p style=\"color:#88F\"><b>EUR: </b></p>" + netProc.getEURValue());
-            netProc.loadTable(tablePane);
+            usdValueLabel.setText("<html><p style=\"color:#8F8\"><b>USD: </b></p>" + vaultService.getUSDValue());
+            eurValueLabel.setText("<html><p style=\"color:#88F\"><b>EUR: </b></p>" + vaultService.getEURValue());
+            shareService.loadTable();
         } catch (InterruptedException | IOException e) {
             log.error("Exception here: {}", e.getMessage());
         }

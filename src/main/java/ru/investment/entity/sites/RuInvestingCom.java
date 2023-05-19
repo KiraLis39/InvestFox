@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
+import fox.components.FOptionPane;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
 import ru.investment.exceptions.BrowserException;
+import ru.investment.exceptions.root.ParsingException;
 import ru.investment.utils.BrowserUtils;
 
 import java.time.Duration;
@@ -21,7 +23,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.back;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
 @Slf4j
 public class RuInvestingCom extends AbstractSite {
@@ -57,7 +64,7 @@ public class RuInvestingCom extends AbstractSite {
             // open the web page into opened browser:
             SOURCE += realUrl;
             open(SOURCE);
-            sleep(6000);
+            sleep(4500);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
@@ -151,7 +158,11 @@ public class RuInvestingCom extends AbstractSite {
                     sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
                     isEmpty = sectorBlock.isEmpty();
                     if (isEmpty) {
-                        log.error("\nFix it");
+                        if ($x("//title").innerText().equals("Application error: a client-side exception has occurred")) {
+                            throw new ParsingException("client-side exception");
+                        } else {
+                            log.error("\nFix it");
+                        }
                     }
                 }
                 getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
@@ -161,7 +172,12 @@ public class RuInvestingCom extends AbstractSite {
                 if (infoBlock.exists()) {
                     getDto().addInfo(infoBlock.text());
                 } else {
-                    log.warn("Инфо по тикеру '{}' не обнаружена на странице профиля акции", getDto().getTicker());
+                    infoBlock = $x("//*[@id='profile-fullStory-showhide']");
+                    if (infoBlock.exists()) {
+                        getDto().addInfo(infoBlock.text());
+                    } else {
+                        log.warn("Инфо по тикеру '{}' не обнаружена на странице профиля акции", getDto().getTicker());
+                    }
                 }
 
                 back();

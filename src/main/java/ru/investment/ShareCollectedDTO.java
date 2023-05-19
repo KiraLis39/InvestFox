@@ -52,7 +52,7 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     private LocalDateTime nextPayDate; // Дата след. выплаты
     private String comment; // Комментарий
 
-    public synchronized void update(String ticker, ShareDTO newData) {
+    public synchronized void update(String ticker, ShareDTO newData) throws BadDataException {
         if (newData == null) {
             return;
         }
@@ -89,6 +89,7 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
             calcResultPayDate(newData.getPayDate());
         } catch (Exception e) {
             log.error("exception here: {}", e.getMessage());
+            throw e;
         }
     }
 

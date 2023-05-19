@@ -25,10 +25,10 @@ import static com.codeborne.selenide.Selenide.*;
 
 @Slf4j
 public class InvestfundsRu extends AbstractSite {
+    private final UUID uuid = UUID.randomUUID();
     private static final String SEARCH = "https://investfunds.ru/stocks/?searchString=";
     private static final String VERIFY_HASH = "&verifyHash=813dd92bf207bbcdc65be773606698fe"; // &verifyHash=136690883ecab2ec4d5ec54d0d11b873
-    private static String SOURCE = "https://investfunds.ru";
-    private final UUID uuid = UUID.randomUUID();
+    private String SOURCE = "https://investfunds.ru";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public InvestfundsRu(String ticket) {
@@ -45,7 +45,7 @@ public class InvestfundsRu extends AbstractSite {
         }
 
         try {
-            ResponseEntity<String> result = restTemplate
+            ResponseEntity<String> result = restTemplate // problem with GCHE
                     .getForEntity(SEARCH + getDto().getTicker(), String.class);
             JsonNode tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
             JsonNode results = tree.get("currentResults");
@@ -54,7 +54,7 @@ public class InvestfundsRu extends AbstractSite {
             }
 
             // open the web page into opened browser:
-            open(SOURCE);
+            open(SOURCE); // problem with GCHE
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;

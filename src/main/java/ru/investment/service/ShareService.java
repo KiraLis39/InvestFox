@@ -2,12 +2,19 @@ package ru.investment.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.investment.ShareCollectedDTO;
 import ru.investment.entity.Share;
+import ru.investment.gui.TablePane;
+import ru.investment.gui.components.ShareTableRow;
 import ru.investment.mapper.ShareMapper;
 import ru.investment.repository.SharesRepository;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,10 +25,16 @@ import java.util.UUID;
 public class ShareService {
     private final SharesRepository sharesRepository;
     private final ShareMapper shareMapper;
+    private TablePane tablePane;
 
-    public void saveAll(List<Share> shares) {
-        sharesRepository.saveAll(shares);
+    @Autowired
+    public void setTablePane(@Lazy TablePane tablePane) {
+        this.tablePane = tablePane;
     }
+
+//    public void saveAll(List<Share> shares) {
+//        sharesRepository.saveAll(shares);
+//    }
 
     public List<Share> findAll() {
         return sharesRepository.findAll();
@@ -70,5 +83,24 @@ public class ShareService {
         share.setTicker(dto.getTicker());
         share.setUpdatedDate(dto.getUpdatedDate());
         return share;
+    }
+
+    public void saveTable(List<ShareTableRow> shareTableRows) {
+        log.info("Saving shares..");
+        List<ShareCollectedDTO> shares = shareTableRows.stream().map(ShareTableRow::getResultDto).toList();
+        updateOrSave(shares);
+    }
+
+    public void reload() throws IOException {
+        saveTable(tablePane.getRows());
+        TablePane.clearRows();
+        loadTable();
+    }
+
+    public void loadTable() throws IOException {
+        log.info("Loading shares..");
+        List<ShareCollectedDTO> loading = new ArrayList<>(findAll().stream().map(shareMapper::toDto).toList());
+        Collections.sort(loading);
+        tablePane.addShares(loading);
     }
 }
