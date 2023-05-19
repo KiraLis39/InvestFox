@@ -21,15 +21,17 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.open;
 
 @Slf4j
 public class InvestfundsRu extends AbstractSite {
-    private final UUID uuid = UUID.randomUUID();
     private static final String SEARCH = "https://investfunds.ru/stocks/?searchString=";
     private static final String VERIFY_HASH = "&verifyHash=813dd92bf207bbcdc65be773606698fe"; // &verifyHash=136690883ecab2ec4d5ec54d0d11b873
-    private String SOURCE = "https://investfunds.ru";
+    private final UUID uuid = UUID.randomUUID();
     private final RestTemplate restTemplate = new RestTemplate();
+    private String SOURCE = "https://investfunds.ru";
 
     public InvestfundsRu(String ticket) {
         super.setName(ticket);

@@ -2,32 +2,21 @@ package ru.investment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import ru.investment.config.ObjectMapperConfig;
-import ru.investment.config.constants.Constant;
 import ru.investment.entity.Share;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.InvestfundsRu;
 import ru.investment.entity.sites.RuInvestingCom;
 import ru.investment.entity.sites.TradingRu;
 import ru.investment.entity.sites.impl.AbstractSite;
-import ru.investment.gui.BrokersPane;
 import ru.investment.gui.InvestFrame;
 import ru.investment.gui.TablePane;
-import ru.investment.gui.components.ShareTableRow;
 import ru.investment.mapper.ShareMapper;
 import ru.investment.service.ShareService;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -85,9 +74,9 @@ public class NetProcessor {
                         ArrayList<AbstractSite> sites = new ArrayList<>(countOfSites) {
                             {
                                 // selenide:
-                                // add(new TradingRu(ticker));
-                                // add(new RuInvestingCom(ticker));
-                                add(new InvestfundsRu(ticker)); // есть лот
+                                add(new TradingRu(ticker));
+                                add(new RuInvestingCom(ticker));
+                                add(new InvestfundsRu(ticker));
 
                                 // jquery:
                                 // add(new InvestmintRu(ticker));

@@ -4,7 +4,6 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
-import fox.components.FOptionPane;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -166,7 +165,6 @@ public class RuInvestingCom extends AbstractSite {
                     }
                 }
                 getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
-
 
                 SelenideElement infoBlock = $x("//*[@id='leftColumn']/div[9]/p");
                 if (infoBlock.exists()) {

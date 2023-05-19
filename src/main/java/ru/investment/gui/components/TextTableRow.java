@@ -2,6 +2,7 @@ package ru.investment.gui.components;
 
 import ru.investment.config.constants.Constant;
 import ru.investment.service.ShareService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

@@ -22,9 +22,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
-import static ru.investment.enums.CostType.*;
+import static ru.investment.enums.CostType.EUR;
+import static ru.investment.enums.CostType.RUB;
+import static ru.investment.enums.CostType.USD;
 
 @Slf4j
 @Data
