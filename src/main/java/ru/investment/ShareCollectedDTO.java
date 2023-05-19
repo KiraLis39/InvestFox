@@ -47,7 +47,7 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     private String partOfProfit; // Часть дохода
     private String stablePay; // Стабильность выплат
     private String stableGrow; // Стабильность роста
-    private String info; // Информация
+    private String info = ""; // Информация
     private String recommendation; // Рекомендация
     private LocalDateTime nextPayDate; // Дата след. выплаты
     private String comment; // Комментарий
@@ -78,7 +78,7 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
             calcResultDiv(newData.getDividends());
             calcResultSector(newData.getSector());
 
-//          this.setInfo(newData.getInfo().toString());
+          this.setInfo(this.getInfo().concat("\n\n*** *** ***\n\n").concat(newData.getInfos().toString()));
 //          this.setPaySumOnShare(newData.getPaySumOnShare().toString());
 //          this.setPaySum(newData.getPaySum().toString());
 //          this.setPartOfProfit(newData.getPartOfProfit().toString());

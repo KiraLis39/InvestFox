@@ -95,7 +95,7 @@ public class Share {
     @Column(name = "stable_grow")
     private String stableGrow; // Стабильность роста
 
-    @Column(name = "info")
+    @Column(name = "info", columnDefinition = "text")
     private String info; // Информация
 
     @Column(name = "recommendation")

@@ -44,8 +44,11 @@ public class ShareService {
         for (ShareCollectedDTO share : shares) {
             Optional<Share> exists = findShareByTicker(share.getTicker());
             if (exists.isPresent()) {
-                sharesRepository.save(update(exists.get(), share));
+                // update exists share:
+                Share updated = update(exists.get(), share);
+                sharesRepository.save(updated);
             } else {
+                // create a new share into DB:
                 sharesRepository.save(shareMapper.toEntity(share));
             }
         }

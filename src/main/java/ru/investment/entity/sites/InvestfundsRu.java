@@ -46,16 +46,22 @@ public class InvestfundsRu extends AbstractSite {
         }
 
         try {
-            ResponseEntity<String> result = restTemplate // problem with GCHE
+            // problem with GCHE
+            ResponseEntity<String> result = restTemplate
                     .getForEntity(SEARCH + getDto().getTicker(), String.class);
             JsonNode tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
             JsonNode results = tree.get("currentResults");
             if (!results.isEmpty()) {
-                SOURCE += results.get(0).get("url").asText();
+                for (JsonNode node : results) {
+                    if (node.get("isin").asText().startsWith("RU")) {
+                        SOURCE += node.get("url").asText();
+                        break;
+                    }
+                }
             }
 
             // open the web page into opened browser:
-            open(SOURCE); // problem with GCHE
+            open(SOURCE);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;

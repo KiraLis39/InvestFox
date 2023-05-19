@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -108,12 +110,14 @@ public class TablePane extends JPanel {
                                     if (fut.get() != null) {
                                         addShare(fut.get());
                                     } else {
-                                        new FOptionPane().buildFOptionPane("Провал!", "Не было найдено никакой информации.");
+                                        new FOptionPane().buildFOptionPane("Провал!",
+                                                "Не было найдено никакой информации.");
                                     }
                                 } catch (Exception ex) {
                                     log.error("Exception here: {}", ex.getMessage());
                                 } finally {
                                     scroll.revalidate();
+                                    investFrame.getTablePane().updateResults();
                                 }
                             }
                         });
@@ -136,6 +140,7 @@ public class TablePane extends JPanel {
                                 log.info("TablePane: calculating " + nextRow.getResultDto().getTicker());
 
                                 CompletableFuture.supplyAsync(() -> {
+                                    Instant wasInst = Instant.now();
                                     try {
                                         ShareCollectedDTO data = netProcessor
                                                 .checkTicket(nextRow.getResultDto().getTicker(), false)
@@ -156,6 +161,11 @@ public class TablePane extends JPanel {
                                         log.error("Exception here: {}", ex.getMessage());
                                         new FOptionPane().buildFOptionPane("Ошибка!",
                                                 "Ошибка: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                                    } finally {
+                                        long elapsed = Duration.between(wasInst, Instant.now()).toMillis();
+                                        log.info("\n*** Rescan time: ***\n{}:{}\n\n",
+                                                TimeUnit.MILLISECONDS.toMinutes(elapsed),
+                                                TimeUnit.MILLISECONDS.toSeconds(elapsed));
                                     }
                                     return null;
                                 }, es);
@@ -421,11 +431,11 @@ public class TablePane extends JPanel {
         for (ShareCollectedDTO shareCollectedDTO : loading) {
             addShare(shareCollectedDTO);
         }
+        updateResults();
     }
 
     public void addShare(ShareCollectedDTO dto) {
-        contentTablePane.add(new ShareTableRow(investFrame, dto));
-        updateResults();
+        contentTablePane.add(new ShareTableRow(investFrame, dto)); // убедиться, что dto сюда приходит с info
     }
 
     public void updateResults() {

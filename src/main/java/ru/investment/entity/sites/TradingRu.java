@@ -76,7 +76,13 @@ public class TradingRu extends AbstractSite {
             content.shouldBe(Condition.visible);
 
             try {
-                getDto().setName($x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/h1").text());
+                SelenideElement nameBlock = $x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/h1");
+                if (nameBlock.exists()) {
+                    getDto().setName(nameBlock.text());
+                } else {
+                    log.warn("Fix it!");
+                }
+
                 SelenideElement sectorBlock = $x("//*[@id='js-category-content']/div[2]/div/section/div[3]/div[2]/div/div[2]");
                 if (sectorBlock.exists()) {
                     getDto().setSector(sectorBlock.$("a div").text());
@@ -157,11 +163,13 @@ public class TradingRu extends AbstractSite {
                                 tmpArr.add(next);
                             }
                         }
-                        float psos = (float) tmpArr.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
-                        getDto().addPaySumOnShare(psos);
-                        // getDto().addPaySum(psos);
+                        if (!tmpArr.isEmpty()) {
+                            float psos = (float) tmpArr.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
+                            getDto().addPaySumOnShare(psos);
+                            // getDto().addPaySum(psos);
+                            tmpArr.clear();
+                        }
 
-                        tmpArr.clear();
                         List<String> divSums = dataBlock.get(2).$$x("./div")
                                 .filter(Condition.not(Condition.empty)).get(1).$$x("./div")
                                 .filter(Condition.not(Condition.empty)).texts()
@@ -179,6 +187,8 @@ public class TradingRu extends AbstractSite {
                         //getDto().addStableGrow("");
                         //getDto().addStablePay("");
                         //getDto().setPayDate(LocalDateTime.now()); //*[@id="js-category-content"]/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[3]/span/span
+                    } else {
+                        log.error("\nFix it!");
                     }
                 } else {
                     log.error("\nFix it!");
