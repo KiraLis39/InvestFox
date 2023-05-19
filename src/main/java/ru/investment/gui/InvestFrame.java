@@ -1,5 +1,6 @@
 package ru.investment.gui;
 
+import fox.components.FOptionPane;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import ru.investment.ShareCollectedDTO;
 import ru.investment.config.ApplicationProperties;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.gui.components.ShareTableRow;
 import ru.investment.service.ShareService;
 import ru.investment.service.VaultService;
 
@@ -29,8 +29,6 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -93,11 +91,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                                             @Override
                                             public void keyPressed(KeyEvent e) {
                                                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                                                    try {
-                                                        runScan();
-                                                    } catch (Exception ex) {
-                                                        log.warn("Exception here: {}", ex.getMessage());
-                                                    }
+                                                    runScan();
                                                 }
                                             }
 
@@ -114,11 +108,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                                         setFocusPainted(false);
                                         setFont(Constant.fontPrimaryHeaders);
                                         addActionListener(e -> {
-                                            try {
-                                                runScan();
-                                            } catch (ExecutionException | InterruptedException ex) {
-                                                log.error("Exception here: {}", ex.getMessage());
-                                            }
+                                            runScan();
                                         });
                                     }
                                 };
@@ -327,9 +317,14 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
     }
 
     // при нажатии на кнопку поиска:
-    private void runScan() throws ExecutionException, InterruptedException {
-        baseMidPane.removeAll();
-        netProc.runScan(ticketField.getText());
+    private void runScan() {
+        try {
+            baseMidPane.removeAll();
+            netProc.runScan(ticketField.getText());
+        } catch (Exception ex) {
+            log.warn("Exception here: {}", ex.getMessage());
+            new FOptionPane().buildFOptionPane("Error:", "Сканирование провалилось: " + ex.getMessage());
+        }
     }
 
     public synchronized void updateDownPanel(ShareCollectedDTO result) {

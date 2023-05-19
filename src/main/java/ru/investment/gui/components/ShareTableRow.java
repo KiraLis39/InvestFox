@@ -22,7 +22,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 import static ru.investment.enums.CostType.EUR;
 import static ru.investment.enums.CostType.RUB;
@@ -404,7 +403,8 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
             name.setForeground(Color.WHITE);
         }
 
-        switch ((int) ((JSpinner) getColumnNamed("INDEX")).getValue()) {
+        int type = (int) ((JSpinner) getColumnNamed("INDEX")).getValue();
+        switch (type) {
             case 6 -> {
                 name.setBackground(Color.BLACK);
                 name.setForeground(Color.DARK_GRAY);
@@ -434,6 +434,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 name.setForeground(Color.WHITE);
             }
             case -2 -> name.setForeground(Color.ORANGE);
+            default -> {log.warn("неподдерживаемый тип: {}", type);}
         }
         getColumnNamed("TICKER").setBackground(name.getBackground());
         getColumnNamed("TICKER").setForeground(name.getForeground());

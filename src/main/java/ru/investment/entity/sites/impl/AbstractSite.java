@@ -8,7 +8,6 @@ import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.helper.HttpConnection;
 import org.jsoup.nodes.Document;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.exceptions.root.ParsingException;
 import ru.investment.utils.BrowserUtils;
 
 import java.io.IOException;
@@ -65,7 +64,7 @@ public abstract class AbstractSite {
         return null;
     }
 
-    public abstract ShareDTO task() throws ParsingException;
+    public abstract ShareDTO task() throws Exception;
 
     protected boolean checkPageAvailable() {
         if (BrowserUtils.isPageNotFound()) {

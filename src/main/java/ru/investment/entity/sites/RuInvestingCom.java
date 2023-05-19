@@ -4,7 +4,6 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.databind.JsonNode;
-import fox.components.FOptionPane;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +46,7 @@ public class RuInvestingCom extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws ParsingException {
+    public ShareDTO task() throws Exception {
         if (!BrowserUtils.openNewBrowser()) {
             throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
         }
@@ -64,7 +63,7 @@ public class RuInvestingCom extends AbstractSite {
             // open the web page into opened browser:
             SOURCE += realUrl;
             open(SOURCE);
-            sleep(3500);
+            sleep(4500);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
@@ -98,7 +97,13 @@ public class RuInvestingCom extends AbstractSite {
                     if (costTypeBlock.exists()) {
                         getDto().setCostType(CostType.valueOf(costTypeBlock.text()));
                     } else {
-                        getDto().setCostType(CostType.valueOf(xPathRoot.$x(".//div/div/div/div[2]").$("span").text()));
+                        costTypeBlock = xPathRoot.$x(".//div/div/div/div[2]").$("span");
+                        if (costTypeBlock.exists()) {
+                            getDto().setCostType(CostType.valueOf(costTypeBlock.text()));
+                        } else {
+                            costTypeBlock = xPathRoot.$x(".//div/div/div/div[2]").$("span");
+                            log.error("\nFix it");
+                        }
                     }
                 } catch (Exception e) {
                     log.warn("Тип валюты не определён: '{}'", costTypeBlock.exists() ? costTypeBlock.text() : xPathRoot.$x(".//div/div/div/div[2]").$("span").text());
@@ -144,11 +149,12 @@ public class RuInvestingCom extends AbstractSite {
                 sleep(tabClickSleep);
 
                 ElementsCollection sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
-                sleep(1000);
+                sleep(1500);
+
                 boolean isEmpty = sectorBlock.isEmpty();
                 if (isEmpty) {
+                    sleep(1500);
                     sectorBlock = $$x("//*[@id='leftColumn']/div[8]//div/a");
-                    sleep(1000);
                     isEmpty = sectorBlock.isEmpty();
                     if (isEmpty) {
                         if ($x("//title").innerText().equals("Application error: a client-side exception has occurred")) {
@@ -159,7 +165,6 @@ public class RuInvestingCom extends AbstractSite {
                     }
                 }
                 getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
-
 
                 SelenideElement infoBlock = $x("//*[@id='leftColumn']/div[9]/p");
                 if (infoBlock.exists()) {
@@ -180,17 +185,15 @@ public class RuInvestingCom extends AbstractSite {
                 parseTechAnalyzeTab(xPathRoot);
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
-            } finally {
-                BrowserUtils.closeAndClearAll();
             }
 
             getDto().setLastRefreshDate(LocalDateTime.now());
             return getDto();
         } catch (Exception e) {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
-            new FOptionPane().buildFOptionPane("Ошибка!",
-                    "Ошибка: " + (e.getCause() == null ? e.getMessage() : e.getCause()));
-            return null;
+            throw e;
+        } finally {
+            BrowserUtils.closeAndClearAll();
         }
     }
 

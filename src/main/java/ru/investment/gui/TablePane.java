@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -47,9 +46,9 @@ public class TablePane extends JPanel {
     private static JLabel lMoney, gMoney, sCount, shBye;
     private static JScrollPane scroll;
     private static int searchedIndex;
-    private NetProcessor netProcessor;
     private final BrokersPane brokersPane;
     private final ShareService shareService;
+    private NetProcessor netProcessor;
     private InvestFrame investFrame;
     private ArrayList<Component> searchResultList;
 
@@ -111,7 +110,7 @@ public class TablePane extends JPanel {
                                     } else {
                                         new FOptionPane().buildFOptionPane("Провал!", "Не было найдено никакой информации.");
                                     }
-                                } catch (ExecutionException | InterruptedException ex) {
+                                } catch (Exception ex) {
                                     log.error("Exception here: {}", ex.getMessage());
                                 } finally {
                                     scroll.revalidate();
@@ -153,7 +152,7 @@ public class TablePane extends JPanel {
                                             log.info("TablePane: calculating " + nextRow.getResultDto().getTicker() + " done!");
                                         }
                                         return null;
-                                    } catch (InterruptedException | ExecutionException ex) {
+                                    } catch (Exception ex) {
                                         log.error("Exception here: {}", ex.getMessage());
                                         new FOptionPane().buildFOptionPane("Ошибка!",
                                                 "Ошибка: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));

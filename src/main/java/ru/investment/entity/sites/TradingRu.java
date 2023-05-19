@@ -3,6 +3,7 @@ package ru.investment.entity.sites;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class TradingRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws BrowserException {
+    public ShareDTO task() throws BrowserException, JsonProcessingException {
         if (!BrowserUtils.openNewBrowser()) {
             throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
         }
@@ -83,12 +84,26 @@ public class TradingRu extends AbstractSite {
                     sectorBlock = $x("//*[@id='js-category-content']/div[2]/div/section/div[3]/div[2]/div/div[3]");
                     if (sectorBlock.exists()) {
                         getDto().setSector(sectorBlock.$("a div").text());
+                    } else {
+                        log.error("\nFix it!");
                     }
                 }
-                getDto().addInfo($x("//*[@id='js-category-content']/div[2]/div/section/div[3]").text());
-                getDto().addCoast($x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[1]/span[1]").text());
-                String cType = $x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[1]/span[2]/span[1]").text();
-                getDto().setCostType(CostType.valueOf(cType));
+
+                SelenideElement infoBlock = $x("//*[@id='js-category-content']/div[2]/div/section/div[3]");
+                if (infoBlock.exists()) {
+                    getDto().addInfo(infoBlock.text());
+                } else {
+                    log.error("\nFix it!");
+                }
+
+                SelenideElement costBlock = $x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[1]/span[1]");
+                if (costBlock.exists()) {
+                    getDto().addCoast(costBlock.text());
+                    String cType = $x("//*[@id='js-category-content']/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[1]/span[2]/span[1]").text();
+                    getDto().setCostType(CostType.valueOf(cType));
+                } else {
+                    log.error("\nFix it!");
+                }
 
                 //getDto().setLotSize(1);
 
@@ -115,6 +130,8 @@ public class TradingRu extends AbstractSite {
                     } else {
                         getDto().addRecommendation("Держать");
                     }
+                } else {
+                    log.error("\nFix it!");
                 }
 
                 ElementsCollection otchetnost = tabsPane.$$("a").filter(Condition.text("Отчётность"));
@@ -163,18 +180,19 @@ public class TradingRu extends AbstractSite {
                         //getDto().addStablePay("");
                         //getDto().setPayDate(LocalDateTime.now()); //*[@id="js-category-content"]/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[3]/span/span
                     }
+                } else {
+                    log.error("\nFix it!");
                 }
             } catch (Exception e) {
                 log.error("Exception here: {}", e.getMessage());
-            } finally {
-                BrowserUtils.closeAndClearAll();
             }
-
-            getDto().setLastRefreshDate(LocalDateTime.now());
-            return getDto();
         } catch (Exception e) {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
-            return null;
+            throw e;
+        } finally {
+            BrowserUtils.closeAndClearAll();
+            getDto().setLastRefreshDate(LocalDateTime.now());
+            return getDto();
         }
     }
 

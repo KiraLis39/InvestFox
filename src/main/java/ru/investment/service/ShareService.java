@@ -32,10 +32,6 @@ public class ShareService {
         this.tablePane = tablePane;
     }
 
-//    public void saveAll(List<Share> shares) {
-//        sharesRepository.saveAll(shares);
-//    }
-
     public List<Share> findAll() {
         return sharesRepository.findAll();
     }

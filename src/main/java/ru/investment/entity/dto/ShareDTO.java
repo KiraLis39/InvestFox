@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
 
 @Slf4j
 @Data
@@ -81,9 +80,13 @@ public class ShareDTO {
                     if (dat.contains("(")) {
                         dat = datum.split("\\(")[1].replace(")", "");
                     }
+                    if (dat.equals("N/A")) {
+                        return;
+                    }
                     div = UniversalNumberParser.parseFloat(dat);
                 } catch (Exception e) {
                     log.warn("Ошибка в цикле парсинга: {}", e.getMessage());
+                    throw e;
                 }
             }
         }
