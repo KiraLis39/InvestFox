@@ -8,6 +8,7 @@ public enum CostType {
     CHF("₣"),
     JPY("¥"),
     INR("₹"),
+    NGN("₦"),
     UNKNOWN("?");
 
     final String value;
