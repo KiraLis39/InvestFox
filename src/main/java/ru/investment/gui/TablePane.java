@@ -140,7 +140,7 @@ public class TablePane extends JPanel {
                                 log.info("TablePane: calculating " + nextRow.getResultDto().getTicker());
 
                                 CompletableFuture.supplyAsync(() -> {
-                                    Instant wasInst = Instant.now();
+                                    long wast = System.currentTimeMillis();
                                     try {
                                         ShareCollectedDTO data = netProcessor
                                                 .checkTicket(nextRow.getResultDto().getTicker(), false)
@@ -162,10 +162,14 @@ public class TablePane extends JPanel {
                                         new FOptionPane().buildFOptionPane("Ошибка!",
                                                 "Ошибка: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
                                     } finally {
-                                        long elapsed = Duration.between(wasInst, Instant.now()).toMillis();
-                                        log.info("\n*** Rescan time: ***\n{}:{}\n\n",
-                                                TimeUnit.MILLISECONDS.toMinutes(elapsed),
-                                                TimeUnit.MILLISECONDS.toSeconds(elapsed));
+                                        Long pass = System.currentTimeMillis() - wast;
+                                        log.info(String.format(
+                                                "%n*** Rescan: %s %d min, %d sec ***%n%n%n",
+                                                nextRow.getResultDto().getTicker(),
+                                                TimeUnit.MILLISECONDS.toMinutes(pass),
+                                                TimeUnit.MILLISECONDS.toSeconds(pass) -
+                                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
+                                        ));
                                     }
                                     return null;
                                 }, es);

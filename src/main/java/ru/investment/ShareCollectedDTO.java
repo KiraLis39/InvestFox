@@ -47,6 +47,7 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     private String partOfProfit; // Часть дохода
     private String stablePay; // Стабильность выплат
     private String stableGrow; // Стабильность роста
+    @Builder.Default
     private String info = ""; // Информация
     private String recommendation; // Рекомендация
     private LocalDateTime nextPayDate; // Дата след. выплаты
@@ -78,7 +79,12 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
             calcResultDiv(newData.getDividends());
             calcResultSector(newData.getSector());
 
-          this.setInfo(this.getInfo().concat("\n\n*** *** ***\n\n").concat(newData.getInfos().toString()));
+            if (this.getInfo() == null && newData.getInfos() != null) {
+                // если в БД null - установится null даже если в классе билдится строкой. Потому проверка:
+                this.setInfo(newData.getInfos().toString());
+            } else {
+                this.setInfo(this.getInfo().concat("\n\n*** *** ***\n\n").concat(newData.getInfos().toString()));
+            }
 //          this.setPaySumOnShare(newData.getPaySumOnShare().toString());
 //          this.setPaySum(newData.getPaySum().toString());
 //          this.setPartOfProfit(newData.getPartOfProfit().toString());

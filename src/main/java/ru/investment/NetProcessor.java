@@ -70,7 +70,8 @@ public class NetProcessor {
                     log.info(String.format("Check the ticket '%s'...", ticker));
                     try {
                         Optional<Share> exists = shareService.findShareByTicker(ticker);
-                        ShareCollectedDTO resultDTO = exists.isPresent() ? shareMapper.toDto(exists.get()) : new ShareCollectedDTO();
+                        ShareCollectedDTO resultDTO = exists.isPresent() ? shareMapper.toDto(exists.get())
+                                : ShareCollectedDTO.builder().build();
                         ArrayList<AbstractSite> sites = new ArrayList<>(countOfSites) {
                             {
                                 // selenide:

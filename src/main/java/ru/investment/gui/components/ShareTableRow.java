@@ -114,7 +114,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
         addEditableColumn("TICKER",
                 resultDto.getTicker(),
-                resultDto.getInfo(),
+                "<html>" + resultDto.getInfo().replace("\n", "<br>"),
                 Color.WHITE, false);
 
         addTextColumn("COST",

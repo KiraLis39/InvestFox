@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -95,6 +96,7 @@ public class Share {
     @Column(name = "stable_grow")
     private String stableGrow; // Стабильность роста
 
+    @Lob
     @Column(name = "info", columnDefinition = "text")
     private String info; // Информация
 
@@ -106,4 +108,20 @@ public class Share {
 
     @Column(name = "comment")
     private String comment; // Комментарий
+
+    @Override
+    public String toString() {
+        return "Share{" +
+                "id=" + id +
+                ", updatedDate=" + updatedDate +
+                ", index=" + index +
+                ", ticker='" + ticker + '\'' +
+                ", source='" + source + '\'' +
+                ", name='" + name + '\'' +
+                ", costType=" + costType +
+                ", lotSize=" + lotSize +
+                ", cost=" + cost +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }

@@ -13,7 +13,6 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class MainClass {
-
     public static void main(String[] args) {
         loadUIM();
 

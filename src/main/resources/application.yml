@@ -2,6 +2,7 @@ logging:
   level:
     root: DEBUG
     fox.FoxFontBuilder: INFO
+    ru.investment.utils.BrowserUtils: INFO
 
     sun.rmi: INFO
     sun.awt: INFO
@@ -49,14 +50,21 @@ logging:
     org.openqa.selenium.remote.RemoteWebDriver: INFO
     org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec: INFO
     org.openqa.selenium.devtools.CdpVersionFinder: INFO
+    org.openqa.selenium.firefox: FATAL
+    org.openqa.selenium.firefox.GeckoDriverService: OFF
     org.asynchttpclient.netty.request.NettyRequestSender: INFO
     org.asynchttpclient.netty.channel: INFO
     org.asynchttpclient.netty.handler: INFO
     com.codeborne.selenide.drivercommands: WARN
     com.codeborne.selenide.impl.Plugins: INFO
     com.codeborne.selenide.impl.FileHelper: WARN
+    com.codeborne.selenide.impl.DeadThreadsWatchdog: WARN
     com.codeborne.selenide.webdriver.SelenideNettyClientFactory: WARN
     com.codeborne.selenide.webdriver.WebDriverFactory: INFO
+    com.codeborne.selenide.level: FATAL
+
+    org.seleniumhq.selenium: FATAL
+    org.slf4j.simpleLogger.log.com.codeborne.selenide: FATAL
 
     io.netty.handler.codec.compression: INFO
     io.netty.channel.DefaultChannelId: INFO
