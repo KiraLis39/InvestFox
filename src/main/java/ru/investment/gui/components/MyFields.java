@@ -1,7 +1,8 @@
 package ru.investment.gui.components;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.investment.config.constants.Constant;
 import ru.investment.utils.UniversalNumberParser;
 
@@ -12,7 +13,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyListener;
 import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class MyFields implements Serializable {
 
@@ -99,12 +101,12 @@ public class MyFields implements Serializable {
                 sum = UniversalNumberParser.parseFloat(value);
                 text = String.format("%,.0f р.", sum);
                 label = textLabel(text,
-                        SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSum);
+                        SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.FONT_TABLE_SUM);
             } else {
                 sum = Math.round(UniversalNumberParser.parseFloat(value));
                 text = String.format("%s %%", Math.round(sum));
                 label = textLabel(text,
-                        SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSum);
+                        SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.FONT_TABLE_SUM);
             }
             add(label);
         }

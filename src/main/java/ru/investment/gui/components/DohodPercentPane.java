@@ -54,7 +54,7 @@ public class DohodPercentPane extends JPanel {
 
                         int sum = Math.round(itogSum / inputSum * 100);
                         itogPercentLabel = textLabel(sum + "%",
-                                SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSumRow);
+                                SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
                         add(itogPercentLabel);
                     }
                 });

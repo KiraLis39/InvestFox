@@ -1,8 +1,9 @@
 package ru.investment.parser;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -17,7 +18,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 @Slf4j
-@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,12 +58,12 @@ public class ParserThread extends Thread {
 
     public void close() {
 //        log.info("*** Total work time is " + sdf.format(getWorkTime()) + " ***\n");
-        setThreadState(THREAD_STATE.SHUTTING_DOWN.name());
+        setThreadState(ParserThread.ThreadState.SHUTTING_DOWN.name());
         stateMachine.sendEvent(ParserEvents.ON_STOP_BY_USER);
         isFinished = true;
     }
 
-    public enum THREAD_STATE {
+    public enum ThreadState {
         RUNNABLE,
         TERMINATED,
         DEAD,

@@ -1,8 +1,9 @@
 package ru.investment.gui.abstracts;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.investment.config.ObjectMapperConfig;
 import ru.investment.config.constants.Constant;
@@ -14,7 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Data
+@Getter
+@Setter
 @Slf4j
 @EqualsAndHashCode(callSuper = false)
 public abstract class AbstractBroker extends JPanel {

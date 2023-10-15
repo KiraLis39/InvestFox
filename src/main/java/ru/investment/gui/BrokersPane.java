@@ -1,7 +1,9 @@
 package ru.investment.gui;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 import ru.investment.config.constants.Constant;
@@ -19,8 +21,10 @@ import java.util.UUID;
 
 import static ru.investment.gui.components.MyFields.textLabel;
 
-@Data
+@Getter
+@Setter
 @Component
+@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class BrokersPane extends JPanel {
     private final UUID id = UUID.randomUUID();
@@ -120,7 +124,7 @@ public class BrokersPane extends JPanel {
 
                                 add(new JLabel("ИТОГИ:") {
                                     {
-                                        setFont(Constant.fontEmitentLabel);
+                                        setFont(Constant.FONT_EMITENT_LABEL);
                                         setForeground(Color.WHITE);
                                         setHorizontalAlignment(0);
                                     }
@@ -140,14 +144,14 @@ public class BrokersPane extends JPanel {
 
                         needGets = new JLabel("ОТСТАВАНИЕ ОТ ПЛАНА: na") {
                             {
-                                setFont(Constant.fontTableSumRow);
+                                setFont(Constant.getFontTableSumRow());
                                 setHorizontalAlignment(0);
                                 setForeground(Color.RED);
                             }
                         };
                         currentMonth = new JLabel("МЕСЯЦ: na") {
                             {
-                                setFont(Constant.fontTableSumRow);
+                                setFont(Constant.getFontTableSumRow());
                                 setForeground(Color.WHITE);
                             }
                         };

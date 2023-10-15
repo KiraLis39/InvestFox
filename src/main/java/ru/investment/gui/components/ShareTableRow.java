@@ -1,8 +1,9 @@
 package ru.investment.gui.components;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -21,9 +22,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Comparator;
 
-import static ru.investment.enums.CostType.*;
+import static ru.investment.enums.CostType.EUR;
+import static ru.investment.enums.CostType.RUB;
+import static ru.investment.enums.CostType.USD;
 
-@Data
+@Getter
+@Setter
 @org.springframework.stereotype.Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @EqualsAndHashCode(callSuper = false)
@@ -179,7 +183,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         leftPane.add(new JSpinner(new SpinnerNumberModel(index, -2, 6, 1)) {
             {
                 setName(name);
-                if (Constant.showTableCellsBorder) {
+                if (Constant.SHOW_TABLE_CELLS_BORDER) {
                     setBorder(BorderFactory.createCompoundBorder(
                             new EmptyBorder(3, 0, 3, 0),
                             BorderFactory.createLineBorder(Color.GREEN)
@@ -187,7 +191,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 } else {
                     setBorder(new EmptyBorder(3, 0, 3, 0));
                 }
-                setFont(Constant.fontTableDataText);
+                setFont(Constant.FONT_TABLE_DATA_TEXT);
 //                getEditor().getComponent(0).setForeground(Color.WHITE);
                 getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.BLACK);
                 ((DefaultEditor) getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
@@ -218,7 +222,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         midPane.add(new JTextField(text) {
             {
                 setName(name);
-                if (Constant.showTableCellsBorder) {
+                if (Constant.SHOW_TABLE_CELLS_BORDER) {
                     setBorder(BorderFactory.createCompoundBorder(
                             BorderFactory.createLineBorder(Color.GREEN),
                             new EmptyBorder(3, 3, 0, 3)
@@ -227,7 +231,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                     setBorder(new EmptyBorder(3, 3, 0, 3));
                 }
                 setHorizontalAlignment(SwingConstants.CENTER);
-                setFont(Constant.fontTableDataText);
+                setFont(Constant.FONT_TABLE_DATA_TEXT);
                 setBackground(Color.DARK_GRAY.darker());
                 setForeground(color == null ? Color.WHITE : color);
 
@@ -326,8 +330,8 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
             setName(name);
             setForeground(foreground == null ? Color.WHITE : foreground);
             setHorizontalAlignment(SwingConstants.CENTER);
-            setFont(Constant.fontTableDataText);
-            if (Constant.showTableCellsBorder) {
+            setFont(Constant.FONT_TABLE_DATA_TEXT);
+            if (Constant.SHOW_TABLE_CELLS_BORDER) {
                 setBorder(BorderFactory.createLineBorder(Color.GREEN));
             }
             if (tooltip != null) {
@@ -433,7 +437,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
         }
 
         //
-        getColumnNamed("COMMENT").setFont(Constant.fontTableComment);
+        getColumnNamed("COMMENT").setFont(Constant.FONT_TABLE_COMMENT);
         getColumnNamed("COMMENT").setForeground(Color.ORANGE);
         ((JTextField) getColumnNamed("COMMENT")).setToolTipText(((JTextField) getColumnNamed("COMMENT")).getText());
 
@@ -442,7 +446,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
         //
         getColumnNamed("COST").setForeground(Color.YELLOW);
-        getColumnNamed("COST").setFont(Constant.fontTableSum);
+        getColumnNamed("COST").setFont(Constant.FONT_TABLE_SUM);
         ((JLabel) getColumnNamed("COST")).setHorizontalAlignment(SwingConstants.RIGHT);
 
         //
@@ -460,6 +464,6 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
         //
         getColumnNamed("LOT_SIZE").setForeground(new Color(0.65f, 0.2f, 1.0f));
-        getColumnNamed("LOT_SIZE").setFont(Constant.fontTableSum);
+        getColumnNamed("LOT_SIZE").setFont(Constant.FONT_TABLE_SUM);
     }
 }

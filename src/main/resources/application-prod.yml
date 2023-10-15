@@ -1,0 +1,75 @@
+logging:
+  level:
+    root: INFO
+    sun: INFO
+    java.awt: INFO
+    javax.swing: INFO
+    fox.FoxFontBuilder: INFO
+    com.codeborne.selenide: INFO
+    com.zaxxer.hikari: WARN
+    javax.management.remote: INFO
+    jdk.event.security: INFO
+    org.hibernate: WARN
+    org.jboss.logging: INFO
+    org.apache.tomcat: INFO
+    org.apache.catalina: WARN
+    org.springframework: INFO
+    org.asynchttpclient: INFO
+    org.openqa.selenium: INFO
+    io.netty.handler: INFO
+    io.netty.channel: INFO
+    io.netty.buffer: INFO
+    io.netty.util: INFO
+
+server:
+  port: 8080
+  error:
+    whitelabel:
+      # false - для отображения фактического ответа сервера, вместо белой страницы с описанием:
+      enabled: false
+
+spring:
+  main:
+    allow-circular-references: false
+    lazy-initialization: true
+    allow-bean-definition-overriding: false
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:invest}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:admin}
+
+  jpa:
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          # Hibernate прозрачно отключает пакетную вставку на уровне JDBC, если вы используете генератор IDENTITY
+          batch_size: 10
+          batch_versioned_data: true
+        order_updates: true
+        auto_quote_keyword: true
+        globally_quoted_identifiers: true
+        connection:
+          # autocommit: true // не рекомендуется
+          pool_size: 10
+
+app:
+  sites:
+    count: ${APP_SITES_COUNT:6}
+
+  selenide:
+    test_timeout: ${SELENIDE_TEST_TIMEOUT:30000}
+    page_load_timeout: ${SELENIDE_PAGE_LOAD_TIMEOUT:13900}
+    polling_interval: ${SELENIDE_POLL_INTERVAL:250}
+    # remote_read_timeout: ${SELENIDE_RREAD_TIMEOUT:30_000}
+    # remote_connect_timeout: ${SELENIDE_RCONN_TIMEOUT:30_000}
+
+    max_error_count: 100
+    each_state_sleep: 3_000
+    tab_click_sleep: 3_500
+    purchases_shift_sleep: 1_000
+    technical_work_sleep: 360_000
+    max_depth_sleep: 360_000

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import ru.investment.exceptions.root.ParsingException;
 import ru.investment.parser.handlers.markers.IParseRoot;
 
 @SuppressWarnings("JsonStandardCompliance")
@@ -14,7 +13,7 @@ import ru.investment.parser.handlers.markers.IParseRoot;
 @Scope("prototype")
 public class PurchaseItemParser implements IParseRoot {
 
-    public void parseItem(String sourceUrl) throws ParsingException {
+    public void parseItem(String sourceUrl) {
 //        final ParserThread parserThread = ((ParserThread) Thread.currentThread());
 //        final PurchasePage purchasePage =
 //            ((PurchasePage) parserThread.get(ParserThread.ENVIRONMENTS.PURCHASE_PAGE));

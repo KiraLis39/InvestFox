@@ -3,7 +3,6 @@ package ru.investment.entity.sites;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +11,7 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.BrowserException;
-import ru.investment.exceptions.NoElementAvailableException;
-import ru.investment.utils.BrowserUtils;
+import ru.investment.utils.BrowserUtil;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
@@ -23,7 +20,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
 @Slf4j
 public class TradingRu extends AbstractSite {
@@ -40,9 +41,9 @@ public class TradingRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws BrowserException, JsonProcessingException {
-        if (!BrowserUtils.openNewBrowser()) {
-            throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
+    public ShareDTO task() throws Exception {
+        if (!BrowserUtil.openNewBrowser()) {
+            throw new Exception("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
         }
 
         try {
@@ -106,7 +107,7 @@ public class TradingRu extends AbstractSite {
                 // Разбор табов: 'Теханализ' | 'Новости':
                 SelenideElement tabsPane = $("#js-category-content > div.tv-category-symbol-header > div.tv-category-symbol-header__tabs > div > div.tv-tabs__scroll-wrap > div");
                 if (!tabsPane.exists()) {
-                    throw new NoElementAvailableException("Not found tabs head 'tabsPane' on this page");
+                    throw new Exception("Not found tabs head 'tabsPane' on this page");
                 }
 
                 ElementsCollection techAnal = tabsPane.$$("a").filter(Condition.text("Теханализ"));
@@ -186,7 +187,7 @@ public class TradingRu extends AbstractSite {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
             throw e;
         } finally {
-            BrowserUtils.closeAndClearAll();
+            BrowserUtil.closeAndClearAll();
             getDto().setLastRefreshDate(LocalDateTime.now());
             return getDto();
         }

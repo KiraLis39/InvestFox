@@ -12,8 +12,7 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.BrowserException;
-import ru.investment.utils.BrowserUtils;
+import ru.investment.utils.BrowserUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -21,7 +20,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.back;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
 @Slf4j
 public class RuInvestingCom extends AbstractSite {
@@ -41,8 +45,8 @@ public class RuInvestingCom extends AbstractSite {
 
     @Override
     public ShareDTO task() throws Exception {
-        if (!BrowserUtils.openNewBrowser()) {
-            throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
+        if (!BrowserUtil.openNewBrowser()) {
+            throw new Exception("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
         }
 
         try {
@@ -179,7 +183,7 @@ public class RuInvestingCom extends AbstractSite {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
             throw e;
         } finally {
-            BrowserUtils.closeAndClearAll();
+            BrowserUtil.closeAndClearAll();
         }
     }
 

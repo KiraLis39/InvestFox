@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
-public class ObjectMapperConfig {
+public final class ObjectMapperConfig {
     private static ObjectMapper mapper;
 
     private ObjectMapperConfig() {

@@ -2,10 +2,10 @@ package ru.investment.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.BadDataException;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDate;
@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @Slf4j
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class ShareDTO {
@@ -59,9 +60,9 @@ public class ShareDTO {
         return this.payDate != null ? this.payDate.toLocalDate() : null;
     }
 
-    public void addCoast(String... coast) throws BadDataException {
+    public void addCoast(String... coast) throws Exception {
         if (coast.length == 0 || coast[0].isBlank()) {
-            throw new BadDataException("Array 'coast' is empty?");
+            throw new Exception("Array 'coast' is empty?");
         }
         this.coasts.addAll(Arrays.stream(coast).map(UniversalNumberParser::parseFloat).toList());
     }

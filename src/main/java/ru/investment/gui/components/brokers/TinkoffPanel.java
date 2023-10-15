@@ -109,10 +109,10 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(tinkColor);
                                 Float sum = 0f;
-                                for (Float aFloat : getDto().getData().inputs) {
+                                for (Float aFloat : getDto().getData().getInputs()) {
                                     sum += aFloat;
                                 }
-                                sumLabel01 = textLabel(String.valueOf(sum), SwingConstants.CENTER, Color.RED, Constant.fontTableSumRow);
+                                sumLabel01 = textLabel(String.valueOf(sum), SwingConstants.CENTER, Color.RED, Constant.getFontTableSumRow());
                                 add(sumLabel01);
                             }
                         });
@@ -139,10 +139,10 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(tinkColor);
                                 Float sum = 0f;
-                                for (Float aFloat : getDto().getData().outputs) {
+                                for (Float aFloat : getDto().getData().getOutputs()) {
                                     sum += aFloat;
                                 }
-                                sumLabel02 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.WHITE, Constant.fontTableSumRow);
+                                sumLabel02 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.WHITE, Constant.getFontTableSumRow());
                                 add(sumLabel02);
                             }
                         });
@@ -178,7 +178,7 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
 
                                 float sum = itog2 - itog1;
                                 sumLabel03 = textLabel(String.valueOf(sum),
-                                        SwingConstants.CENTER, sum > 0 ? Color.GREEN : Color.RED, Constant.fontTableSumRow);
+                                        SwingConstants.CENTER, sum > 0 ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
                                 add(sumLabel03);
                             }
                         });
@@ -202,11 +202,11 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
             }
 
             private float getDtoInputListValue(int index) {
-                return getDto().getData().inputs.isEmpty() ? 0 : getDto().getData().inputs.get(index);
+                return getDto().getData().getInputs().isEmpty() ? 0 : getDto().getData().getInputs().get(index);
             }
 
             private float getDtoOutputListValue(int index) {
-                return getDto().getData().outputs.isEmpty() ? 0 : getDto().getData().outputs.get(index);
+                return getDto().getData().getOutputs().isEmpty() ? 0 : getDto().getData().getOutputs().get(index);
             }
         };
 
@@ -214,8 +214,8 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
             {
                 setBackground(tinkColor);
                 setPreferredSize(new Dimension(Constant.TITLE_WIDTH, 0));
-                add(textLabel("Тинькофф", SwingConstants.CENTER, Color.ORANGE, Constant.fontEmitentLabel), BorderLayout.CENTER);
-                add(textLabel("ВСЕГО:", SwingConstants.CENTER, Color.ORANGE, Constant.fontFinalSum), BorderLayout.SOUTH);
+                add(textLabel("Тинькофф", SwingConstants.CENTER, Color.ORANGE, Constant.FONT_EMITENT_LABEL), BorderLayout.CENTER);
+                add(textLabel("ВСЕГО:", SwingConstants.CENTER, Color.ORANGE, Constant.FONT_FINAL_SUM), BorderLayout.SOUTH);
             }
         };
 
@@ -285,13 +285,13 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
     }
 
     public void reload() {
-        inputRowField01.setText(String.valueOf(getDto().getData().inputs.get(0)));
-        inputRowField02.setText(String.valueOf(getDto().getData().inputs.get(1)));
-        inputRowField03.setText(String.valueOf(getDto().getData().inputs.get(2)));
+        inputRowField01.setText(String.valueOf(getDto().getData().getInputs().get(0)));
+        inputRowField02.setText(String.valueOf(getDto().getData().getInputs().get(1)));
+        inputRowField03.setText(String.valueOf(getDto().getData().getInputs().get(2)));
 
-        todayRowField01.setText(String.valueOf(getDto().getData().outputs.get(0)));
-        todayRowField02.setText(String.valueOf(getDto().getData().outputs.get(1)));
-        todayRowField03.setText(String.valueOf(getDto().getData().outputs.get(2)));
+        todayRowField01.setText(String.valueOf(getDto().getData().getOutputs().get(0)));
+        todayRowField02.setText(String.valueOf(getDto().getData().getOutputs().get(1)));
+        todayRowField03.setText(String.valueOf(getDto().getData().getOutputs().get(2)));
     }
 
     // other:

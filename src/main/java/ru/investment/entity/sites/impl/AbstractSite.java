@@ -1,6 +1,7 @@
 package ru.investment.entity.sites.impl;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -8,13 +9,14 @@ import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.helper.HttpConnection;
 import org.jsoup.nodes.Document;
 import ru.investment.entity.dto.ShareDTO;
-import ru.investment.utils.BrowserUtils;
+import ru.investment.utils.BrowserUtil;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 
-@Data
+@Getter
+@Setter
 @Slf4j
 public abstract class AbstractSite {
     protected String name;
@@ -67,19 +69,19 @@ public abstract class AbstractSite {
     public abstract ShareDTO task() throws Exception;
 
     protected boolean checkPageAvailable() {
-        if (BrowserUtils.isPageNotFound()) {
+        if (BrowserUtil.isPageNotFound()) {
             log.error("isPageNotFound");
             return false;
         }
-        if (BrowserUtils.isPageNotExists()) {
+        if (BrowserUtil.isPageNotExists()) {
             log.error("isPageNotExists");
             return false;
         }
-        if (BrowserUtils.isPageNotAvailable()) {
+        if (BrowserUtil.isPageNotAvailable()) {
             log.error("isPageNotAvailable");
             return false;
         }
-        if (BrowserUtils.isTechnicalWorks()) {
+        if (BrowserUtil.isTechnicalWorks()) {
             log.error("isTechnicalWorks");
             return false;
         }

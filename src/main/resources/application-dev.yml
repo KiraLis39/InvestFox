@@ -1,0 +1,118 @@
+logging:
+  level:
+    root: DEBUG
+    fox.FoxFontBuilder: INFO
+    sun.rmi: INFO
+    sun.awt: INFO
+    sun.net.www.protocol.http: INFO
+    com.zaxxer.hikari: INFO
+    com.zaxxer.hikari.HikariDataSource: WARN
+    com.codeborne.selenide.impl.CiReportUrl: INFO
+    javax.swing: INFO
+    javax.management.remote.rmi: INFO
+    java.awt.mixing: INFO
+    java.awt.event.WaitDispatchSupport: INFO
+    java.awt.focus.DefaultKeyboardFocusManager: INFO
+    jdk.event.security: INFO
+    org.hibernate: WARN
+    org.hibernate.Version: INFO
+    org.hibernate.annotations.common.Version: WARN
+    org.jboss.logging: INFO
+    org.apache: INFO
+    org.springframework.ui: INFO
+    org.springframework.jmx: INFO
+    org.springframework.orm: INFO
+    org.springframework.orm.jpa: WARN
+    org.springframework.boot: INFO
+    org.springframework.boot.devtools.autoconfigure: WARN
+    org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor: WARN
+    org.springframework.context: INFO
+    org.springframework.core.env: INFO
+    org.springframework.scheduling: INFO
+    org.springframework.web.servlet: INFO
+    org.springframework.web.client.RestTemplate: INFO
+    org.springframework.aop.framework.CglibAopProxy: INFO
+    org.springframework.beans.factory: INFO
+    org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor: WARN
+    org.springframework.beans.CachedIntrospectionResults: INFO
+    org.springframework.data.repository.core: INFO
+    org.springframework.data.repository.config: WARN
+    org.springframework.data.jpa.repository.query: INFO
+    org.springframework.data.jpa.repository.config: INFO
+    org.springframework.validation.beanvalidation: INFO
+    org.springframework.statemachine.support.LifecycleObjectSupport: INFO
+    org.springframework.jdbc.datasource.DataSourceUtils: INFO
+    org.asynchttpclient.netty.channel.DefaultChannelPool: INFO
+    org.openqa.selenium.remote.RemoteWebDriver: INFO
+    org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec: INFO
+    org.openqa.selenium.devtools.CdpVersionFinder: INFO
+    org.asynchttpclient.netty.request.NettyRequestSender: INFO
+    org.asynchttpclient.netty.channel: INFO
+    org.asynchttpclient.netty.handler: INFO
+    com.codeborne.selenide.drivercommands: WARN
+    com.codeborne.selenide.impl.Plugins: INFO
+    com.codeborne.selenide.impl.FileHelper: WARN
+    com.codeborne.selenide.webdriver.SelenideNettyClientFactory: WARN
+
+    com.codeborne.selenide.webdriver.WebDriverFactory: INFO
+    io.netty.handler.codec.compression: INFO
+    io.netty.channel.DefaultChannelId: INFO
+    io.netty.channel.nio: INFO
+    io.netty.buffer: INFO
+
+    io.netty.util: INFO
+
+server:
+  port: 8082
+  error:
+    whitelabel:
+      # false - для отображения фактического ответа сервера, вместо белой страницы с описанием:
+      enabled: false
+
+spring:
+  main:
+    allow-circular-references: false
+    lazy-initialization: false
+    allow-bean-definition-overriding: false
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:invest}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:admin}
+
+  jpa:
+    show-sql: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          # Hibernate прозрачно отключает пакетную вставку на уровне JDBC, если вы используете генератор IDENTITY
+          batch_size: 10
+          batch_versioned_data: true
+        order_updates: true
+        auto_quote_keyword: true
+        globally_quoted_identifiers: true
+        connection:
+          # autocommit: true // не рекомендуется
+          pool_size: 10
+
+app:
+  sites:
+    count: ${APP_SITES_COUNT:6}
+
+  selenide:
+    test_timeout: ${SELENIDE_TEST_TIMEOUT:30000}
+    page_load_timeout: ${SELENIDE_PAGE_LOAD_TIMEOUT:13900}
+    polling_interval: ${SELENIDE_POLL_INTERVAL:250}
+    # remote_read_timeout: ${SELENIDE_RREAD_TIMEOUT:30_000}
+    # remote_connect_timeout: ${SELENIDE_RCONN_TIMEOUT:30_000}
+
+    max_error_count: 100
+    each_state_sleep: 3_000
+    tab_click_sleep: 3_500
+    purchases_shift_sleep: 1_000
+    technical_work_sleep: 360_000
+    max_depth_sleep: 360_000

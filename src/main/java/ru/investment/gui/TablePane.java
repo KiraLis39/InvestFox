@@ -20,7 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -66,7 +70,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setToolTipText("Добавить строку/акцию");
                         setForeground(Color.GREEN.darker());
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             String tickerInput = JOptionPane.showInputDialog(TablePane.this, "Тикер:", "Ввод тикера:", JOptionPane.INFORMATION_MESSAGE);
                             if (tickerInput != null && tickerInput.length() > 0) {
@@ -103,7 +107,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setToolTipText("Перепарсить данные из сети");
                         setForeground(Color.CYAN);
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             if (es == null) {
                                 es = Executors.newWorkStealingPool();
@@ -169,7 +173,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setForeground(Color.ORANGE);
                         setToolTipText("Сохранить таблицу в БД");
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
                                 netProcessor.saveTable();
@@ -187,7 +191,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setForeground(Color.BLUE);
                         setToolTipText("Загрузить таблицу из БД");
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
                                 netProcessor.loadTable(TablePane.this);
@@ -205,7 +209,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setToolTipText("Поиск по тексту");
                         setForeground(Color.WHITE);
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> showSearchDialog());
                     }
                 };
@@ -215,7 +219,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setToolTipText("Экспорт данных в локальную папку");
                         setForeground(Color.ORANGE);
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
                                 netProcessor.exportTable();
@@ -234,7 +238,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setToolTipText("Импорт данных из локальной папки");
                         setForeground(Color.BLUE);
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
                                 netProcessor.importTable(TablePane.this);
@@ -253,7 +257,7 @@ public class TablePane extends JPanel {
                         setFocusPainted(false);
                         setToolTipText("Перерисовать стиль таблицы");
                         setForeground(Color.WHITE);
-                        setFont(Constant.fontSidePanel);
+                        setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> reloadTableStyle());
                     }
                 };
@@ -330,7 +334,7 @@ public class TablePane extends JPanel {
                     sCount = new JLabel() {{
                         setForeground(Color.GRAY);
                         setHorizontalAlignment(0);
-                        setFont(Constant.fontTableSum);
+                        setFont(Constant.FONT_TABLE_SUM);
                     }};
                     add(sCount, BorderLayout.CENTER);
                 }}); // 12
@@ -353,7 +357,7 @@ public class TablePane extends JPanel {
                     shBye = new JLabel() {{
                         setForeground(Color.ORANGE);
                         setHorizontalAlignment(0);
-                        setFont(Constant.fontTableSum);
+                        setFont(Constant.FONT_TABLE_SUM);
                     }};
                     add(shBye, BorderLayout.CENTER);
                 }});
@@ -364,7 +368,7 @@ public class TablePane extends JPanel {
                     lMoney = new JLabel() {{
                         setForeground(Color.RED);
                         setHorizontalAlignment(0);
-                        setFont(Constant.fontTableSum);
+                        setFont(Constant.FONT_TABLE_SUM);
                     }};
                     add(lMoney, BorderLayout.CENTER);
                 }}); // 12
@@ -376,7 +380,7 @@ public class TablePane extends JPanel {
                     gMoney = new JLabel() {{
                         setForeground(Color.GREEN);
                         setHorizontalAlignment(0);
-                        setFont(Constant.fontTableSum);
+                        setFont(Constant.FONT_TABLE_SUM);
                     }};
                     add(gMoney, BorderLayout.CENTER);
                 }}); // 13

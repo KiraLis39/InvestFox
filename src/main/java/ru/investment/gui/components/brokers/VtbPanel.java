@@ -104,10 +104,10 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(Color.BLUE.darker().darker());
                                 Float sum = 0f;
-                                for (Float aFloat : getDto().getData().inputs) {
+                                for (Float aFloat : getDto().getData().getInputs()) {
                                     sum += aFloat;
                                 }
-                                inputtedSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.fontTableSumRow);
+                                inputtedSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.getFontTableSumRow());
                                 add(inputtedSumLabel);
                             }
                         });
@@ -131,10 +131,10 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(Color.BLUE.darker().darker());
                                 Float sum = 0f;
-                                for (Float aFloat : getDto().getData().outputs) {
+                                for (Float aFloat : getDto().getData().getOutputs()) {
                                     sum += aFloat;
                                 }
-                                todaySumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.white, Constant.fontTableSumRow);
+                                todaySumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.white, Constant.getFontTableSumRow());
                                 add(todaySumLabel);
                             }
                         });
@@ -164,7 +164,7 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                                 itog2 += UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText());
 
                                 float sum = itog2 - itog1;
-                                itogSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSumRow);
+                                itogSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
                                 add(itogSumLabel);
                             }
                         });
@@ -185,11 +185,11 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
             }
 
             private float getDtoInputListValue(int index) {
-                return getDto().getData().inputs.isEmpty() ? 0 : getDto().getData().inputs.get(index);
+                return getDto().getData().getInputs().isEmpty() ? 0 : getDto().getData().getInputs().get(index);
             }
 
             private float getDtoOutputListValue(int index) {
-                return getDto().getData().outputs.isEmpty() ? 0 : getDto().getData().outputs.get(index);
+                return getDto().getData().getOutputs().isEmpty() ? 0 : getDto().getData().getOutputs().get(index);
             }
         };
 
@@ -198,8 +198,8 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                 setLayout(new BorderLayout(0, 0));
                 setBackground(Color.BLUE.darker().darker());
                 setPreferredSize(new Dimension(Constant.TITLE_WIDTH, 0));
-                add(textLabel("ВТБ", SwingConstants.CENTER, new Color(0.8f, 0.8f, 1.0f), Constant.fontEmitentLabel), BorderLayout.CENTER);
-                add(textLabel("ВСЕГО:", SwingConstants.CENTER, new Color(0.8f, 0.8f, 1.0f), Constant.fontFinalSum), BorderLayout.SOUTH);
+                add(textLabel("ВТБ", SwingConstants.CENTER, new Color(0.8f, 0.8f, 1.0f), Constant.FONT_EMITENT_LABEL), BorderLayout.CENTER);
+                add(textLabel("ВСЕГО:", SwingConstants.CENTER, new Color(0.8f, 0.8f, 1.0f), Constant.FONT_FINAL_SUM), BorderLayout.SOUTH);
             }
         };
 
@@ -252,7 +252,7 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
     }
 
     public void reload() {
-        tf01.setText(String.valueOf(getDto().getData().inputs.get(0)));
-        tf11.setText(String.valueOf(getDto().getData().outputs.get(0)));
+        tf01.setText(String.valueOf(getDto().getData().getInputs().get(0)));
+        tf11.setText(String.valueOf(getDto().getData().getOutputs().get(0)));
     }
 }

@@ -2,7 +2,6 @@ package ru.investment.utils;
 
 import com.codeborne.selenide.SelenideElement;
 import lombok.experimental.UtilityClass;
-import ru.investment.exceptions.DateParseException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,23 +23,23 @@ public class UniversalDateParser {
         //  уточнить, заменить при необходимости.
     }
 
-    public static Instant parseDateTime(String rawDateStr) throws DateParseException {
+    public static Instant parseDateTime(String rawDateStr) throws Exception {
         return toInstant(rawDateStr, DateZone.GMT);
     }
 
-    public static Instant parseDateTimeMoskow(String rawDateStr) throws DateParseException {
+    public static Instant parseDateTimeMoskow(String rawDateStr) throws Exception {
         return toInstant(rawDateStr, DateZone.MOSKOW);
     }
 
-    public static Instant parseDateTimeGMT(String rawDateStr) throws DateParseException {
+    public static Instant parseDateTimeGMT(String rawDateStr) throws Exception {
         return toInstant(rawDateStr, DateZone.GMT);
     }
 
-    public static Instant parseDateTimeFromSE(SelenideElement dataElement) throws DateParseException {
+    public static Instant parseDateTimeFromSE(SelenideElement dataElement) throws Exception {
         return toInstant(dataElement.text().trim(), DateZone.GMT);
     }
 
-    private static Instant toInstant(String rawDateStr, DateZone zone) throws DateParseException {
+    private static Instant toInstant(String rawDateStr, DateZone zone) throws Exception {
         SimpleDateFormat formatter = null;
 
         if (rawDateStr.contains(", ")) {
@@ -75,7 +74,7 @@ public class UniversalDateParser {
             }
             return null;
         } catch (ParseException e) {
-            throw new DateParseException("Не удалось распарсить дату с сайта: '{}'", rawDateStr);
+            throw new Exception("Не удалось распарсить дату с сайта: '%s'".formatted(rawDateStr));
         }
     }
 

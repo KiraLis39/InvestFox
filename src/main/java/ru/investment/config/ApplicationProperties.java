@@ -1,11 +1,13 @@
 package ru.investment.config;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Data
-@ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
+@Getter
+@Setter
+@ConfigurationProperties(prefix = "all", ignoreUnknownFields = false)
 public class ApplicationProperties {
     @Value("${spring.application.version}")
     private String version;

@@ -15,7 +15,16 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -66,7 +75,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
                                 ticketField = new JTextField() {
                                     {
-                                        setFont(Constant.fontPrimaryHeaders);
+                                        setFont(Constant.getFontPrimaryHeaders());
                                         setColumns(6);
                                         setHorizontalAlignment(0);
                                         setAlignmentY(1);
@@ -95,10 +104,8 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                                 JButton updateButton = new JButton("Сканировать") {
                                     {
                                         setFocusPainted(false);
-                                        setFont(Constant.fontPrimaryHeaders);
-                                        addActionListener(e -> {
-                                            runScan();
-                                        });
+                                        setFont(Constant.getFontPrimaryHeaders());
+                                        addActionListener(e -> runScan());
                                     }
                                 };
 
@@ -258,7 +265,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
 
             loadIcons(); // подгружаем иконки приложения
         } catch (IOException e) {
-            log.error("Exception here: {}", e.getMessage());
+            log.error("#234 Exception here: {}", e.getMessage());
         }
     }
 
@@ -272,14 +279,14 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
             log.error("Exception here: {}", e.getMessage());
         }
 
-        Constant.inAc.add("tabedPane", tablePane);
-        Constant.inAc.set("tabedPane", "showSearchDialog", KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK, new AbstractAction() {
+        Constant.IN_AC.add("tabedPane", tablePane);
+        Constant.IN_AC.set("tabedPane", "showSearchDialog", KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tablePane.showSearchDialog();
             }
         });
-        Constant.inAc.set("tabedPane", "showNextSearch", KeyEvent.VK_F3, 0, new AbstractAction() {
+        Constant.IN_AC.set("tabedPane", "showNextSearch", KeyEvent.VK_F3, 0, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tablePane.showNextSearched();

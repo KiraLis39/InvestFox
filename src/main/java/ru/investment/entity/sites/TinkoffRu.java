@@ -9,7 +9,6 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.root.ParsingException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -26,7 +25,7 @@ public class TinkoffRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws ParsingException {
+    public ShareDTO task() throws IOException {
         buildUrl(SOURCE_THREE + getDto().getTicker());
         Document doc = getDoc();
         if (doc == null || doc.getAllElements().size() < 3) {
@@ -95,7 +94,9 @@ public class TinkoffRu extends AbstractSite {
             }
         } catch (IOException e) {
             log.error("Exception here: {}", e.getMessage());
-            throw new ParsingException(e);
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         getDto().setLastRefreshDate(LocalDateTime.now());

@@ -22,7 +22,7 @@ public class TextTableRow extends JPanel implements Comparator<ShareTableRow> {
         for (String value : values) {
             add(new JLabel(value) {{
                 setFocusable(true);
-                setFont(Constant.fontPrimaryHeaders);
+                setFont(Constant.getFontPrimaryHeaders());
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setVerticalAlignment(SwingConstants.CENTER);
                 setForeground(Color.GRAY);

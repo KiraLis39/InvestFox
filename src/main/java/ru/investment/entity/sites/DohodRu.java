@@ -4,7 +4,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
-import ru.investment.exceptions.root.ParsingException;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +18,7 @@ public class DohodRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws ParsingException {
+    public ShareDTO task() {
         buildUrl(SOURCE_FOUR + getDto().getTicker().toLowerCase());
         Document doc = getDoc();
         if (doc == null) {

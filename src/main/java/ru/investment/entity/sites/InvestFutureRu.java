@@ -6,11 +6,11 @@ import org.jsoup.select.Elements;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.BadDataException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class InvestFutureRu extends AbstractSite {
@@ -27,7 +27,7 @@ public class InvestFutureRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws BadDataException {
+    public ShareDTO task() throws Exception {
         Elements docElems;
         String temp;
         buildUrl(SOURCE_ONE_SUB + getDto().getTicker());
@@ -75,8 +75,11 @@ public class InvestFutureRu extends AbstractSite {
         }
 
         try {
-            if (doc.html().split("<li>торговый лот ").length > 1) {
-                double lot = Double.parseDouble(doc.html().split("<li>торговый лот ")[1].split(";</li>")[0].replace("‒", "").trim());
+            if (doc.html().split("<li>торговый лот ", Pattern.CANON_EQ).length > 1) {
+                double lot = Double.parseDouble(doc.html().split("<li>торговый лот ", Pattern.CANON_EQ)[1]
+                        .split(";</li>")[0]
+                        .replace("‒", "")
+                        .trim());
                 getDto().setLotSize((int) lot);
             }
         } catch (Exception e) {

@@ -7,11 +7,15 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import ru.investment.config.constants.ParserMessages;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.webdriver;
 
 @Slf4j
 @UtilityClass
-public class BrowserUtils {
+public class BrowserUtil {
 
     // для локального не-headless тестирования:
     public static void closeRegionModal() {

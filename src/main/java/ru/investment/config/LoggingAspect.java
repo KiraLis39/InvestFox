@@ -21,9 +21,9 @@ public class LoggingAspect {
      * Pointcut that matches all repositories, services and Web REST endpoints.
      */
     @Pointcut(
-            "within(@org.springframework.stereotype.Repository *)" +
-                    " || within(@org.springframework.stereotype.Service *)" +
-                    " || within(@org.springframework.web.bind.annotation.RestController *)"
+            "within(@org.springframework.stereotype.Repository *)"
+                    + " || within(@org.springframework.stereotype.Service *)"
+                    + " || within(@org.springframework.web.bind.annotation.RestController *)"
     )
     public void springBeanPointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
@@ -48,7 +48,7 @@ public class LoggingAspect {
     }
 
     /**
-     * Advice that logs methods throwing exceptions.
+     * Advice that logs methods throwing ru.investment.exceptions.
      *
      * @param joinPoint join point for advice.
      * @param e         exception.

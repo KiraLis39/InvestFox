@@ -113,10 +113,10 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(mtsColor);
                                 Float sum = 0f;
-                                for (Float aFloat : getDto().getData().inputs) {
+                                for (Float aFloat : getDto().getData().getInputs()) {
                                     sum += aFloat;
                                 }
-                                itog01 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.fontTableSumRow);
+                                itog01 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.getFontTableSumRow());
                                 add(itog01);
                             }
                         });
@@ -145,10 +145,11 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                             {
                                 setBackground(mtsColor);
                                 float sum = 0f;
-                                for (Float aFloat : getDto().getData().outputs) {
+                                for (Float aFloat : getDto().getData().getOutputs()) {
                                     sum += aFloat;
                                 }
-                                itog02 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.white, Constant.fontTableSumRow);
+                                itog02 = textLabel(String.format("%,.0f р.", sum),
+                                        SwingConstants.CENTER, Color.white, Constant.getFontTableSumRow());
                                 add(itog02);
                             }
                         });
@@ -188,7 +189,7 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                                 itog2 += UniversalNumberParser.parseFloat(tf14.getText().isBlank() ? "0" : tf14.getText());
 
                                 float sum = itog2 - itog1;
-                                itog3 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.fontTableSumRow);
+                                itog3 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
                                 add(itog3);
                             }
                         });
@@ -251,11 +252,11 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
             }
 
             private float getDtoInputListValue(int index) {
-                return !getDto().getData().inputs.isEmpty() ? getDto().getData().inputs.get(index) : 0;
+                return !getDto().getData().getInputs().isEmpty() ? getDto().getData().getInputs().get(index) : 0;
             }
 
             private float getDtoOutputListValue(int index) {
-                return !getDto().getData().outputs.isEmpty() ? getDto().getData().outputs.get(index) : 0;
+                return !getDto().getData().getOutputs().isEmpty() ? getDto().getData().getOutputs().get(index) : 0;
             }
         };
 
@@ -263,8 +264,8 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
             {
                 setBackground(mtsColor);
                 setPreferredSize(new Dimension(Constant.TITLE_WIDTH, 0));
-                add(textLabel("МТС", null, SwingConstants.CENTER, Color.RED, Constant.fontEmitentLabel), BorderLayout.CENTER);
-                add(textLabel("ВСЕГО:", null, SwingConstants.CENTER, Color.RED, Constant.fontFinalSum), BorderLayout.SOUTH);
+                add(textLabel("МТС", null, SwingConstants.CENTER, Color.RED, Constant.FONT_EMITENT_LABEL), BorderLayout.CENTER);
+                add(textLabel("ВСЕГО:", null, SwingConstants.CENTER, Color.RED, Constant.FONT_FINAL_SUM), BorderLayout.SOUTH);
             }
         };
 
@@ -336,15 +337,16 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
     }
 
     public void reload() {
-        tf01.setText(String.valueOf(getDto().getData().inputs.get(0)));
-        tf02.setText(String.valueOf(getDto().getData().inputs.get(1)));
-        tf03.setText(String.valueOf(getDto().getData().inputs.get(2)));
-        tf04.setText(String.valueOf(getDto().getData().inputs.get(3)));
+        tf01.setText(String.valueOf(getDto().getData().getInputs().get(0)));
+        tf02.setText(String.valueOf(getDto().getData().getInputs().get(1)));
+        tf03.setText(String.valueOf(getDto().getData().getInputs().get(2)));
+        tf04.setText(String.valueOf(getDto().getData().getInputs().get(3)));
 
-        tf11.setText(String.valueOf(getDto().getData().outputs.get(0)));
-        tf12.setText(String.valueOf(getDto().getData().outputs.get(1)));
-        tf13.setText(String.valueOf(getDto().getData().outputs.get(2)));
-        tf14.setText(String.valueOf(getDto().getData().outputs.get(3)));
+        log.warn("Точно тут inputs, a не outputs?..");
+        tf11.setText(String.valueOf(getDto().getData().getInputs().get(0)));
+        tf12.setText(String.valueOf(getDto().getData().getInputs().get(1)));
+        tf13.setText(String.valueOf(getDto().getData().getInputs().get(2)));
+        tf14.setText(String.valueOf(getDto().getData().getInputs().get(3)));
     }
 
     // other:

@@ -3,7 +3,6 @@ package ru.investment.entity.sites;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +11,16 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.BadDataException;
-import ru.investment.exceptions.BrowserException;
-import ru.investment.utils.BrowserUtils;
+import ru.investment.utils.BrowserUtil;
 import ru.investment.utils.UniversalNumberParser;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.open;
 
 @Slf4j
 public class InvestfundsRu extends AbstractSite {
@@ -39,9 +38,10 @@ public class InvestfundsRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws BadDataException, BrowserException, JsonProcessingException {
-        if (!BrowserUtils.openNewBrowser()) {
-            throw new BrowserException("Не удалось открыть окно браузера. Парсер: " + getDto().getSource());
+    public ShareDTO task() throws Exception {
+        if (!BrowserUtil.openNewBrowser()) {
+//            throw new GlobalServiceException(ErrorMessages.BROWSER_CLOSED, "Парсер: " + getDto().getSource());
+            throw new Exception("Парсер: " + getDto().getSource());
         }
 
         try {
@@ -114,7 +114,7 @@ public class InvestfundsRu extends AbstractSite {
             log.error(getDto().getSource() + " не нашла тикер " + getDto().getTicker() + ". Ex: {}", e.getMessage());
             throw e;
         } finally {
-            BrowserUtils.closeAndClearAll();
+            BrowserUtil.closeAndClearAll();
             getDto().setLastRefreshDate(LocalDateTime.now());
             return getDto();
         }

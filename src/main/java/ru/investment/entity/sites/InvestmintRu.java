@@ -3,7 +3,6 @@ package ru.investment.entity.sites;
 import lombok.extern.slf4j.Slf4j;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
-import ru.investment.exceptions.root.ParsingException;
 
 @Slf4j
 public class InvestmintRu extends AbstractSite {
@@ -18,7 +17,7 @@ public class InvestmintRu extends AbstractSite {
     }
 
     @Override
-    public ShareDTO task() throws ParsingException {
+    public ShareDTO task() throws Exception {
         return null;
     }
 }

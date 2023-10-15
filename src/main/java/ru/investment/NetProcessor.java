@@ -21,6 +21,7 @@ import ru.investment.gui.TablePane;
 import ru.investment.gui.components.ShareTableRow;
 import ru.investment.mapper.ShareMapper;
 import ru.investment.service.ShareService;
+import ru.investment.utils.ExceptionsUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @org.springframework.stereotype.Component
 public class NetProcessor {
+    private static final long AWAIT_TERMINATION_TIMEOUT = 10;
     private static ExecutorService exec;
     private final ShareService shareService;
     private final BrokersPane brokersPane;
@@ -98,15 +100,14 @@ public class NetProcessor {
         try {
             if (exec != null) {
                 exec.shutdown();
-                if (!exec.awaitTermination(10, TimeUnit.SECONDS)) {
+                if (!exec.awaitTermination(AWAIT_TERMINATION_TIMEOUT, TimeUnit.SECONDS)) {
                     exec.shutdownNow();
                 }
             }
             saveTable();
             investFrame.getPortfel().saveBrokers();
         } catch (Exception e) {
-            err += e.getMessage().length() / 10;
-            log.error("Exit failed! {}", e.getMessage());
+            log.error("Exit failed! {}", ExceptionsUtil.getFullExceptionMessage(e));
         }
         log.info("End of work with error code {}", err);
         System.exit(err);

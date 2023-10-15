@@ -2,12 +2,13 @@ package ru.investment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.BadDataException;
 
 import javax.validation.constraints.Max;
 import java.time.LocalDate;
@@ -17,9 +18,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Slf4j
 @Builder
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
@@ -128,14 +131,14 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
         dividend = dividend == 0D ? listAverage : (dividend + listAverage) / 2D;
     }
 
-    private void calcResultCostType(CostType type) throws BadDataException {
+    private void calcResultCostType(CostType type) throws Exception {
         if (type == null) {
             return;
         }
         if (costType == null) {
             costType = type;
         } else if (!costType.equals(type)) {
-            throw new BadDataException("Cost type is multiply: " + type + " or " + costType);
+            throw new Exception("Cost type is multiply: " + type + " or " + costType);
         }
     }
 

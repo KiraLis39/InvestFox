@@ -8,7 +8,6 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.entity.dto.ShareDTO;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.enums.CostType;
-import ru.investment.exceptions.root.ParsingException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -28,7 +27,7 @@ public class RbkRu extends AbstractSite {
         getDto().setTicker(ticket);
     }
 
-    public ShareDTO task() throws ParsingException {
+    public ShareDTO task() throws IOException {
         buildUrl(SOURCE_FIVE + getDto().getTicker());
         Document doc = getDoc();
 
@@ -73,7 +72,9 @@ public class RbkRu extends AbstractSite {
             }
         } catch (IOException e) {
             log.error("Exception here: {}", e.getMessage());
-            throw new ParsingException(e);
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         getDto().setLastRefreshDate(LocalDateTime.now());
