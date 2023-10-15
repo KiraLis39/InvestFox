@@ -22,7 +22,6 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class MainClass {
-
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 

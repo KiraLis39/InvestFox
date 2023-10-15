@@ -25,10 +25,9 @@ import static com.codeborne.selenide.Selenide.open;
 @Slf4j
 public class InvestfundsRu extends AbstractSite {
     private static final String SEARCH = "https://investfunds.ru/stocks/?searchString=";
-    private static final String VERIFY_HASH = "&verifyHash=813dd92bf207bbcdc65be773606698fe"; // &verifyHash=136690883ecab2ec4d5ec54d0d11b873
-    private static String SOURCE = "https://investfunds.ru";
     private final UUID uuid = UUID.randomUUID();
     private final RestTemplate restTemplate = new RestTemplate();
+    private String SOURCE = "https://investfunds.ru";
 
     public InvestfundsRu(String ticket) {
         super.setName(ticket);
@@ -45,12 +44,18 @@ public class InvestfundsRu extends AbstractSite {
         }
 
         try {
+            // problem with GCHE
             ResponseEntity<String> result = restTemplate
                     .getForEntity(SEARCH + getDto().getTicker(), String.class);
             JsonNode tree = ObjectMapperConfig.getMapper().readTree(result.getBody());
             JsonNode results = tree.get("currentResults");
             if (!results.isEmpty()) {
-                SOURCE += results.get(0).get("url").asText();
+                for (JsonNode node : results) {
+                    if (node.get("isin").asText().startsWith("RU")) {
+                        SOURCE += node.get("url").asText();
+                        break;
+                    }
+                }
             }
 
             // open the web page into opened browser:

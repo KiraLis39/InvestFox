@@ -3,22 +3,33 @@ package ru.investment.gui;
 import fox.components.FOptionPane;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import ru.investment.NetProcessor;
 import ru.investment.ShareCollectedDTO;
+import ru.investment.config.ObjectMapperConfig;
 import ru.investment.config.constants.Constant;
 import ru.investment.enums.CostType;
 import ru.investment.gui.components.ShareTableRow;
 import ru.investment.gui.components.TextTableRow;
+import ru.investment.service.ShareService;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @Slf4j
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 @RequiredArgsConstructor
 @org.springframework.stereotype.Component
 public class TablePane extends JPanel {
@@ -36,7 +48,9 @@ public class TablePane extends JPanel {
     private static JLabel lMoney, gMoney, sCount, shBye;
     private static JScrollPane scroll;
     private static int searchedIndex;
-    private final transient NetProcessor netProcessor;
+    private final BrokersPane brokersPane;
+    private final ShareService shareService;
+    private NetProcessor netProcessor;
     private InvestFrame investFrame;
     private ArrayList<Component> searchResultList;
 
@@ -51,6 +65,11 @@ public class TablePane extends JPanel {
     @Autowired
     public void setInvestFrame(@Lazy InvestFrame investFrame) {
         this.investFrame = investFrame;
+    }
+
+    @Autowired
+    public void setNetProcessor(@Lazy NetProcessor netProcessor) {
+        this.netProcessor = netProcessor;
     }
 
     @PostConstruct
@@ -82,7 +101,8 @@ public class TablePane extends JPanel {
                                 }
 
                                 try {
-                                    Future<ShareCollectedDTO> fut = netProcessor.checkTicket(tickerInput, false).exceptionally(throwable -> null);
+                                    Future<ShareCollectedDTO> fut = netProcessor
+                                            .checkTicket(tickerInput, false).exceptionally(throwable -> null);
                                     log.info("Scanning " + tickerInput + "...");
                                     while (!fut.isDone()) {
                                         Thread.yield();
@@ -90,12 +110,14 @@ public class TablePane extends JPanel {
                                     if (fut.get() != null) {
                                         addShare(fut.get());
                                     } else {
-                                        new FOptionPane().buildFOptionPane("Провал!", "Не было найдено никакой информации.");
+                                        new FOptionPane().buildFOptionPane("Провал!",
+                                                "Не было найдено никакой информации.");
                                     }
                                 } catch (Exception ex) {
                                     log.error("Exception here: {}", ex.getMessage());
                                 } finally {
                                     scroll.revalidate();
+                                    investFrame.getTablePane().updateResults();
                                 }
                             }
                         });
@@ -118,6 +140,7 @@ public class TablePane extends JPanel {
                                 log.info("TablePane: calculating " + nextRow.getResultDto().getTicker());
 
                                 CompletableFuture.supplyAsync(() -> {
+                                    long wast = System.currentTimeMillis();
                                     try {
                                         ShareCollectedDTO data = netProcessor
                                                 .checkTicket(nextRow.getResultDto().getTicker(), false)
@@ -138,6 +161,15 @@ public class TablePane extends JPanel {
                                         log.error("Exception here: {}", ex.getMessage());
                                         new FOptionPane().buildFOptionPane("Ошибка!",
                                                 "Ошибка: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                                    } finally {
+                                        Long pass = System.currentTimeMillis() - wast;
+                                        log.info(String.format(
+                                                "%n*** Rescan: %s %d min, %d sec ***%n%n%n",
+                                                nextRow.getResultDto().getTicker(),
+                                                TimeUnit.MILLISECONDS.toMinutes(pass),
+                                                TimeUnit.MILLISECONDS.toSeconds(pass) -
+                                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
+                                        ));
                                     }
                                     return null;
                                 }, es);
@@ -159,7 +191,7 @@ public class TablePane extends JPanel {
                                         TimeUnit.MILLISECONDS.toSeconds(pass) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
                                 ));
                                 try {
-                                    netProcessor.reload();
+                                    shareService.reload();
                                 } catch (IOException ex) {
                                     log.error("Exception here: {}", ex.getMessage());
                                 }
@@ -176,7 +208,7 @@ public class TablePane extends JPanel {
                         setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
-                                netProcessor.saveTable();
+                                shareService.saveTable(getRows());
                                 new FOptionPane().buildFOptionPane("Сохранено!", "Список сохранен.");
                             } catch (Exception ex) {
                                 log.error("Ошибка сохранения: {}", ex.getMessage());
@@ -194,7 +226,7 @@ public class TablePane extends JPanel {
                         setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
-                                netProcessor.loadTable(TablePane.this);
+                                shareService.loadTable();
                                 new FOptionPane().buildFOptionPane("Готово!", "Список загружен из базы данных");
                             } catch (Exception ex) {
                                 log.error("Ошибка загрузки данных: {}", ex.getMessage());
@@ -222,8 +254,8 @@ public class TablePane extends JPanel {
                         setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
-                                netProcessor.exportTable();
-                                netProcessor.exportBrokers();
+                                exportTable();
+                                brokersPane.exportBrokers();
                                 new FOptionPane().buildFOptionPane("Готово!", "Список выгружен на диск");
                             } catch (Exception ex) {
                                 log.error("Ошибка записи данных: {}", ex.getMessage());
@@ -241,8 +273,8 @@ public class TablePane extends JPanel {
                         setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
                             try {
-                                netProcessor.importTable(TablePane.this);
-                                netProcessor.importBrokers();
+                                importTable();
+                                importBrokers();
                                 new FOptionPane().buildFOptionPane("Готово!", "Список загружен из локальной директории");
                             } catch (Exception ex) {
                                 log.error("Ошибка загрузки данных: {}", ex.getMessage());
@@ -283,12 +315,12 @@ public class TablePane extends JPanel {
                     {
                         setOpaque(false);
 
-                        add(new TextTableRow(netProcessor, "<html>Индекс</html>"
+                        add(new TextTableRow(shareService, "<html>Индекс</html>"
                         ) {{
                             setBorder(new EmptyBorder(0, 0, 0, 0));
                         }}, BorderLayout.WEST);
 
-                        add(new TextTableRow(netProcessor, "<html>Сектор</html>", "<html>Эмитент</html>",
+                        add(new TextTableRow(shareService, "<html>Сектор</html>", "<html>Эмитент</html>",
                                 "<html>Тикер</html>", "<html>Цена</html>", "<html>Тип цены</html>", "<html>Лот</html>",
                                 "<html>Рублей за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
                                 "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>", "<html>Стоимость</html>",
@@ -297,7 +329,7 @@ public class TablePane extends JPanel {
                             setBorder(new EmptyBorder(0, 0, 0, 12));
                         }}, BorderLayout.CENTER);
 
-                        add(new TextTableRow(netProcessor, "<html>P/E</html>"
+                        add(new TextTableRow(shareService, "<html>P/E</html>"
                         ) {{
                             setBorder(new EmptyBorder(0, 0, 0, 30));
                         }}, BorderLayout.EAST);
@@ -403,11 +435,11 @@ public class TablePane extends JPanel {
         for (ShareCollectedDTO shareCollectedDTO : loading) {
             addShare(shareCollectedDTO);
         }
+        updateResults();
     }
 
     public void addShare(ShareCollectedDTO dto) {
-        contentTablePane.add(new ShareTableRow(investFrame, dto));
-        updateResults();
+        contentTablePane.add(new ShareTableRow(investFrame, dto)); // убедиться, что dto сюда приходит с info
     }
 
     public void updateResults() {
@@ -511,5 +543,48 @@ public class TablePane extends JPanel {
                 resultList.add(label);
             }
         }
+    }
+
+    public int exportTable() throws IOException {
+        if (!new File(Constant.SHARES_DIR).exists()) {
+            Files.createDirectory(Paths.get(Constant.SHARES_DIR));
+        }
+
+        int fails = 0;
+        log.info("Saving shares..");
+        for (ShareTableRow row : getRows()) {
+            try {
+                ObjectMapperConfig.getMapper().writeValue(
+                        new File(Constant.SHARES_DIR + row.getResultDto().getTicker() + Constant.BROKER_SAVE_POSTFIX),
+                        row.getResultDto());
+            } catch (IOException e) {
+                fails++;
+                e.printStackTrace();
+            }
+        }
+
+        if (fails > 0) {
+            log.error("Не удалось сохранить акций: {}", fails);
+        }
+        return fails;
+    }
+
+    public void importTable() throws IOException {
+        if (!new File(Constant.SHARES_DIR).exists()) {
+            throw new NotFoundException("Требуемая директория не найдена");
+        }
+
+        File[] shares = Paths.get(Constant.SHARES_DIR).toFile().listFiles();
+        ArrayList<ShareCollectedDTO> loading = new ArrayList<>();
+        assert shares != null;
+        for (File share : shares) {
+            loading.add(ObjectMapperConfig.getMapper().readValue(share, ShareCollectedDTO.class));
+        }
+        Collections.sort(loading);
+        addShares(loading);
+    }
+
+    public void importBrokers() {
+        brokersPane.importBrokers();
     }
 }

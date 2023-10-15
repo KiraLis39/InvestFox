@@ -32,6 +32,7 @@ public class BrowserSetupConfig {
         String os = System.getProperty("os.name").toLowerCase();
         log.info("Текущая ОС: " + os);
 
+        Configuration.webdriverLogsEnabled = false;
         Configuration.browser = Browsers.FIREFOX; // default "chrome"
         Configuration.browserSize = "1680x1050";
         Configuration.headless = true; // default "false"

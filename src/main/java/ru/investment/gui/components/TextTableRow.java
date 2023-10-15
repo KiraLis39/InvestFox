@@ -1,7 +1,7 @@
 package ru.investment.gui.components;
 
-import ru.investment.NetProcessor;
 import ru.investment.config.constants.Constant;
+import ru.investment.service.ShareService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.util.Comparator;
 
 public class TextTableRow extends JPanel implements Comparator<ShareTableRow> {
-    private final transient NetProcessor netProc;
+    private final ShareService shareService;
 
-    public TextTableRow(NetProcessor netProc, String... values) {
-        this.netProc = netProc;
+    public TextTableRow(ShareService shareService, String... values) {
+        this.shareService = shareService;
         setLayout(new GridLayout(1, values.length, 0, 0));
         setAlignmentY(Component.CENTER_ALIGNMENT);
         setBackground(Color.BLACK);
@@ -32,7 +32,7 @@ public class TextTableRow extends JPanel implements Comparator<ShareTableRow> {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             try {
-                                TextTableRow.this.netProc.reload();
+                                TextTableRow.this.shareService.reload();
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
                             }
