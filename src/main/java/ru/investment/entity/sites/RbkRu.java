@@ -18,11 +18,13 @@ import java.util.OptionalDouble;
 
 @Slf4j
 public class RbkRu extends AbstractSite {
-    private static final String SOURCE_FIVE = "https://quote.rbc.ru/v5/ajax/catalog/get-tickers?type=share&sort=leaders&limit=15&offset=0&search="; // https://quote.rbc.ru/ticker/"; // 172651
+    // https://quote.rbc.ru/ticker/"; // 172651
+    private static final String SOURCE_FIVE =
+            "https://quote.rbc.ru/v5/ajax/catalog/get-tickers?type=share&sort=leaders&limit=15&offset=0&search=";
 
     public RbkRu(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        setActive(true);
         getDto().setSource("quote.rbc.ru");
         getDto().setTicker(ticket);
     }

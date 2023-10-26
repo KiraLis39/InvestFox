@@ -12,7 +12,7 @@ import ru.investment.parser.enums.ParserStates;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PurchaseItem_ErrorHandlerAction implements Action<ParserStates, ParserEvents> {
+public class ErrorHandlerAction implements Action<ParserStates, ParserEvents> {
 
     @Override
     public void execute(final StateContext<ParserStates, ParserEvents> context) {

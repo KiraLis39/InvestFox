@@ -25,8 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -91,7 +89,8 @@ public class TablePane extends JPanel {
                         setForeground(Color.GREEN.darker());
                         setFont(Constant.FONT_SIDE_PANEL);
                         addActionListener(e -> {
-                            String tickerInput = JOptionPane.showInputDialog(TablePane.this, "Тикер:", "Ввод тикера:", JOptionPane.INFORMATION_MESSAGE);
+                            String tickerInput = JOptionPane.showInputDialog(TablePane.this,
+                                    "Тикер:", "Ввод тикера:", JOptionPane.INFORMATION_MESSAGE);
                             if (tickerInput != null && tickerInput.length() > 0) {
                                 for (ShareTableRow row : getRows()) {
                                     if (row.getResultDto().getTicker().equalsIgnoreCase(tickerInput)) {
@@ -167,8 +166,8 @@ public class TablePane extends JPanel {
                                                 "%n*** Rescan: %s %d min, %d sec ***%n%n%n",
                                                 nextRow.getResultDto().getTicker(),
                                                 TimeUnit.MILLISECONDS.toMinutes(pass),
-                                                TimeUnit.MILLISECONDS.toSeconds(pass) -
-                                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
+                                                TimeUnit.MILLISECONDS.toSeconds(pass)
+                                                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(pass))
                                         ));
                                     }
                                     return null;
@@ -212,7 +211,8 @@ public class TablePane extends JPanel {
                                 new FOptionPane().buildFOptionPane("Сохранено!", "Список сохранен.");
                             } catch (Exception ex) {
                                 log.error("Ошибка сохранения: {}", ex.getMessage());
-                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка сохранения: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                                new FOptionPane().buildFOptionPane("Ошибка!",
+                                        "Ошибка сохранения: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
                             }
                         });
                     }
@@ -230,7 +230,8 @@ public class TablePane extends JPanel {
                                 new FOptionPane().buildFOptionPane("Готово!", "Список загружен из базы данных");
                             } catch (Exception ex) {
                                 log.error("Ошибка загрузки данных: {}", ex.getMessage());
-                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка загрузки данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                                new FOptionPane().buildFOptionPane("Ошибка!",
+                                        "Ошибка загрузки данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
                             }
                         });
                     }
@@ -259,7 +260,8 @@ public class TablePane extends JPanel {
                                 new FOptionPane().buildFOptionPane("Готово!", "Список выгружен на диск");
                             } catch (Exception ex) {
                                 log.error("Ошибка записи данных: {}", ex.getMessage());
-                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка записи данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                                new FOptionPane().buildFOptionPane("Ошибка!",
+                                        "Ошибка записи данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
                             }
                         });
                     }
@@ -278,7 +280,8 @@ public class TablePane extends JPanel {
                                 new FOptionPane().buildFOptionPane("Готово!", "Список загружен из локальной директории");
                             } catch (Exception ex) {
                                 log.error("Ошибка загрузки данных: {}", ex.getMessage());
-                                new FOptionPane().buildFOptionPane("Ошибка!", "Ошибка загрузки данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
+                                new FOptionPane().buildFOptionPane("Ошибка!",
+                                        "Ошибка загрузки данных: " + (ex.getCause() == null ? ex.getMessage() : ex.getCause()));
                             }
                         });
                     }
@@ -323,8 +326,8 @@ public class TablePane extends JPanel {
                         add(new TextTableRow(shareService, "<html>Сектор</html>", "<html>Эмитент</html>",
                                 "<html>Тикер</html>", "<html>Цена</html>", "<html>Тип цены</html>", "<html>Лот</html>",
                                 "<html>Рублей за лот</html>", "<html>Дивиденды (<font color=\"#0F0\" b>&#37;</font>)</html>",
-                                "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>", "<html>Стоимость</html>",
-                                "<html>Прибыль/год</html>", "<html>Комментарий</html>"
+                                "<html>Дивиденды (<font color=\"#FF0\" b>&#128181;</font>)</html>", "<html>Куплено шт.</html>",
+                                "<html>Стоимость</html>", "<html>Прибыль/год</html>", "<html>Комментарий</html>"
                         ) {{
                             setBorder(new EmptyBorder(0, 0, 0, 12));
                         }}, BorderLayout.CENTER);

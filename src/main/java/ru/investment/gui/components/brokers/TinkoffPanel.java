@@ -142,7 +142,8 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
                                 for (Float aFloat : getDto().getData().getOutputs()) {
                                     sum += aFloat;
                                 }
-                                sumLabel02 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.WHITE, Constant.getFontTableSumRow());
+                                sumLabel02 = textLabel(String.format("%,.0f р.", sum),
+                                        SwingConstants.CENTER, Color.WHITE, Constant.getFontTableSumRow());
                                 add(sumLabel02);
                             }
                         });
@@ -256,8 +257,10 @@ public class TinkoffPanel extends AbstractBroker implements KeyListener {
 
             sumLabel03.setText(String.format("%,.0f р.", ((sum002 + sum022 + sum222) - (sum001 + sum011 + sum111))));
 
-            dohodPercentPane.getItogPersentRowLabel(0).setSum(UniversalNumberParser.parseFloat(sumLabel03.getText()) / (sum001 + sum011 + sum111) * 100);
-            dohodPercentPane.getItogPercentLabel().setText(String.format("%s %%", Math.round(UniversalNumberParser.parseFloat(sumLabel03.getText()) / (sum001 + sum011 + sum111) * 100)));
+            dohodPercentPane.getItogPersentRowLabel(0)
+                    .setSum(UniversalNumberParser.parseFloat(sumLabel03.getText()) / (sum001 + sum011 + sum111) * 100);
+            dohodPercentPane.getItogPercentLabel().setText(String.format("%s %%",
+                    Math.round(UniversalNumberParser.parseFloat(sumLabel03.getText()) / (sum001 + sum011 + sum111) * 100)));
         } catch (Exception ew) {
             log.error("Caution: {}", ew.getMessage());
         }

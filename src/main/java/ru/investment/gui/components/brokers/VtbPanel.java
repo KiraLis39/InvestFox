@@ -107,7 +107,8 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                                 for (Float aFloat : getDto().getData().getInputs()) {
                                     sum += aFloat;
                                 }
-                                inputtedSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.RED, Constant.getFontTableSumRow());
+                                inputtedSumLabel = textLabel(String.format("%,.0f р.", sum),
+                                        SwingConstants.CENTER, Color.RED, Constant.getFontTableSumRow());
                                 add(inputtedSumLabel);
                             }
                         });
@@ -134,7 +135,8 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                                 for (Float aFloat : getDto().getData().getOutputs()) {
                                     sum += aFloat;
                                 }
-                                todaySumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, Color.white, Constant.getFontTableSumRow());
+                                todaySumLabel = textLabel(String.format("%,.0f р.", sum),
+                                        SwingConstants.CENTER, Color.white, Constant.getFontTableSumRow());
                                 add(todaySumLabel);
                             }
                         });
@@ -164,7 +166,8 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
                                 itog2 += UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText());
 
                                 float sum = itog2 - itog1;
-                                itogSumLabel = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
+                                itogSumLabel = textLabel(String.format("%,.0f р.", sum),
+                                        SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
                                 add(itogSumLabel);
                             }
                         });
@@ -226,13 +229,14 @@ public class VtbPanel extends AbstractBroker implements KeyListener {
             float sum2 = UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText());
             todaySumLabel.setText(String.format("%,.0f р.", sum2));
 
-            itogRowPanel.setSum(UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText()) -
-                    UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText()));
+            itogRowPanel.setSum(UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText())
+                    - UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText()));
 
             itogSumLabel.setText(String.format("%,.0f р.", (sum2 - sum1)));
 
             dohodPercentPane.getItogPersentRowLabel(0).setSum(UniversalNumberParser.parseFloat(itogSumLabel.getText()) / sum1 * 100);
-            dohodPercentPane.getItogPercentLabel().setText(String.format("%s %%", Math.round(UniversalNumberParser.parseFloat(itogSumLabel.getText()) / sum1 * 100)));
+            dohodPercentPane.getItogPercentLabel()
+                    .setText(String.format("%s %%", Math.round(UniversalNumberParser.parseFloat(itogSumLabel.getText()) / sum1 * 100)));
         } catch (Exception ew) {
             log.error("Caution: {}", ew.getMessage());
         }

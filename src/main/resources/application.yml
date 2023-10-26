@@ -15,17 +15,16 @@ spring:
     version: 0.0.1
 
   profiles:
-    active: dev, prod
     default: dev
+    group:
+      dev: dev
+      prod: prod
 
   main:
     banner-mode: console
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:invest}
-    username: ${POSTGRES_USER:admin}
-    password: ${POSTGRES_PASSWORD:admin}
     hikari:
       poolName: Hikari
       auto-commit: false

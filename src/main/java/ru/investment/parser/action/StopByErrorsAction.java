@@ -12,13 +12,13 @@ import ru.investment.parser.enums.ParserStates;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PurchaseItem_StopByErrorsAction implements Action<ParserStates, ParserEvents> {
+public class StopByErrorsAction implements Action<ParserStates, ParserEvents> {
 
     private final ApplicationProperties props;
 
     @Override
     public void execute(final StateContext<ParserStates, ParserEvents> context) {
-//        log.error("Parser stopped due to exceeding error count ({})", props.getMaxErrorCount());
+        log.error("Parser stopped due to exceeding error count ({})", props.getMaxErrorCount());
 //        ParserThread parserThread = (ParserThread) Thread.currentThread();
 //        parserStateService.updateTaskState(context.getEvent().toString(), parserThread);
 //        parserThread.close();

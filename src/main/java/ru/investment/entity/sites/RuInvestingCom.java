@@ -34,11 +34,11 @@ public class RuInvestingCom extends AbstractSite {
     private final UUID uuid = UUID.randomUUID();
     @Value("${app.selenide.tab_click_sleep}")
     private short tabClickSleep;
-    private String SOURCE = "https://ru.investing.com";
+    private String source = "https://ru.investing.com";
 
     public RuInvestingCom(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        setActive(true);
         getDto().setSource("ru.investing.com");
         getDto().setTicker(ticket);
     }
@@ -59,8 +59,8 @@ public class RuInvestingCom extends AbstractSite {
             String realUrl = tree.get("quotes").get(0).get("url").asText();
 
             // open the web page into opened browser:
-            SOURCE += realUrl;
-            open(SOURCE);
+            source += realUrl;
+            open(source);
             sleep(6000);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
@@ -75,7 +75,7 @@ public class RuInvestingCom extends AbstractSite {
                 try {
                     xPathRoot.shouldBe(Condition.exist, Duration.of(3500, ChronoUnit.MILLIS));
                 } catch (Throwable e2) {
-                    log.error("Страница {} так и не была отображена? {}", SOURCE + realUrl, e2.getMessage());
+                    log.error("Страница {} так и не была отображена? {}", source + realUrl, e2.getMessage());
                     return null;
                 }
             }
@@ -104,7 +104,8 @@ public class RuInvestingCom extends AbstractSite {
                         }
                     }
                 } catch (Exception e) {
-                    log.warn("Тип валюты не определён: '{}'", costTypeBlock.exists() ? costTypeBlock.text() : xPathRoot.$x(".//div/div/div/div[2]").$("span").text());
+                    log.warn("Тип валюты не определён: '{}'", costTypeBlock.exists()
+                            ? costTypeBlock.text() : xPathRoot.$x(".//div/div/div/div[2]").$("span").text());
                     getDto().setCostType(CostType.UNKNOWN);
                 }
 
@@ -160,7 +161,6 @@ public class RuInvestingCom extends AbstractSite {
                 }
                 getDto().setSector(sectorBlock.get(1).text() + ";" + sectorBlock.get(0).text());
 
-
                 SelenideElement infoBlock = $x("//*[@id='leftColumn']/div[9]/p");
                 if (infoBlock.exists()) {
                     getDto().addInfo(infoBlock.text());
@@ -207,9 +207,15 @@ public class RuInvestingCom extends AbstractSite {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         RuInvestingCom that = (RuInvestingCom) o;
         return uuid.equals(that.uuid);
     }

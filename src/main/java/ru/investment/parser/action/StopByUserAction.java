@@ -11,11 +11,11 @@ import ru.investment.parser.enums.ParserStates;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PurchaseItem_StopByUserAction implements Action<ParserStates, ParserEvents> {
+public class StopByUserAction implements Action<ParserStates, ParserEvents> {
 
     @Override
     public void execute(final StateContext<ParserStates, ParserEvents> context) {
-//        log.info("Parser stopped due to the user's request");
+        log.info("Parser stopped due to the user's request");
 //        ParserThread parserThread = (ParserThread) Thread.currentThread();
 //        parserStateService.updateTaskState(context.getEvent().toString(), parserThread);
 //        parserThread.close();

@@ -189,7 +189,8 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
                                 itog2 += UniversalNumberParser.parseFloat(tf14.getText().isBlank() ? "0" : tf14.getText());
 
                                 float sum = itog2 - itog1;
-                                itog3 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0 ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
+                                itog3 = textLabel(String.format("%,.0f р.", sum), SwingConstants.CENTER, sum >= 0
+                                        ? Color.GREEN : Color.RED, Constant.getFontTableSumRow());
                                 add(itog3);
                             }
                         });
@@ -295,14 +296,14 @@ public class MtsPanel extends AbstractBroker implements KeyListener {
 
             itog02.setText(String.format("%,.0f р.", sum2));
 
-            p01.setSum(UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText()) -
-                    UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText()));
-            p02.setSum(UniversalNumberParser.parseFloat(tf12.getText().isBlank() ? "0" : tf12.getText()) -
-                    UniversalNumberParser.parseFloat(tf02.getText().isBlank() ? "0" : tf02.getText()));
-            p03.setSum(UniversalNumberParser.parseFloat(tf13.getText().isBlank() ? "0" : tf13.getText()) -
-                    UniversalNumberParser.parseFloat(tf03.getText().isBlank() ? "0" : tf03.getText()));
-            p04.setSum(UniversalNumberParser.parseFloat(tf14.getText().isBlank() ? "0" : tf14.getText()) -
-                    UniversalNumberParser.parseFloat(tf04.getText().isBlank() ? "0" : tf04.getText()));
+            p01.setSum(UniversalNumberParser.parseFloat(tf11.getText().isBlank() ? "0" : tf11.getText())
+                    - UniversalNumberParser.parseFloat(tf01.getText().isBlank() ? "0" : tf01.getText()));
+            p02.setSum(UniversalNumberParser.parseFloat(tf12.getText().isBlank() ? "0" : tf12.getText())
+                    - UniversalNumberParser.parseFloat(tf02.getText().isBlank() ? "0" : tf02.getText()));
+            p03.setSum(UniversalNumberParser.parseFloat(tf13.getText().isBlank() ? "0" : tf13.getText())
+                    - UniversalNumberParser.parseFloat(tf03.getText().isBlank() ? "0" : tf03.getText()));
+            p04.setSum(UniversalNumberParser.parseFloat(tf14.getText().isBlank() ? "0" : tf14.getText())
+                    - UniversalNumberParser.parseFloat(tf04.getText().isBlank() ? "0" : tf04.getText()));
 
             itog3.setText(String.format("%,.0f р.", (sum2 - sum1)));
         } catch (Exception ew) {

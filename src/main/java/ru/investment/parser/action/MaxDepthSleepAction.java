@@ -12,7 +12,7 @@ import ru.investment.parser.enums.ParserStates;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PurchaseList_MaxDepthSleepAction implements Action<ParserStates, ParserEvents> {
+public class MaxDepthSleepAction implements Action<ParserStates, ParserEvents> {
 
     private final ApplicationProperties props;
 

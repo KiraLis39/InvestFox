@@ -9,6 +9,7 @@ import ru.investment.ShareCollectedDTO;
 import ru.investment.config.ApplicationProperties;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.dto.ShareDTO;
+import ru.investment.gui.components.ShareTableRow;
 import ru.investment.service.ShareService;
 import ru.investment.service.VaultService;
 
@@ -29,6 +30,7 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -385,8 +387,12 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
     public void componentHidden(ComponentEvent e) {
     }
 
+    public List<ShareTableRow> getTableRows() {
+        return getTablePane().getRows();
+    }
+
     private static class DataPanel extends JPanel {
-        public DataPanel(ShareDTO dto) {
+        DataPanel(ShareDTO dto) {
 
             setBorder(new EmptyBorder(9, 6, 0, 3));
 

@@ -11,13 +11,14 @@ import ru.investment.parser.enums.ParserStates;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PurchaseList_ParseAction implements Action<ParserStates, ParserEvents> {
+public class ParseAction implements Action<ParserStates, ParserEvents> {
 
     @Override
     public void execute(final StateContext<ParserStates, ParserEvents> context) {
 //        parserStateService.saveCurrentStateAndTaskByContext(context);
 //
-//        guid = context.getExtendedState().get("guid", String.class); // TODO: избавиться от переменных контекста для реализации нормальной многопоточности
+        // todo: избавиться от переменных контекста для реализации нормальной многопоточности
+//        guid = context.getExtendedState().get("guid", String.class);
 //        parserTaskDTO = parserTaskService.findOneByGuid(guid).orElseThrow();
 //
 //        try {
@@ -211,9 +212,10 @@ public class PurchaseList_ParseAction implements Action<ParserStates, ParserEven
 //                                purchasePageService.save(existsPage);
 //                                newItemsCount++; // так же зачитывается как найденная закупка.
 //                            }
-//                            // TODO: достаточно ли менять маркер на NOT_PARSED для перепарсинга карточки?
+//                            // todo: достаточно ли менять маркер на NOT_PARSED для перепарсинга карточки?
 //                            //  или лучше вообще удалять карточку, заливая новую версию? Ничего не будет ломаться при этом? Уточнить.
-//                            //  Если же дубликатов вообще не бывает - требуется понять откуда тогда пробелы в поиске закупок, когда находится всего 4 тысячи карточек,
+//                            //  Если же дубликатов вообще не бывает - требуется понять откуда тогда пробелы в
+//                            //  поиске закупок, когда находится всего 4 тысячи карточек,
 //                            //  при том, что на сайте-источнике написано "более 15 000 результатов".
 //                        }
 //                    }

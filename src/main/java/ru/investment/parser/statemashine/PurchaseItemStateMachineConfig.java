@@ -8,15 +8,15 @@ import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
-import ru.investment.parser.action.PurchaseItem_ErrorAction;
-import ru.investment.parser.action.PurchaseItem_ErrorHandlerAction;
-import ru.investment.parser.action.PurchaseItem_FindPageToParseAction;
-import ru.investment.parser.action.PurchaseItem_ParsePageAction;
-import ru.investment.parser.action.PurchaseItem_SetupAction;
-import ru.investment.parser.action.PurchaseItem_SleepAction;
-import ru.investment.parser.action.PurchaseItem_StopByErrorsAction;
-import ru.investment.parser.action.PurchaseItem_StopByUserAction;
-import ru.investment.parser.action.PurchaseItem_TechnicalWorkSleepAction;
+import ru.investment.parser.action.ErrorAction;
+import ru.investment.parser.action.ErrorHandlerAction;
+import ru.investment.parser.action.FindPageToParseAction;
+import ru.investment.parser.action.ParsePageAction;
+import ru.investment.parser.action.SetupAction;
+import ru.investment.parser.action.SleepAction;
+import ru.investment.parser.action.StopByErrorsAction;
+import ru.investment.parser.action.StopByUserAction;
+import ru.investment.parser.action.TechnicalWorkSleepAction;
 import ru.investment.parser.enums.ParserEvents;
 import ru.investment.parser.enums.ParserStates;
 
@@ -62,13 +62,13 @@ public class PurchaseItemStateMachineConfig extends EnumStateMachineConfigurerAd
                 .initial(IN_RUNNING)
                 .stateEntry(
                         IN_STOPPED_BY_USER,
-                        beanCtx.getBean(PurchaseItem_StopByUserAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class)
+                        beanCtx.getBean(StopByUserAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class)
                 )
                 .stateEntry(
                         IN_STOPPED_BY_ERRORS,
-                        beanCtx.getBean(PurchaseItem_StopByErrorsAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class)
+                        beanCtx.getBean(StopByErrorsAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class)
                 )
                 .end(IN_CUSTOM_END)
                 .and()
@@ -77,28 +77,28 @@ public class PurchaseItemStateMachineConfig extends EnumStateMachineConfigurerAd
                 .initial(IN_INIT)
                 .stateEntry(
                         IN_SETTING_UP,
-                        beanCtx.getBean(PurchaseItem_SetupAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class))
+                        beanCtx.getBean(SetupAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class))
                 .stateEntry(
                         IN_ERROR_STATE,
-                        beanCtx.getBean(PurchaseItem_ErrorAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class))
+                        beanCtx.getBean(ErrorAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class))
                 .stateEntry(
                         IN_LOADING_DATA,
-                        beanCtx.getBean(PurchaseItem_FindPageToParseAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class))
+                        beanCtx.getBean(FindPageToParseAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class))
                 .stateEntry(
                         IN_PARSING,
-                        beanCtx.getBean(PurchaseItem_ParsePageAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class))
+                        beanCtx.getBean(ParsePageAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class))
                 .stateEntry(
                         IN_SLEEPING,
-                        beanCtx.getBean(PurchaseItem_SleepAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class))
+                        beanCtx.getBean(SleepAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class))
                 .stateEntry(
                         IN_TECHNICAL_WORK_SLEEPING,
-                        beanCtx.getBean(PurchaseItem_TechnicalWorkSleepAction.class),
-                        beanCtx.getBean(PurchaseItem_ErrorHandlerAction.class));
+                        beanCtx.getBean(TechnicalWorkSleepAction.class),
+                        beanCtx.getBean(ErrorHandlerAction.class));
     }
 
     @Override

@@ -56,7 +56,7 @@ public class ShareCollectedDTO implements Comparable<ShareCollectedDTO> {
     private LocalDateTime nextPayDate; // Дата след. выплаты
     private String comment; // Комментарий
 
-    public synchronized void update(String ticker, ShareDTO newData) throws BadDataException {
+    public synchronized void update(String ticker, ShareDTO newData) throws Exception {
         if (newData == null) {
             return;
         }

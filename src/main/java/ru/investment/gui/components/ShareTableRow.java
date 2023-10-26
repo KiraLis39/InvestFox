@@ -93,13 +93,15 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
     public void loadColumns() {
         double sharePay = resultDto.getCost() / 100D * resultDto.getDividend();
-        int PE = (int) Math.round(resultDto.getCost() / sharePay);
+        int pe = (int) Math.round(resultDto.getCost() / sharePay);
 
         addSpinnerColumn("INDEX", resultDto.getIndex());
         addTextColumn("SECTOR",
                 resultDto.getSectors().isEmpty() ? "=NA=" : resultDto.getSectors().toString(),
-                resultDto.getSectors().isEmpty() ? "(not assigned)" : "<html>".concat(resultDto.getSectors().stream().toList().toString().replace(",", "<br>")));
-        addEditableColumn("NAME", resultDto.getShowedName(), "<html>" + resultDto.getName().replace(";", "<br>"));
+                resultDto.getSectors().isEmpty() ? "(not assigned)" : "<html>".concat(resultDto.getSectors().stream()
+                        .toList().toString().replace(",", "<br>")));
+        addEditableColumn("NAME", resultDto.getShowedName(),
+                "<html>" + resultDto.getName().replace(";", "<br>"));
         addEditableColumn("TICKER", resultDto.getTicker(), null, Color.WHITE, false);
         addTextColumn("COST", String.format("%,.2f", resultDto.getCost()), String.format("%,.5f", resultDto.getCost()));
         addTextColumn("COST_TYPE", resultDto.getCostType() == null ? "?" : resultDto.getCostType().value());
@@ -134,10 +136,10 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 
         addEditableColumn("COMMENT", resultDto.getComment(), resultDto.getComment());
 
-        if (Double.valueOf(PE).isInfinite()) {
+        if (Double.valueOf(pe).isInfinite()) {
             addTextColumn("PE", "0", Color.RED);
         } else {
-            addTextColumn("PE", String.valueOf(PE), Color.WHITE);
+            addTextColumn("PE", String.valueOf(pe), Color.WHITE);
         }
 
         validateRowStyle();
@@ -195,12 +197,11 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
 //                getEditor().getComponent(0).setForeground(Color.WHITE);
                 getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.BLACK);
                 ((DefaultEditor) getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-                addChangeListener(e ->
-                        {
-                            getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
-                            resultDto.setIndex(Short.parseShort(getValue().toString()));
-                            validateRowStyle();
-                        }
+                addChangeListener(e -> {
+                        getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
+                        resultDto.setIndex(Short.parseShort(getValue().toString()));
+                        validateRowStyle();
+                    }
                 );
             }
         });
@@ -251,7 +252,8 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                             allCost.setText(String.format("%.2f", resultDto.getCost() * resultDto.getCount()));
 
                             JLabel allPay = (JLabel) getColumnNamed("ALL_PAY");
-                            allPay.setText(String.format("%.2f", (resultDto.getCost() / 100D * resultDto.getDividend()) * resultDto.getCount() / 0.87D)); // -13%
+                            allPay.setText(String.format("%.2f",
+                                    (resultDto.getCost() / 100D * resultDto.getDividend()) * resultDto.getCount() / 0.87D)); // -13%
 
                             if (resultDto.getCount() > 0 && (int) ((JSpinner) getColumnNamed("INDEX")).getValue() > 0) {
                                 ((JSpinner) getColumnNamed("INDEX")).setValue(0);
@@ -423,6 +425,7 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 name.setForeground(Color.WHITE);
             }
             case -2 -> name.setForeground(Color.ORANGE);
+            default -> name.setForeground(Color.WHITE);
         }
         getColumnNamed("TICKER").setBackground(name.getBackground());
         getColumnNamed("TICKER").setForeground(name.getForeground());

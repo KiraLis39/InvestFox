@@ -7,11 +7,11 @@ networks:
 
 services:
   investfox-postgres:
-    image: postgres:15.2
+    image: postgres:16.0
     container_name: investfox
     restart: on-failure
     volumes:
-      - ./db/data/:/var/lib/postgresql/data/
+      - ./db_data/:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=invest
       - POSTGRES_USER=admin

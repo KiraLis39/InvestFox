@@ -19,7 +19,7 @@ public class UniversalDateParser {
 
     public static Instant now() {
         return LocalDateTime.now().toInstant(ZoneOffset.ofHours(0));
-        // TODO: или всё же лучше "LocalDateTime.now(ZoneId.of("Europe/Moscow")).toInstant(ZoneOffset.UTC)"
+        // todo: или всё же лучше "LocalDateTime.now(ZoneId.of("Europe/Moscow")).toInstant(ZoneOffset.UTC)"
         //  уточнить, заменить при необходимости.
     }
 

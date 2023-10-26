@@ -12,7 +12,7 @@ public class DohodRu extends AbstractSite {
 
     public DohodRu(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        setActive(true);
         getDto().setSource("www.dohod.ru");
         getDto().setTicker(ticket);
     }

@@ -11,7 +11,7 @@ public class InvestmintRu extends AbstractSite {
 
     public InvestmintRu(String ticker) {
         super.setName(ticker);
-        isActive = false;
+        setActive(true);
         getDto().setSource(SOURCE);
         getDto().setTicker(ticker);
     }

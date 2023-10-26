@@ -27,11 +27,11 @@ public class InvestfundsRu extends AbstractSite {
     private static final String SEARCH = "https://investfunds.ru/stocks/?searchString=";
     private final UUID uuid = UUID.randomUUID();
     private final RestTemplate restTemplate = new RestTemplate();
-    private String SOURCE = "https://investfunds.ru";
+    private String source = "https://investfunds.ru";
 
     public InvestfundsRu(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        setActive(true);
         getDto().setSource("www.investfunds.ru");
         getDto().setTicker(ticket);
     }
@@ -52,14 +52,14 @@ public class InvestfundsRu extends AbstractSite {
             if (!results.isEmpty()) {
                 for (JsonNode node : results) {
                     if (node.get("isin").asText().startsWith("RU")) {
-                        SOURCE += node.get("url").asText();
+                        source += node.get("url").asText();
                         break;
                     }
                 }
             }
 
             // open the web page into opened browser:
-            open(SOURCE);
+            open(source);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
@@ -127,9 +127,15 @@ public class InvestfundsRu extends AbstractSite {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         InvestfundsRu that = (InvestfundsRu) o;
         return uuid.equals(that.uuid);
     }

@@ -86,9 +86,9 @@ public class MyFields implements Serializable {
     }
 
     public static class SumPanel extends JPanel {
-        float was = 0, sum;
-        String text;
-        JLabel label;
+        private float was = 0, sum;
+        private String text;
+        private final JLabel label;
 
         public SumPanel(String value, Color foreground) {
             setAlignmentX(SwingConstants.CENTER);

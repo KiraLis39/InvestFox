@@ -114,7 +114,8 @@ public class PurchaseItemParser implements IParseRoot {
 //                                    .parent()
 //                                    .attr("href");
 //
-//                            // todo: бывает вместо номера проскакивает полный html и дублируется в url. Исправить или оставить как есть, через костыль.
+//                            // todo: бывает вместо номера проскакивает полный html и дублируется в url.
+//                            // Исправить или оставить как есть, через костыль.
 //                            if (noticeId.startsWith("http")) {
 //                                url = new URL(noticeId + "#tabs-2");
 //                            } else {
@@ -151,7 +152,7 @@ public class PurchaseItemParser implements IParseRoot {
 //            // work with xml:
 //            return new XmlMapper().readTree(result); // id="tabs-2" -> </div>
 //        } catch (Throwable t) {
-//            log.error("Ошибка XML: " + t.getMessage()); // TODO: выяснить откуда берутся проблемы с чтением xml и устранить их.
+//            log.error("Ошибка XML: " + t.getMessage()); // todo: выяснить откуда берутся проблемы с чтением xml и устранить их.
 //            return null;
 //        }
 //    }
@@ -191,7 +192,7 @@ public class PurchaseItemParser implements IParseRoot {
 //
 //        // парсим EventLogs:
 //        eventLogsHandler.parseFrom(purchase);
-//        // TODO уточнить, нужно ли вообще:
+//        // todo уточнить, нужно ли вообще:
 //        // purchase.setCustomerRequirements(customerRequirementsParseHandler.parseFrom($$(".collapseInfo"), purchase));
 //    }
 
@@ -261,7 +262,7 @@ public class PurchaseItemParser implements IParseRoot {
 //                    );
 //                }
 //            } else if (purchase.getLaw().equalsIgnoreCase(PurchaseLaw.PPRF615.value())) {
-//                throw new ParsingException("TODO: 615 law is here, it`s not seem correct (требуется обработать редкий вариант)");
+//                throw new ParsingException("todo: 615 law is here, it`s not seem correct (требуется обработать редкий вариант)");
 //            } else {
 //                throw new NotEnoughDataException("Необработанный закон в методе 'parseMemberships' закупки № " + purchase.getNumber());
 //            }
@@ -286,8 +287,9 @@ public class PurchaseItemParser implements IParseRoot {
 //                $$(".custReqNoticeTable .container")
 //                    .filter(Condition.text("Информация о банковском и (или) казначейском сопровождении контракта")); // 44FZ
 //            if (bankBlock.size() == 0 && $$(".container .col").size() != 0) {
+//                // 44FZ второй вариант:
 //                bankBlock =
-//                    $$(".container .col").filter(Condition.text("Информация о банковском и (или) казначейском сопровождении контракта")); // 44FZ второй вариант
+//                    $$(".container .col").filter(Condition.text("Информация о банковском и (или) казначейском сопровождении контракта"));
 //                if (bankBlock.size() != 0) {
 //                    String bankText = bankBlock.get(0).$(".section__info").text().trim();
 //                    purchase.setIsBankingOrTreasurySupportNeeded(
@@ -461,7 +463,8 @@ public class PurchaseItemParser implements IParseRoot {
 //                case "Закупка лекарственного препарата":
 //                    purchase.isMedicalProduct(value.equalsIgnoreCase("да"));
 //                    break;
-//                case "Предметом контракта является поставка товара, необходимого для нормального жизнеобеспечения в случаях, указанных в ч. 9 ст. 37 Закона 44-ФЗ":
+//                case "Предметом контракта является поставка товара, необходимого для нормального жизнеобеспечения
+//                  в случаях, указанных в ч. 9 ст. 37 Закона 44-ФЗ":
 //                    purchase.setIsNecessaryForLifeSupport(value.equalsIgnoreCase("да"));
 //                    break;
 //                case "Виды работ в соответствии с ч.1 ст. 166 Жилищного кодекса":
@@ -557,7 +560,8 @@ public class PurchaseItemParser implements IParseRoot {
 //                case "Место выполнения работ и (или) оказания услуг":
 //                    purchase.setWorkProvisionPlace(value);
 //                    break;
-//                case "Право заключения контрактов с несколькими участниками закупки в случаях, указанных в части 10 статьи 34 Федерального закона 44-ФЗ":
+//                case "Право заключения контрактов с несколькими участниками закупки в случаях,
+//                  указанных в части 10 статьи 34 Федерального закона 44-ФЗ":
 //                    purchase.setFederalLawConcludeSeveralRight(value);
 //                    break;
 //                case "Срок исполнения контракта, срок исполнения и цена отдельных этапов исполнения контракта":
@@ -574,7 +578,7 @@ public class PurchaseItemParser implements IParseRoot {
 //                    purchase.setContractUnilateralRefusalPossibility(value.equalsIgnoreCase("да"));
 //                    break;
 //                case "Предоставление документации":
-//                    // TODO требуется ли реализовать? // dataCollection.filter(Condition.text("Предоставление документации"))
+//                    // todo требуется ли реализовать? // dataCollection.filter(Condition.text("Предоставление документации"))
 //                    break;
 //                case "Информация о требованиях к гарантийному обслуживанию товара":
 //                    purchase.setRequirementsProductWarrantyInfo(value);
@@ -583,7 +587,8 @@ public class PurchaseItemParser implements IParseRoot {
 //                    purchase.setManufactureWarrantyRequirements(value);
 //                    break;
 //                case "Срок, на который предоставляется гарантия":
-//                case "Срок, на который предоставляется гарантия и (или) требования к объему предоставления гарантий качества товара, работы, услуги":
+//                case "Срок, на который предоставляется гарантия и (или) требования к объему предоставления гарантий
+//                  качества товара, работы, услуги":
 //                    purchase.setGuaranteeProvidedPeriod(value);
 //                    break;
 //                case "Требуется гарантия качества товара, работы, услуги":

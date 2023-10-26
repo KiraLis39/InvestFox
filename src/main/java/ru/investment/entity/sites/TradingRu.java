@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalDouble;
 import java.util.UUID;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -28,14 +29,15 @@ import static com.codeborne.selenide.Selenide.sleep;
 
 @Slf4j
 public class TradingRu extends AbstractSite {
-    private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl=1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
+    private static final String SEARCH = "https://symbol-search.tradingview.com/symbol_search/v3/?text=TICKER&hl="
+            + "1&exchange=&lang=ru&search_type=stocks&domain=production&sort_by_country=RU";
     private final UUID uuid = UUID.randomUUID();
     private final RestTemplate restTemplate = new RestTemplate();
-    private String SOURCE = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
+    private String source = "https://ru.tradingview.com/symbols/"; // MOEX-LNZL, MOEX-AQUA
 
     public TradingRu(String ticker) {
         super.setName(ticker);
-        isActive = true;
+        setActive(true);
         getDto().setSource("ru.tradingview.com");
         getDto().setTicker(ticker);
     }
@@ -54,16 +56,16 @@ public class TradingRu extends AbstractSite {
             for (JsonNode symbol : symbols) {
                 if (symbol.get("currency_code").asText().equalsIgnoreCase("RUB")) {
                     isFound = true;
-                    SOURCE = SOURCE.concat(symbol.get("provider_id").asText()).concat("-").concat(getDto().getTicker());
+                    source = source.concat(symbol.get("provider_id").asText()).concat("-").concat(getDto().getTicker());
                     break;
                 }
             }
 
             // open the web page into opened browser:
             if (!isFound) {
-                SOURCE += getDto().getTicker();
+                source += getDto().getTicker();
             }
-            open(SOURCE);
+            open(source);
             if (!checkPageAvailable()) {
                 log.error("Страница не доступна. Не пройдена проверка абстрактного родителя.");
                 return null;
@@ -108,10 +110,9 @@ public class TradingRu extends AbstractSite {
                     log.error("\nFix it!");
                 }
 
-                //getDto().setLotSize(1);
-
                 // Разбор табов: 'Теханализ' | 'Новости':
-                SelenideElement tabsPane = $("#js-category-content > div.tv-category-symbol-header > div.tv-category-symbol-header__tabs > div > div.tv-tabs__scroll-wrap > div");
+                SelenideElement tabsPane = $("#js-category-content > div.tv-category-symbol-header > "
+                        + "div.tv-category-symbol-header__tabs > div > div.tv-tabs__scroll-wrap > div");
                 if (!tabsPane.exists()) {
                     throw new Exception("Not found tabs head 'tabsPane' on this page");
                 }
@@ -121,7 +122,8 @@ public class TradingRu extends AbstractSite {
                     techAnal.get(0).click();
                     sleep(2000);
                     List<Integer> sellNeutralBye = new ArrayList<>(3);
-                    ElementsCollection pazes = $$x("//*[@id='js-category-content']/div[2]/div/div/div[4]/div[2]/div[2]/div");
+                    ElementsCollection pazes =
+                            $$x("//*[@id='js-category-content']/div[2]/div/div/div[4]/div[2]/div[2]/div");
                     for (SelenideElement paze : pazes) {
                         sellNeutralBye.add(Integer.parseInt(paze.$$("span").get(1).text()));
                     }
@@ -161,10 +163,13 @@ public class TradingRu extends AbstractSite {
                             }
                         }
                         if (!tmpArr.isEmpty()) {
-                            float psos = (float) tmpArr.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
-                            getDto().addPaySumOnShare(psos);
-                            // getDto().addPaySum(psos);
-                            tmpArr.clear();
+                            OptionalDouble aver = tmpArr.stream().mapToDouble(Double::doubleValue).average();
+                            if (aver.isPresent()) {
+                                float psos = (float) aver.getAsDouble();
+                                getDto().addPaySumOnShare(psos);
+                                // getDto().addPaySum(psos);
+                                tmpArr.clear();
+                            }
                         }
 
                         List<String> divSums = dataBlock.get(2).$$x("./div")
@@ -180,10 +185,12 @@ public class TradingRu extends AbstractSite {
                         float dss = (float) tmpArr.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
                         getDto().addDividend(dss);
 
-                        //getDto().addPartOfProfit("");
-                        //getDto().addStableGrow("");
-                        //getDto().addStablePay("");
-                        //getDto().setPayDate(LocalDateTime.now()); //*[@id="js-category-content"]/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[3]/span/span
+                        // getDto().addPartOfProfit("");
+                        // getDto().addStableGrow("");
+                        // getDto().addStablePay("");
+
+                        // *[@id="js-category-content"]/div[1]/div[1]/div/div/div/div[3]/div[1]/div/div[3]/span/span
+                        // getDto().setPayDate(LocalDateTime.now());
                     } else {
                         log.error("\nFix it!");
                     }
@@ -205,9 +212,15 @@ public class TradingRu extends AbstractSite {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         TradingRu tradingRu = (TradingRu) o;
         return uuid.equals(tradingRu.uuid);
     }

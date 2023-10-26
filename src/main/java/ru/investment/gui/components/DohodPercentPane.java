@@ -31,8 +31,8 @@ public class DohodPercentPane extends JPanel {
         // med sums:
         for (Map.Entry<Integer, Map<String, String>> entry : fields.entrySet()) {
             add(MyFields.getJPWT(String.format("%s %%",
-                    UniversalNumberParser.parseFloat(entry.getValue().keySet().toArray(new String[0])[0]) /
-                            UniversalNumberParser.parseFloat(entry.getValue().values().toArray(new String[0])[0]) * 100)
+                    UniversalNumberParser.parseFloat(entry.getValue().keySet().toArray(new String[0])[0])
+                            / UniversalNumberParser.parseFloat(entry.getValue().values().toArray(new String[0])[0]) * 100)
             ));
         }
 
@@ -63,7 +63,8 @@ public class DohodPercentPane extends JPanel {
     }
 
     public MyFields.SumPanel getItogPersentRowLabel(int index) {
-        List<MyFields.SumPanel> sPanes = Arrays.stream(getComponents()).filter(c -> c instanceof MyFields.SumPanel).map(c -> ((MyFields.SumPanel) c)).toList();
+        List<MyFields.SumPanel> sPanes = Arrays.stream(getComponents())
+                .filter(c -> c instanceof MyFields.SumPanel).map(c -> ((MyFields.SumPanel) c)).toList();
         return sPanes.get(index);
     }
 

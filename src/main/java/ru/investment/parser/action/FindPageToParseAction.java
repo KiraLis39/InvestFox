@@ -12,7 +12,7 @@ import ru.investment.parser.enums.ParserStates;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PurchaseItem_FindPageToParseAction implements Action<ParserStates, ParserEvents> {
+public class FindPageToParseAction implements Action<ParserStates, ParserEvents> {
 
     private final ApplicationContext appCtx;
 

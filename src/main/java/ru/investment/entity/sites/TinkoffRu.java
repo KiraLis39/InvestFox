@@ -19,7 +19,7 @@ public class TinkoffRu extends AbstractSite {
 
     public TinkoffRu(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        setActive(true);
         getDto().setSource("www.tinkoff.ru");
         getDto().setTicker(ticket);
     }

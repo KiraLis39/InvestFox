@@ -21,7 +21,7 @@ public class InvestFutureRu extends AbstractSite {
 
     public InvestFutureRu(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        setActive(true);
         getDto().setSource("investfuture.ru");
         getDto().setTicker(ticket);
     }
@@ -66,7 +66,8 @@ public class InvestFutureRu extends AbstractSite {
         buildUrl(SOURCE_ONE + code);
         doc = getDoc();
         try {
-            String s = doc.select("#result_panel > div").get(0).text().substring(doc.select("#result_panel > div").get(0).text().indexOf("составляет")).trim();
+            String s = doc.select("#result_panel > div").get(0).text()
+                    .substring(doc.select("#result_panel > div").get(0).text().indexOf("составляет")).trim();
             if (s.split(" ")[2].equals("RUB")) {
                 getDto().setCostType(CostType.RUB);
             }

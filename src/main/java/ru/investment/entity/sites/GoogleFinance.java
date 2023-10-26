@@ -17,7 +17,7 @@ public class GoogleFinance extends AbstractSite {
 
     public GoogleFinance(String ticket) {
         super.setName(ticket);
-        isActive = true;
+        setActive(true);
         getDto().setSource("www.google.com");
         getDto().setTicker(ticket);
     }
@@ -66,7 +66,8 @@ public class GoogleFinance extends AbstractSite {
         }
 
         try {
-            String name = doc.select("#yDmH0d > c-wiz > div > div.e1AOyf > div > div > div > div:nth-child(3) > ul > li:nth-child(1) > a > div > div > div.iLEcy > div.Q8lakc.W9Vc1e > div").text();
+            String name = doc.select("#yDmH0d > c-wiz > div > div.e1AOyf > div > div > div > div:nth-child(3) > "
+                    + "ul > li:nth-child(1) > a > div > div > div.iLEcy > div.Q8lakc.W9Vc1e > div").text();
             getDto().setName(name.isBlank()
                     ? doc.text().substring(0, doc.text().indexOf("Stock")).trim()
                     .replace("'", "")
@@ -77,9 +78,9 @@ public class GoogleFinance extends AbstractSite {
 
             try {
                 String cost = doc.select(
-                        "#yDmH0d > c-wiz > div > div.e1AOyf > div > div > main > div.Gfxi4 > div.yWOrNb > " +
-                                "div.VfPpkd-WsjYwc.VfPpkd-WsjYwc-OWXEXe-INsAgc.KC1dQ.Usd1Ac.AaN0Dd.QZMA8b > c-wiz > " +
-                                "div > div:nth-child(1) > div > div.rPF6Lc > div > div:nth-child(1) > div > span > div > div").text();
+                        "#yDmH0d > c-wiz > div > div.e1AOyf > div > div > main > div.Gfxi4 > div.yWOrNb > "
+                                + "div.VfPpkd-WsjYwc.VfPpkd-WsjYwc-OWXEXe-INsAgc.KC1dQ.Usd1Ac.AaN0Dd.QZMA8b > c-wiz > "
+                                + "div > div:nth-child(1) > div > div.rPF6Lc > div > div:nth-child(1) > div > span > div > div").text();
                 if (cost.startsWith(CostType.RUB.value()) || cost.startsWith(CostType.USD.value()) || cost.startsWith(CostType.EUR.value())) {
                     getDto().setCostType(CostType.valueOf(cost.substring(0, 1)));
                     cost = cost.substring(1);
@@ -100,7 +101,8 @@ public class GoogleFinance extends AbstractSite {
                     getDto().addDividend(elOpt.get().select("div > div.P6K39c").text());
                 } catch (Exception e) {
                     String divValue = doc
-                            .select("#yDmH0d > c-wiz > div > div.e1AOyf > div > div > main > div.Gfxi4 > div.HKO5Mb > div > div.eYanAe > div > div.P6K39c")
+                            .select("#yDmH0d > c-wiz > div > div.e1AOyf > div > div > main > div.Gfxi4 >"
+                                    + "div.HKO5Mb > div > div.eYanAe > div > div.P6K39c")
                             .get(5).text();
                     if (!divValue.equals("-")) {
                         getDto().addDividend(divValue);

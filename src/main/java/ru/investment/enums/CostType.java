@@ -11,7 +11,7 @@ public enum CostType {
     NGN("₦"),
     UNKNOWN("?");
 
-    final String value;
+    private final String value;
 
     CostType(String value) {
         this.value = value;

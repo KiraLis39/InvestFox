@@ -19,21 +19,21 @@ import java.net.SocketTimeoutException;
 @Setter
 @Slf4j
 public abstract class AbstractSite {
-    protected String name;
-    protected String source;
-    protected String url;
-    protected boolean isActive;
+    private String name;
+    private String source;
+    private String url;
+    private boolean isActive;
     private ShareDTO dto = ShareDTO.builder().build();
 
-    protected void buildUrl(String url) {
-        this.url = url;
+    protected void buildUrl(String url_) {
+        this.url = url_;
         log.debug("ССЫЛКА: " + this.url);
     }
 
     public Document getDoc() {
         try {
             HttpConnection conn = (HttpConnection) Jsoup.newSession();
-            conn.url(url);
+            conn.url(this.url);
             conn.followRedirects(true); // default true
             conn.ignoreContentType(true);
             conn.ignoreHttpErrors(true); // default false
@@ -43,21 +43,22 @@ public abstract class AbstractSite {
 
             Document result = conn.get();
             if (conn.response().statusCode() != 200) {
-                throw new HttpStatusException("Abstract site: Request status here not OK", conn.response().statusCode(), url);
+                throw new HttpStatusException("Abstract site: Request status here not OK", conn.response().statusCode(), this.url);
             }
             return result;
         } catch (HttpStatusException hse) {
             switch (hse.getStatusCode()) {
-                case 403 -> log.error("Доступ запрещен: " + url);
-                case 404 -> log.error("Page not found: " + url);
-                default -> log.error("Код ошибки " + hse.getStatusCode() + ": " + url + " (" + hse.getMessage() + ").");
+                case 403 -> log.error("Доступ запрещен: " + this.url);
+                case 404 -> log.error("Page not found: " + this.url);
+                default ->
+                        log.error("Код ошибки " + hse.getStatusCode() + ": " + this.url + " (" + hse.getMessage() + ").");
             }
         } catch (SocketTimeoutException ste) {
-            log.error("Не дождались ответа: " + url);
+            log.error("Не дождались ответа: " + this.url);
         } catch (MalformedURLException | UnsupportedMimeTypeException | IllegalArgumentException mue) {
             mue.printStackTrace();
         } catch (IOException ioe) {
-            log.error("Сайт не отвечает: " + url);
+            log.error("Сайт не отвечает: " + this.url);
         } catch (Exception e) {
             log.error("Some other exception caught: {}", e.getMessage());
             throw e;

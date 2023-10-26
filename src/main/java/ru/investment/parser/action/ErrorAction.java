@@ -12,20 +12,21 @@ import ru.investment.parser.enums.ParserStates;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PurchaseItem_SleepAction implements Action<ParserStates, ParserEvents> {
+public class ErrorAction implements Action<ParserStates, ParserEvents> {
 
     private final ApplicationProperties props;
 
     @Override
     public void execute(final StateContext<ParserStates, ParserEvents> context) {
+        log.error("State Machine Error occurred: " + context.getTarget().getId());
 //        ParserThread parserThread = ((ParserThread) Thread.currentThread());
-//        try {
-//            parserStateService.updateTaskState(context.getEvent().toString(), parserThread);
-//            Thread.sleep(props.getPurchasesSleepMs());
-//            parserThread.getStateMachine().sendEvent(ParserEvents.WAKE_UP);
-//        } catch (InterruptedException e) {
-//            // This may occur when user pressed the "Wake Up" button
-//            parserThread.getStateMachine().sendEvent(ParserEvents.WAKE_UP);
+//        ParserTask task = (ParserTask) parserThread.get(ParserThread.ENVIRONMENTS.TASK);
+//        task.setErrorCount(task.getErrorCount() + 1);
+//        if (task.getErrorCount() > props.getMaxErrorCount()) {
+//            task.setThreadState(ParserThread.THREAD_STATE.TERMINATED.name());
+//            parserThread.getStateMachine().sendEvent(ParserEvents.ERROR_COUNT_EXCEEDED);
+//        } else {
+//            parserThread.getStateMachine().sendEvent(ParserEvents.ERROR_COUNT_NOT_EXCEEDED);
 //        }
     }
 }
