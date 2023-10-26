@@ -149,7 +149,7 @@ public class InvestFrame extends JFrame implements WindowListener, ComponentList
                         JPanel downPane = new JPanel(new BorderLayout(0, 0)) {
                             {
                                 setPreferredSize(new Dimension(0, 170));
-                                setBackground(Color.PINK.darker());
+                                setBackground(Color.GREEN.darker().darker().darker());
                                 setBorder(new EmptyBorder(3, 6, 3, 6));
 
                                 JPanel upPane = new JPanel() {

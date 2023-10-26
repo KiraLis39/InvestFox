@@ -11,8 +11,12 @@ import ru.investment.config.ObjectMapperConfig;
 import ru.investment.config.constants.Constant;
 import ru.investment.entity.Share;
 import ru.investment.entity.dto.ShareDTO;
+import ru.investment.entity.sites.DohodRu;
+import ru.investment.entity.sites.InvestFutureRu;
 import ru.investment.entity.sites.InvestfundsRu;
-import ru.investment.entity.sites.RuInvestingCom;
+import ru.investment.entity.sites.InvestmintRu;
+import ru.investment.entity.sites.RbkRu;
+import ru.investment.entity.sites.TinkoffRu;
 import ru.investment.entity.sites.TradingRu;
 import ru.investment.entity.sites.impl.AbstractSite;
 import ru.investment.gui.BrokersPane;
@@ -230,16 +234,13 @@ public class NetProcessor {
         ShareCollectedDTO resultDTO = exists.isPresent() ? shareMapper.toDto(exists.get()) : new ShareCollectedDTO();
         ArrayList<AbstractSite> sites = new ArrayList<>(countOfSites) {
             {
-                // selenide:
+                add(new DohodRu(ticker));
                 add(new TradingRu(ticker));
-                add(new RuInvestingCom(ticker));
                 add(new InvestfundsRu(ticker)); // есть лот
-
-                // jquery:
-//                add(new InvestmintRu(ticker));
-//                add(new RbkRu(ticker));
-//                add(new TinkoffRu(ticker));
-//                add(new SimplyWallSt(ticker));
+                add(new RbkRu(ticker));
+                add(new TinkoffRu(ticker));
+                add(new InvestFutureRu(ticker));
+                add(new InvestmintRu(ticker));
             }
         };
 
@@ -259,6 +260,7 @@ public class NetProcessor {
                             investFrame.addPanel(data);
                         }
                         resultDTO.update(ticker, data);
+                        log.info("Site {} parsing was accomplished.", data.getName());
                     }
                 } catch (Exception sbe) {
                     log.error("Exception in proceed method: {}", sbe.getMessage());

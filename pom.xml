@@ -38,10 +38,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <mapstruct.version>1.5.2.Final</mapstruct.version>
-        <spring.config-processor.version>2.7.3</spring.config-processor.version>
+<!--        <selenide.version>6.19.1</selenide.version>-->
+<!--        <selenium.version>4.14.1</selenium.version>-->
+
         <selenide.version>6.11.0</selenide.version>
         <selenium.version>4.7.1</selenium.version>
+
+        <mapstruct.version>1.5.2.Final</mapstruct.version>
+        <spring.config-processor.version>2.7.3</spring.config-processor.version>
         <jackson.version>2.14.2</jackson.version>
         <spring.version>2.7.10</spring.version>
         <lombok.version>1.18.24</lombok.version>
@@ -141,6 +145,7 @@
             <artifactId>selenium-api</artifactId>
             <version>${selenium.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-remote-driver</artifactId>

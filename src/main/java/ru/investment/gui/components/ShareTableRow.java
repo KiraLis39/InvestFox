@@ -198,10 +198,10 @@ public class ShareTableRow extends JPanel implements Comparator<ShareTableRow> {
                 getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.BLACK);
                 ((DefaultEditor) getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
                 addChangeListener(e -> {
-                        getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
-                        resultDto.setIndex(Short.parseShort(getValue().toString()));
-                        validateRowStyle();
-                    }
+                            getEditor().getComponent(0).setBackground(((int) getValue() * 1f) % 2f == 0 ? Color.DARK_GRAY : Color.GRAY);
+                            resultDto.setIndex(Short.parseShort(getValue().toString()));
+                            validateRowStyle();
+                        }
                 );
             }
         });

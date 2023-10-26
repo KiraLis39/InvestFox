@@ -34,9 +34,8 @@ public class BrowserSetupConfig {
 
         Configuration.webdriverLogsEnabled = false;
         Configuration.browser = Browsers.FIREFOX; // default "chrome"
-        Configuration.browserSize = "1680x1050";
+        Configuration.browserSize = "1440x900";
         Configuration.headless = true; // default "false"
-        Configuration.driverManagerEnabled = true; // default "true"
         Configuration.pageLoadStrategy = "eager"; // default "normal"
         Configuration.holdBrowserOpen = false; // default "false"
         Configuration.downloadsFolder = "downloads";

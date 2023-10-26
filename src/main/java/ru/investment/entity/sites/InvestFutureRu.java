@@ -10,7 +10,6 @@ import ru.investment.enums.CostType;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class InvestFutureRu extends AbstractSite {
@@ -50,11 +49,13 @@ public class InvestFutureRu extends AbstractSite {
                 .replace("href=securitiesid33", "")
                 .trim();
 
-        List<String> data = Arrays.asList(temp.split(";"));
-        getDto().setName(data.get(1)
-                .replace("href=securitiesid\\S{1,4} ", "")
-                .replace("'", "")
-                .replace("\"", ""));
+        List<String> data = Arrays.asList(temp.split("\\;"));
+        if (data.size() > 1) {
+            getDto().setName(data.get(1)
+                    .replace("href=securitiesid\\S{1,4} ", "")
+                    .replace("'", "")
+                    .replace("\"", ""));
+        }
         if (data.size() > 4) {
             getDto().addCoast(data.get(5));
         }
@@ -68,7 +69,7 @@ public class InvestFutureRu extends AbstractSite {
         try {
             String s = doc.select("#result_panel > div").get(0).text()
                     .substring(doc.select("#result_panel > div").get(0).text().indexOf("составляет")).trim();
-            if (s.split(" ")[2].equals("RUB")) {
+            if (s.split("\\s")[2].equals("RUB")) {
                 getDto().setCostType(CostType.RUB);
             }
         } catch (Exception e) {
@@ -76,8 +77,10 @@ public class InvestFutureRu extends AbstractSite {
         }
 
         try {
-            if (doc.html().split("<li>торговый лот ", Pattern.CANON_EQ).length > 1) {
-                double lot = Double.parseDouble(doc.html().split("<li>торговый лот ", Pattern.CANON_EQ)[1]
+            String html = doc.html();
+            String[] splited = html.split("торговый лот");
+            if (splited.length > 1) {
+                double lot = Double.parseDouble(splited[1]
                         .split(";</li>")[0]
                         .replace("‒", "")
                         .trim());
@@ -87,8 +90,14 @@ public class InvestFutureRu extends AbstractSite {
             e.printStackTrace();
         }
 
-        String txt = doc.selectXpath("/html/body/div[1]/div/div[4]/div/div/div/div/div[2]/div[4]/div[3]/p[9]").text();
-        getDto().addPaySumOnShare(txt);
+        try {
+            String txt = doc.selectXpath("/html/body/div[1]/div/div[4]/div/div/div/div/div[2]/div[4]/div[3]/p[9]").text();
+            if (txt.length() >= 1 && txt.length() < 6) {
+                getDto().addPaySumOnShare(txt);
+            }
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
 
         buildUrl(SOURCE_TWO + code);
         doc = getDoc();
