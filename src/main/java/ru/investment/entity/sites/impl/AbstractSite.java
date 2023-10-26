@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 
+import static com.codeborne.selenide.Selenide.$;
+
 @Getter
 @Setter
 @Slf4j
@@ -84,6 +86,10 @@ public abstract class AbstractSite {
         }
         if (BrowserUtil.isTechnicalWorks()) {
             log.error("isTechnicalWorks");
+            return false;
+        }
+        if ($("*").text().contains("403 ERROR")) {
+            log.error("Спалились (403)...");
             return false;
         }
         return true;
